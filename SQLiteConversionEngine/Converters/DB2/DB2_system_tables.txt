@@ -1,0 +1,50 @@
+AS400/DB2 system tables
+
+SYSCATALOGS 		             CATALOGS Information about relational databases
+SYSCHKCST 		             CHECK_CONSTRAINTS Information about check constraints
+SYSCOLUMNS 		             COLUMNS Information about column attributes
+SYSCOLUMNSTAT 	                  Information about column statistics
+SYSCST 			             TABLE_CONSTRAINTS Information about all constraints
+SYSCSTCOL 		             CONSTRAINT_COLUMN_USAGE Information about the columns referenced in a
+SYSCSTDEP 		             CONSTRAINT_TABLE_USAGE Information about constraint dependencies on
+SYSFIELDS 		             Information about field procedures
+SYSFUNCS 		                  ROUTINES Information about user-defined functions
+SYSINDEXES 		             Information about indexes
+SYSINDEXSTAT 	                  Information about index statistics
+SYSJARCONTENTS 	             Information about jars for Java routines
+SYSJAROBJECTS 	                  Information about jars for Java routines
+SYSKEYCST 		             KEY_COLUMN_USAGE Information about unique, primary, and
+SYSKEYS 		                  Information about index keys
+SYSMQTSTAT 		             Information about materialized query table
+SYSPACKAGE 		             Information about packages
+SYSPACKAGESTAT 	             Information about package statistics
+SYSPARMS 		                  PARAMETERS Information about routine parameters
+SYSPARTITIONDISK 	             Information about partition disk usage
+SYSPARTITIONINDEXES              Information about partition indexes
+SYSPARTITIONINDEXSTAT            Information about partition index statistics
+SYSPARTITIONMQTS 	             Information about partition materialized query
+SYSPARTITIONSTAT	             Information about partition statistics
+SYSPROCS 		                  ROUTINES Information about procedures
+SYSPROGRAMSTAT 	             Information about programs, service programs,
+SYSREFCST 		             REFERENTIAL_CONSTRAINTS Information about referential constraints
+SYSROUTINEDEP 	                  ROUTINE_TABLE_USAGE Information about function and procedure
+SYSROUTINES 		             ROUTINES Information about functions and procedures
+SYSSCHEMAS 		             Information about schemas
+SYSSEQUENCES 	                  Information about sequences
+SYSTABLEDEP 		             Information about materialized query table
+SYSTABLEINDEXSTAT                Information about table index statistics
+SYSTABLES 		             TABLES Information about tables and views
+SYSTABLESTAT 	                  Information about table statistics
+SYSTRIGCOL 		             TRIGGER_COLUMN_USAGE Information about columns used in a trigger
+SYSTRIGDEP 		             TRIGGER_TABLE_USAGE Information about objects used in a trigger
+SYSTRIGGERS 		             TRIGGERS Information about triggers
+SYSTRIGUPD 		             TRIGGERED_UPDATE_COLUMNS Information about columns in the WHEN
+SYSTYPES 		                  USER_DEFINED_TYPES Information about built-in data types and
+SYSVARIABLEDEP 	             Information about objects used in global
+SYSVARIABLES 	                  Information about global variables
+SYSVIEWDEP 		             VIEW_TABLE_USAGE Information about view dependencies on tables
+SYSVIEWS 		                  VIEWS Information about definition of a view
+XSRANNOTATIONINFO                Information about annotations
+XSROBJECTCOMPONENTS              Information about components in an XML
+XSROBJECTHIERARCHIES             Information about XML schema document
+XSROBJECTS 		             Information about XML schemas

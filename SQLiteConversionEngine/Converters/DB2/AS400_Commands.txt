@@ -1,0 +1,11 @@
+To run SQL statement: strsql
+
+Keys greater than F12, add shift.
+	F19 = S + F7
+	F20 = S + F8
+	F24 = S + F12
+	
+	
+
+	
+IBM Serv 1800-IBM-SERV (1800-426-7378) or email (support@us.ibm.com)
