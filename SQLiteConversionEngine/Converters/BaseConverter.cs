@@ -1,63 +1,65 @@
-﻿using SQLiteConversionEngine.ConversionData;
-using SQLiteConversionEngine.Utility;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.SQLite;
-using System.Threading;
-using System.Text.RegularExpressions;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using SQLiteConversionEngine.ConversionData;
+using SQLiteConversionEngine.Utility;
 
-namespace SQLiteConversionEngine.Converters
-{
+namespace SQLiteConversionEngine.Converters {
 	/// <summary>
 	/// This class is resposible to take a single SQL Server database
 	/// and convert it to an SQLite database file.
 	/// </summary>
 	/// <remarks>The class knows how to convert table and index structures only.</remarks>
-	public abstract class BaseConverter
-	{
+	public abstract class BaseConverter {
 		#region Private Variables
+
 		protected static bool _isActive = false;
 		protected static bool _cancelled = false;
 		protected static Regex _keyRx = new Regex(@"([a-zA-Z_0-9]+)(\(\-\))?");
 		protected static Regex _defaultValueRx = new Regex(@"\(N(\'.*\')\)");
-		#endregion
+
+		#endregion Private Variables
 
 		#region Public Properties
+
 		/// <summary>
 		/// Gets a value indicating whether this instance is active.
 		/// </summary>
 		/// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
-		public bool IsActive
-		{
+		public bool IsActive {
 			get { return _isActive; }
 		}
 
 		private List<string> schemasToLoad = new List<string>();
+
 		/// <summary>
 		/// Gets the schemas to load.
 		/// </summary>
 		/// <value>The schemas to load.</value>
-		protected List<string> SchemasToLoad
-		{
-			get
-			{
+		protected List<string> SchemasToLoad {
+			get {
 				return schemasToLoad;
 			}
 		}
 
 		private List<TableToLoad> tablesToLoad = new List<TableToLoad>();
+
 		/// <summary>
 		/// Gets or sets the tables to load.
 		/// </summary>
 		/// <value>The tables to load.</value>
 		public List<TableToLoad> TablesToLoad { get; set; }
-		#endregion
+
+		#endregion Public Properties
 
 		#region Abstract Methods
+
 		/// <summary>
 		/// This method takes as input the connection string to an SQL Server database
 		/// and creates a corresponding SQLite database file with a schema derived from
@@ -176,20 +178,21 @@ namespace SQLiteConversionEngine.Converters
 		/// <param name="conn">The SQL Server connection to use</param>
 		/// <param name="ts">The table schema to whom foreign key schema should be added to</param>
 		protected abstract void CreateForeignKeySchema(IDbConnection sourceConnection, TableSchema tableSchema);
-		#endregion
+
+		#endregion Abstract Methods
 
 		#region Public Methods
+
 		/// <summary>
 		/// Cancels the conversion.
 		/// </summary>
-		public void CancelConversion()
-		{
+		public void CancelConversion() {
 			_cancelled = true;
 		}
 
 		#region SQLite
-		public SQLiteConnection InitializeSQLiteConnection(string sqliteConnectionString)
-		{
+
+		public SQLiteConnection InitializeSQLiteConnection(string sqliteConnectionString) {
 			SQLiteConnectionStringBuilder constring = new SQLiteConnectionStringBuilder();
 			constring.ConnectionString = sqliteConnectionString;
 			//Logging.Log(LogLevel.Debug, "SQLite Connection string initialized");
@@ -200,18 +203,15 @@ namespace SQLiteConversionEngine.Converters
 			return conn;
 		}
 
-		public void InitializeSQLiteDatabase(SQLiteConnection sqliteConnection, List<string[]> PragmaCommands)
-		{
-			try
-			{
+		public void InitializeSQLiteDatabase(SQLiteConnection sqliteConnection, List<string[]> PragmaCommands) {
+			try {
 				//Logging.Log(LogLevel.Debug, "Begin SQLite database initialization");
 				//Logging.Log(LogLevel.Debug, "SQLite Connection opened");
 
 				SQLiteCommand com = sqliteConnection.CreateCommand();
 
 				//Logging.Log(LogLevel.Debug, "Begin PRAGMA commands");
-				foreach (string[] command in PragmaCommands)
-				{
+				foreach (string[] command in PragmaCommands) {
 					//Logging.Log(LogLevel.Debug, string.Format(@"PRAGMA {0} = {1}", command[0], command[1]));
 					com.CommandText = string.Format(@"PRAGMA {0} = {1}", command[0], command[1]);
 					com.ExecuteNonQuery();
@@ -219,18 +219,18 @@ namespace SQLiteConversionEngine.Converters
 
 				//Logging.Log(LogLevel.Debug, "End SQLite database initialization");
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				//Logging.Log(LogLevel.Fatal, FileLogger.GetInnerException(ex).Message);
 				//Logging.HandleException(ex);
 				throw;
 			}
 		}
-		#endregion
+
+		#endregion SQLite
 
 		#region Sql Server
-		public SqlConnection InitializeSqlServerConnection(string sqlServerConnectionString)
-		{
+
+		public SqlConnection InitializeSqlServerConnection(string sqlServerConnectionString) {
 			SqlConnectionStringBuilder constring = new SqlConnectionStringBuilder();
 			constring.ConnectionString = sqlServerConnectionString;
 			//Logging.Log(LogLevel.Debug, "SQLite Connection string initialized");
@@ -241,8 +241,7 @@ namespace SQLiteConversionEngine.Converters
 			return conn;
 		}
 
-		public void InitializeSqlServerDatabase(SqlConnection sqlConnection)
-		{
+		public void InitializeSqlServerDatabase(SqlConnection sqlConnection) {
 			//try
 			//{
 			//    //Logging.Log(LogLevel.Debug, "Begin SQLite database initialization");
@@ -267,25 +266,26 @@ namespace SQLiteConversionEngine.Converters
 			//    throw;
 			//}
 		}
-		#endregion
 
-		#endregion
+		#endregion Sql Server
+
+		#endregion Public Methods
 
 		#region Protected Methods
+
 		#region SQLite
+
 		/// <summary>
 		/// Creates a command object needed to insert values into a specific SQLite table.
 		/// </summary>
 		/// <param name="ts">The table schema object for the table.</param>
 		/// <returns>A command object with the required functionality.</returns>
-		protected static SQLiteCommand BuildSQLiteInsert(TableSchema ts)
-		{
+		protected static SQLiteCommand BuildSQLiteInsert(TableSchema ts) {
 			SQLiteCommand res = new SQLiteCommand();
 
 			StringBuilder sb = new StringBuilder();
 			sb.Append("INSERT INTO [" + ts.TableName + "] (");
-			for (int i = 0; i < ts.Columns.Count; i++)
-			{
+			for (int i = 0; i < ts.Columns.Count; i++) {
 				sb.Append("[" + ts.Columns[i].ColumnName + "]");
 				if (i < ts.Columns.Count - 1)
 					sb.Append(", ");
@@ -293,8 +293,7 @@ namespace SQLiteConversionEngine.Converters
 			sb.Append(") VALUES (");
 
 			List<string> pnames = new List<string>();
-			for (int i = 0; i < ts.Columns.Count; i++)
-			{
+			for (int i = 0; i < ts.Columns.Count; i++) {
 				string pname = "@" + GetNormalizedName(ts.Columns[i].ColumnName, pnames);
 				sb.Append(pname);
 				if (i < ts.Columns.Count - 1)
@@ -318,15 +317,13 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="ts">The table schema object for the table.</param>
 		/// <returns>A command object with the required functionality.</returns>
-		protected static SQLiteCommand BuildSQLiteUpdate(TableSchema ts)
-		{
-			// Need primary key for this to work. If no primary key, MUST SKIP. 
+		protected static SQLiteCommand BuildSQLiteUpdate(TableSchema ts) {
+			// Need primary key for this to work. If no primary key, MUST SKIP.
 			SQLiteCommand res = new SQLiteCommand();
 
 			StringBuilder sb = new StringBuilder();
 			sb.Append("INSERT INTO [" + ts.TableName + "] (");
-			for (int i = 0; i < ts.Columns.Count; i++)
-			{
+			for (int i = 0; i < ts.Columns.Count; i++) {
 				sb.Append("[" + ts.Columns[i].ColumnName + "]");
 				if (i < ts.Columns.Count - 1)
 					sb.Append(", ");
@@ -334,8 +331,7 @@ namespace SQLiteConversionEngine.Converters
 			sb.Append(") VALUES (");
 
 			List<string> pnames = new List<string>();
-			for (int i = 0; i < ts.Columns.Count; i++)
-			{
+			for (int i = 0; i < ts.Columns.Count; i++) {
 				string pname = "@" + GetNormalizedName(ts.Columns[i].ColumnName, pnames);
 				sb.Append(pname);
 				if (i < ts.Columns.Count - 1)
@@ -363,8 +359,7 @@ namespace SQLiteConversionEngine.Converters
 		/// <param name="handler">A handle for progress notifications.</param>
 		protected static void CreateSQLiteDatabase(string sqlitePath, DatabaseSchema schema, string password,
 			SqlConversionHandler handler,
-			FailedViewDefinitionHandler viewFailureHandler)
-		{
+			FailedViewDefinitionHandler viewFailureHandler) {
 			//Logging.Log(LogLevel.Debug, "Creating SQLite database...");
 
 			// Create the SQLite database file
@@ -374,20 +369,16 @@ namespace SQLiteConversionEngine.Converters
 
 			// Connect to the newly created database
 			string sqliteConnString = CreateSQLiteConnectionString(sqlitePath, password);
-			using (SQLiteConnection conn = new SQLiteConnection(sqliteConnString))
-			{
+			using (SQLiteConnection conn = new SQLiteConnection(sqliteConnString)) {
 				conn.Open();
 
 				// Create all tables in the new database
 				int count = 0;
-				foreach (TableSchema dt in schema.Tables)
-				{
-					try
-					{
+				foreach (TableSchema dt in schema.Tables) {
+					try {
 						AddSQLiteTable(conn, dt);
 					}
-					catch (Exception ex)
-					{
+					catch (Exception ex) {
 						//Logging.Log(LogLevel.Error, string.Format("AddSQLiteTable failed: {0}", FileLogger.GetInnerException(ex).Message));
 						//Logging.HandleException(ex);
 						throw;
@@ -401,14 +392,11 @@ namespace SQLiteConversionEngine.Converters
 
 				// Create all views in the new database
 				count = 0;
-				foreach (ViewSchema vs in schema.Views)
-				{
-					try
-					{
+				foreach (ViewSchema vs in schema.Views) {
+					try {
 						AddSQLiteView(conn, vs, viewFailureHandler);
 					}
-					catch (Exception ex)
-					{
+					catch (Exception ex) {
 						//Logging.Log(LogLevel.Error, string.Format("AddSQLiteView failed: {0}", FileLogger.GetInnerException(ex).Message));
 						//Logging.HandleException(ex);
 						throw;
@@ -418,7 +406,6 @@ namespace SQLiteConversionEngine.Converters
 					handler(false, true, 50 + (int)(count * 50.0 / schema.Views.Count), "Added view " + vs.ViewName + " to the SQLite database");
 
 					//Logging.Log(LogLevel.Debug, "added schema for SQLite view [" + vs.ViewName + "]");
-
 				}
 			}
 
@@ -433,20 +420,16 @@ namespace SQLiteConversionEngine.Converters
 		/// <param name="handler">The handler.</param>
 		/// <param name="viewFailureHandler">The view failure handler.</param>
 		protected static void CreateSQLiteDatabase(SQLiteConnection sqliteConnection, DatabaseSchema schema,
-			SqlConversionHandler handler, FailedViewDefinitionHandler viewFailureHandler)
-		{
+			SqlConversionHandler handler, FailedViewDefinitionHandler viewFailureHandler) {
 			//Logging.Log(LogLevel.Debug, "Creating SQLite database...");
 
 			// Create all tables in the new database
 			int count = 0;
-			foreach (TableSchema dt in schema.Tables)
-			{
-				try
-				{
+			foreach (TableSchema dt in schema.Tables) {
+				try {
 					AddSQLiteTable(sqliteConnection, dt);
 				}
-				catch (Exception ex)
-				{
+				catch (Exception ex) {
 					//Logging.Log(LogLevel.Error, string.Format("AddSQLiteTable failed: {0}", FileLogger.GetInnerException(ex).Message));
 					//Logging.HandleException(ex);
 					throw;
@@ -460,14 +443,11 @@ namespace SQLiteConversionEngine.Converters
 
 			// Create all views in the new database
 			count = 0;
-			foreach (ViewSchema vs in schema.Views)
-			{
-				try
-				{
+			foreach (ViewSchema vs in schema.Views) {
+				try {
 					AddSQLiteView(sqliteConnection, vs, viewFailureHandler);
 				}
-				catch (Exception ex)
-				{
+				catch (Exception ex) {
 					//Logging.Log(LogLevel.Error, string.Format("AddSQLiteView failed: {0}", FileLogger.GetInnerException(ex).Message));
 					//Logging.HandleException(ex);
 					throw;
@@ -477,8 +457,7 @@ namespace SQLiteConversionEngine.Converters
 				handler(false, true, 50 + (int)(count * 50.0 / schema.Views.Count), "Added view " + vs.ViewName + " to the SQLite database");
 
 				//Logging.Log(LogLevel.Debug, "added schema for SQLite view [" + vs.ViewName + "]");
-
-			}			
+			}
 
 			//Logging.Log(LogLevel.Debug, "finished adding all table/view schemas for SQLite database");
 		}
@@ -488,8 +467,7 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="sqlitePath">The path to the SQLite database file.</param>
 		/// <returns>SQLite connection string</returns>
-		protected static string CreateSQLiteConnectionString(string sqlitePath, string password)
-		{
+		protected static string CreateSQLiteConnectionString(string sqlitePath, string password) {
 			SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder();
 			builder.DataSource = sqlitePath;
 			if (password != null)
@@ -500,22 +478,22 @@ namespace SQLiteConversionEngine.Converters
 
 			return connstring;
 		}
-		#endregion
+
+		#endregion SQLite
 
 		#region Sql Server
+
 		/// <summary>
 		/// Creates a command object needed to insert values into a specific SQLite table.
 		/// </summary>
 		/// <param name="ts">The table schema object for the table.</param>
 		/// <returns>A command object with the required functionality.</returns>
-		protected static SqlCommand BuildSqlServerInsert(TableSchema ts)
-		{
+		protected static SqlCommand BuildSqlServerInsert(TableSchema ts) {
 			SqlCommand res = new SqlCommand();
 
 			StringBuilder sb = new StringBuilder();
 			sb.Append("INSERT INTO [" + ts.TableName + "] (");
-			for (int i = 0; i < ts.Columns.Count; i++)
-			{
+			for (int i = 0; i < ts.Columns.Count; i++) {
 				sb.Append("[" + ts.Columns[i].ColumnName + "]");
 				if (i < ts.Columns.Count - 1)
 					sb.Append(", ");
@@ -523,8 +501,7 @@ namespace SQLiteConversionEngine.Converters
 			sb.Append(") VALUES (");
 
 			List<string> pnames = new List<string>();
-			for (int i = 0; i < ts.Columns.Count; i++)
-			{
+			for (int i = 0; i < ts.Columns.Count; i++) {
 				string pname = "@" + GetNormalizedName(ts.Columns[i].ColumnName, pnames);
 				sb.Append(pname);
 				if (i < ts.Columns.Count - 1)
@@ -552,27 +529,22 @@ namespace SQLiteConversionEngine.Converters
 		/// <param name="handler">A handle for progress notifications.</param>
 		protected static void CreateSqlServerDatabase(string sqlitePath, DatabaseSchema schema, string password,
 			SqlConversionHandler handler,
-			FailedViewDefinitionHandler viewFailureHandler)
-		{
+			FailedViewDefinitionHandler viewFailureHandler) {
 			//Logging.Log(LogLevel.Debug, "Creating SQLite database...");
 			//Logging.Log(LogLevel.Debug, "SQLite file was created successfully at [" + sqlitePath + "]");
 
 			// Connect to the newly created database
 			string sqliteConnString = CreateSQLiteConnectionString(sqlitePath, password);
-			using (SQLiteConnection conn = new SQLiteConnection(sqliteConnString))
-			{
+			using (SQLiteConnection conn = new SQLiteConnection(sqliteConnString)) {
 				conn.Open();
 
 				// Create all tables in the new database
 				int count = 0;
-				foreach (TableSchema dt in schema.Tables)
-				{
-					try
-					{
+				foreach (TableSchema dt in schema.Tables) {
+					try {
 						AddSQLiteTable(conn, dt);
 					}
-					catch (Exception ex)
-					{
+					catch (Exception ex) {
 						//Logging.Log(LogLevel.Error, string.Format("AddSQLiteTable failed: {0}", FileLogger.GetInnerException(ex).Message));
 						//Logging.HandleException(ex);
 						throw;
@@ -586,14 +558,11 @@ namespace SQLiteConversionEngine.Converters
 
 				// Create all views in the new database
 				count = 0;
-				foreach (ViewSchema vs in schema.Views)
-				{
-					try
-					{
+				foreach (ViewSchema vs in schema.Views) {
+					try {
 						AddSQLiteView(conn, vs, viewFailureHandler);
 					}
-					catch (Exception ex)
-					{
+					catch (Exception ex) {
 						//Logging.Log(LogLevel.Error, string.Format("AddSQLiteView failed: {0}", FileLogger.GetInnerException(ex).Message));
 						//Logging.HandleException(ex);
 						throw;
@@ -603,7 +572,6 @@ namespace SQLiteConversionEngine.Converters
 					handler(false, true, 50 + (int)(count * 50.0 / schema.Views.Count), "Added view " + vs.ViewName + " to the SQLite database");
 
 					//Logging.Log(LogLevel.Debug, "added schema for SQLite view [" + vs.ViewName + "]");
-
 				}
 			}
 
@@ -618,20 +586,16 @@ namespace SQLiteConversionEngine.Converters
 		/// <param name="handler">The handler.</param>
 		/// <param name="viewFailureHandler">The view failure handler.</param>
 		protected static void CreateSqlServerDatabase(SQLiteConnection sqliteConnection, DatabaseSchema schema,
-			SqlConversionHandler handler, FailedViewDefinitionHandler viewFailureHandler)
-		{
+			SqlConversionHandler handler, FailedViewDefinitionHandler viewFailureHandler) {
 			//Logging.Log(LogLevel.Debug, "Creating SQLite database...");
 
 			// Create all tables in the new database
 			int count = 0;
-			foreach (TableSchema dt in schema.Tables)
-			{
-				try
-				{
+			foreach (TableSchema dt in schema.Tables) {
+				try {
 					AddSQLiteTable(sqliteConnection, dt);
 				}
-				catch (Exception ex)
-				{
+				catch (Exception ex) {
 					//Logging.Log(LogLevel.Error, string.Format("AddSQLiteTable failed: {0}", FileLogger.GetInnerException(ex).Message));
 					//Logging.HandleException(ex);
 					throw;
@@ -645,14 +609,11 @@ namespace SQLiteConversionEngine.Converters
 
 			// Create all views in the new database
 			count = 0;
-			foreach (ViewSchema vs in schema.Views)
-			{
-				try
-				{
+			foreach (ViewSchema vs in schema.Views) {
+				try {
 					AddSQLiteView(sqliteConnection, vs, viewFailureHandler);
 				}
-				catch (Exception ex)
-				{
+				catch (Exception ex) {
 					//Logging.Log(LogLevel.Error, string.Format("AddSQLiteView failed: {0}", FileLogger.GetInnerException(ex).Message));
 					//Logging.HandleException(ex);
 					throw;
@@ -662,8 +623,7 @@ namespace SQLiteConversionEngine.Converters
 				handler(false, true, 50 + (int)(count * 50.0 / schema.Views.Count), "Added view " + vs.ViewName + " to the SQLite database");
 
 				//Logging.Log(LogLevel.Debug, "added schema for SQLite view [" + vs.ViewName + "]");
-
-			}			
+			}
 
 			//Logging.Log(LogLevel.Debug, "finished adding all table/view schemas for SQLite database");
 		}
@@ -673,8 +633,7 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="sqlitePath">The path to the SQLite database file.</param>
 		/// <returns>SQLite connection string</returns>
-		protected static string CreateSqlServerConnectionString(string sqlitePath, string password)
-		{
+		protected static string CreateSqlServerConnectionString(string sqlitePath, string password) {
 			SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 			builder.DataSource = sqlitePath;
 			if (password != null)
@@ -683,7 +642,8 @@ namespace SQLiteConversionEngine.Converters
 
 			return connstring;
 		}
-		#endregion
+
+		#endregion Sql Server
 
 		/// <summary>
 		/// Used in order to adjust the value received from SQL Servr for the SQLite database.
@@ -691,15 +651,13 @@ namespace SQLiteConversionEngine.Converters
 		/// <param name="val">The value object</param>
 		/// <param name="columnSchema">The corresponding column schema</param>
 		/// <returns>SQLite adjusted value.</returns>
-		protected static object CastValueForColumn(object val, ColumnSchema columnSchema)
-		{
+		protected static object CastValueForColumn(object val, ColumnSchema columnSchema) {
 			if (val is DBNull)
 				return null;
 
 			DbType dt = GetDbTypeOfColumn(columnSchema);
 
-			switch (dt)
-			{
+			switch (dt) {
 				case DbType.Int32:
 					if (val is short)
 						return (int)(short)val;
@@ -786,10 +744,8 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="columnSchema">The column schema to use for the match</param>
 		/// <returns>The matched DB type</returns>
-		protected static DbType GetDbTypeOfColumn(ColumnSchema columnSchema)
-		{
-			switch (columnSchema.ColumnType)
-			{
+		protected static DbType GetDbTypeOfColumn(ColumnSchema columnSchema) {
+			switch (columnSchema.ColumnType) {
 				case "tinyint":
 					return DbType.Byte;
 				case "int":
@@ -848,11 +804,9 @@ namespace SQLiteConversionEngine.Converters
 		/// <param name="str">The name to change if necessary</param>
 		/// <param name="names">Used to avoid duplicate names</param>
 		/// <returns>A normalized name</returns>
-		protected static string GetNormalizedName(string str, List<string> names)
-		{
+		protected static string GetNormalizedName(string str, List<string> names) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < str.Length; i++)
-			{
+			for (int i = 0; i < str.Length; i++) {
 				if (Char.IsLetterOrDigit(str[i]) || str[i] == '_')
 					sb.Append(str[i]);
 				else
@@ -866,17 +820,14 @@ namespace SQLiteConversionEngine.Converters
 				return sb.ToString();
 		}
 
-		protected static Guid ParseBlobAsGuid(byte[] blob)
-		{
+		protected static Guid ParseBlobAsGuid(byte[] blob) {
 			byte[] data = blob;
-			if (blob.Length > 16)
-			{
+			if (blob.Length > 16) {
 				data = new byte[16];
 				for (int i = 0; i < 16; i++)
 					data[i] = blob[i];
 			}
-			else if (blob.Length < 16)
-			{
+			else if (blob.Length < 16) {
 				data = new byte[16];
 				for (int i = 0; i < blob.Length; i++)
 					data[i] = blob[i];
@@ -885,14 +836,11 @@ namespace SQLiteConversionEngine.Converters
 			return new Guid(data);
 		}
 
-		protected static Guid ParseStringAsGuid(string str)
-		{
-			try
-			{
+		protected static Guid ParseStringAsGuid(string str) {
+			try {
 				return new Guid(str);
 			}
-			catch
-			{
+			catch {
 				return Guid.Empty;
 			}
 		}
@@ -900,8 +848,7 @@ namespace SQLiteConversionEngine.Converters
 		/// <summary>
 		/// Convenience method for checking if the conversion progress needs to be cancelled.
 		/// </summary>
-		protected static void CheckCancelled()
-		{
+		protected static void CheckCancelled() {
 			if (_cancelled)
 				throw new ApplicationException("User cancelled the conversion");
 		}
@@ -911,8 +858,7 @@ namespace SQLiteConversionEngine.Converters
 		/// an exception.
 		/// </summary>
 		/// <param name="dataType">The datatype to validate.</param>
-		protected static void ValidateDataType(string dataType)
-		{
+		protected static void ValidateDataType(string dataType) {
 			if (dataType == "int" || dataType == "smallint" ||
 				dataType == "bit" || dataType == "float" ||
 				dataType == "real" || dataType == "nvarchar" ||
@@ -937,16 +883,14 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="colDefault">The original default value string (as read from SQL Server).</param>
 		/// <returns>Adjusted DEFAULT value string (for SQLite)</returns>
-		protected static string FixDefaultValueString(string colDefault)
-		{
+		protected static string FixDefaultValueString(string colDefault) {
 			bool replaced = false;
 			string res = colDefault.Trim();
 
 			// Find first/last indexes in which to search
 			int first = -1;
 			int last = -1;
-			for (int i = 0; i < res.Length; i++)
-			{
+			for (int i = 0; i < res.Length; i++) {
 				if (res[i] == '\'' && first == -1)
 					first = i;
 				if (res[i] == '\'' && first != -1 && i > last)
@@ -957,10 +901,8 @@ namespace SQLiteConversionEngine.Converters
 				return res.Substring(first, last - first + 1);
 
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < res.Length; i++)
-			{
-				if (res[i] != '(' && res[i] != ')')
-				{
+			for (int i = 0; i < res.Length; i++) {
+				if (res[i] != '(' && res[i] != ')') {
 					sb.Append(res[i]);
 					replaced = true;
 				}
@@ -978,17 +920,14 @@ namespace SQLiteConversionEngine.Converters
 		/// <param name="desc">The description of the index</param>
 		/// <param name="keys">Key columns that are part of the index.</param>
 		/// <returns>An index schema object that represents our knowledge of the index</returns>
-		protected static IndexSchema BuildIndexSchema(string indexName, string desc, string keys)
-		{
+		protected static IndexSchema BuildIndexSchema(string indexName, string desc, string keys) {
 			IndexSchema res = new IndexSchema();
 			res.IndexName = indexName;
 
 			// Determine if this is a unique index or not.
 			string[] descParts = desc.Split(',');
-			foreach (string p in descParts)
-			{
-				if (p.Trim().Contains("unique"))
-				{
+			foreach (string p in descParts) {
+				if (p.Trim().Contains("unique")) {
 					res.IsUnique = true;
 					break;
 				}
@@ -997,11 +936,9 @@ namespace SQLiteConversionEngine.Converters
 			// Get all key names and check if they are ASCENDING or DESCENDING
 			res.Columns = new List<IndexColumn>();
 			string[] keysParts = keys.Split(',');
-			foreach (string p in keysParts)
-			{
+			foreach (string p in keysParts) {
 				Match m = _keyRx.Match(p);
-				if (!m.Success)
-				{
+				if (!m.Success) {
 					throw new ApplicationException("Illegal key name [" + p + "] in index [" +
 						indexName + "]");
 				}
@@ -1025,8 +962,7 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="val">The value to adjust</param>
 		/// <returns>Adjusted DEFAULT value string</returns>
-		protected static string AdjustDefaultValue(string val)
-		{
+		protected static string AdjustDefaultValue(string val) {
 			if (val == null || val == string.Empty)
 				return val;
 
@@ -1041,37 +977,34 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="ts">Trigger to script</param>
 		/// <returns>Executable script</returns>
-		protected static string WriteTriggerSchema(TriggerSchema ts)
-		{
+		protected static string WriteTriggerSchema(TriggerSchema ts) {
 			return @"CREATE TRIGGER [" + ts.Name + "] " +
 				   ts.Type + " " + ts.Event +
 				   " ON [" + ts.Table + "] " +
 				   "BEGIN " + ts.Body + " END;";
 		}
-		#endregion
+
+		#endregion Protected Methods
 
 		#region Private Methods
-		private static void AddSQLiteView(SQLiteConnection conn, ViewSchema vs, FailedViewDefinitionHandler handler)
-		{
+
+		private static void AddSQLiteView(SQLiteConnection conn, ViewSchema vs, FailedViewDefinitionHandler handler) {
 			// Prepare a CREATE VIEW DDL statement
 			string stmt = vs.ViewSQL;
 			//Logging.Log(LogLevel.Debug, "\n\n" + stmt + "\n\n");
 
 			// Execute the query in order to actually create the view.
 			SQLiteTransaction tx = conn.BeginTransaction();
-			try
-			{
+			try {
 				SQLiteCommand cmd = new SQLiteCommand(stmt, conn, tx);
 				cmd.ExecuteNonQuery();
 
 				tx.Commit();
 			}
-			catch
-			{
+			catch {
 				tx.Rollback();
 
-				if (handler != null)
-				{
+				if (handler != null) {
 					ViewSchema updated = new ViewSchema();
 					updated.ViewName = vs.ViewName;
 					updated.ViewSQL = vs.ViewSQL;
@@ -1081,8 +1014,7 @@ namespace SQLiteConversionEngine.Converters
 
 					if (sql == null)
 						return; // Discard the view
-					else
-					{
+					else {
 						// Try to re-create the view with the user-supplied view definition SQL
 						updated.ViewSQL = sql;
 						AddSQLiteView(conn, updated, handler);
@@ -1098,8 +1030,7 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="conn">The SQLite connection</param>
 		/// <param name="dt">The table schema object for the table to be generated.</param>
-		private static void AddSQLiteTable(SQLiteConnection conn, TableSchema dt)
-		{
+		private static void AddSQLiteTable(SQLiteConnection conn, TableSchema dt) {
 			// Prepare a CREATE TABLE DDL statement
 			string stmt = BuildCreateTableQuery(dt);
 
@@ -1116,15 +1047,13 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="ts">The table schema object from which to create the SQL statement.</param>
 		/// <returns>CREATE TABLE DDL for the specified table.</returns>
-		private static string BuildCreateTableQuery(TableSchema ts)
-		{
+		private static string BuildCreateTableQuery(TableSchema ts) {
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append("CREATE TABLE [" + ts.TableName + "] (\n");
 
 			bool pkey = false;
-			for (int i = 0; i < ts.Columns.Count; i++)
-			{
+			for (int i = 0; i < ts.Columns.Count; i++) {
 				ColumnSchema col = ts.Columns[i];
 				string cline = BuildColumnStatement(col, ts, ref pkey);
 				sb.Append(cline);
@@ -1133,12 +1062,10 @@ namespace SQLiteConversionEngine.Converters
 			}
 
 			// add primary keys...
-			if (ts.PrimaryKey != null && ts.PrimaryKey.Count > 0 & !pkey)
-			{
+			if (ts.PrimaryKey != null && ts.PrimaryKey.Count > 0 & !pkey) {
 				sb.Append(",\n");
 				sb.Append("    PRIMARY KEY (");
-				for (int i = 0; i < ts.PrimaryKey.Count; i++)
-				{
+				for (int i = 0; i < ts.PrimaryKey.Count; i++) {
 					sb.Append("[" + ts.PrimaryKey[i] + "]");
 					if (i < ts.PrimaryKey.Count - 1)
 						sb.Append(", ");
@@ -1149,11 +1076,9 @@ namespace SQLiteConversionEngine.Converters
 				sb.Append("\n");
 
 			// add foreign keys...
-			if (ts.ForeignKeys.Count > 0)
-			{
+			if (ts.ForeignKeys.Count > 0) {
 				sb.Append(",\n");
-				for (int i = 0; i < ts.ForeignKeys.Count; i++)
-				{
+				for (int i = 0; i < ts.ForeignKeys.Count; i++) {
 					ForeignKeySchema foreignKey = ts.ForeignKeys[i];
 					string stmt = string.Format("    FOREIGN KEY ([{0}])\n        REFERENCES [{1}]([{2}])",
 								foreignKey.ColumnName, foreignKey.ForeignTableName, foreignKey.ForeignColumnName);
@@ -1168,10 +1093,8 @@ namespace SQLiteConversionEngine.Converters
 			sb.Append(");\n");
 
 			// Create any relevant indexes
-			if (ts.Indexes != null)
-			{
-				for (int i = 0; i < ts.Indexes.Count; i++)
-				{
+			if (ts.Indexes != null) {
+				for (int i = 0; i < ts.Indexes.Count; i++) {
 					string stmt = BuildCreateIndex(ts.TableName, ts.Indexes[i]);
 					sb.Append(stmt + ";\n");
 				}
@@ -1187,29 +1110,24 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="col">The column schema</param>
 		/// <returns>A single column line to be inserted into the general CREATE TABLE DDL statement</returns>
-		private static string BuildColumnStatement(ColumnSchema col, TableSchema ts, ref bool pkey)
-		{
+		private static string BuildColumnStatement(ColumnSchema col, TableSchema ts, ref bool pkey) {
 			StringBuilder sb = new StringBuilder();
 			sb.Append("\t\"" + col.ColumnName + "\"\t\t");
 
 			// Special treatment for IDENTITY columns
-			if (col.IsIdentity)
-			{
+			if (col.IsIdentity) {
 				if (ts.PrimaryKey.Count == 1 && (col.ColumnType == "tinyint" || col.ColumnType == "int" || col.ColumnType == "smallint" ||
-					col.ColumnType == "bigint" || col.ColumnType == "integer"))
-				{
+					col.ColumnType == "bigint" || col.ColumnType == "integer")) {
 					sb.Append("integer PRIMARY KEY AUTOINCREMENT");
 					pkey = true;
 				}
 				else
 					sb.Append("integer");
 			}
-			else
-			{
+			else {
 				if (col.ColumnType == "int")
 					sb.Append("integer");
-				else
-				{
+				else {
 					sb.Append(col.ColumnType);
 				}
 				if (col.Length > 0)
@@ -1224,8 +1142,7 @@ namespace SQLiteConversionEngine.Converters
 			string defval = StripParens(col.DefaultValue);
 			defval = DiscardNational(defval);
 			//Logging.Log(LogLevel.Debug, "DEFAULT VALUE BEFORE [" + col.DefaultValue + "] AFTER [" + defval + "]");
-			if (defval != string.Empty && defval.ToUpper().Contains("GETDATE"))
-			{
+			if (defval != string.Empty && defval.ToUpper().Contains("GETDATE")) {
 				//Logging.Log(LogLevel.Debug, "converted SQL Server GETDATE() to CURRENT_TIMESTAMP for column [" + col.ColumnName + "]");
 				sb.Append(" DEFAULT (CURRENT_TIMESTAMP)");
 			}
@@ -1241,8 +1158,7 @@ namespace SQLiteConversionEngine.Converters
 		/// <param name="tableName">The name of the indexed table.</param>
 		/// <param name="indexSchema">The schema of the index object</param>
 		/// <returns>A CREATE INDEX DDL (SQLite format).</returns>
-		private static string BuildCreateIndex(string tableName, IndexSchema indexSchema)
-		{
+		private static string BuildCreateIndex(string tableName, IndexSchema indexSchema) {
 			StringBuilder sb = new StringBuilder();
 			sb.Append("CREATE ");
 			if (indexSchema.IsUnique)
@@ -1250,8 +1166,7 @@ namespace SQLiteConversionEngine.Converters
 			sb.Append("INDEX [" + tableName + "_" + indexSchema.IndexName + "]\n");
 			sb.Append("ON [" + tableName + "]\n");
 			sb.Append("(");
-			for (int i = 0; i < indexSchema.Columns.Count; i++)
-			{
+			for (int i = 0; i < indexSchema.Columns.Count; i++) {
 				sb.Append("[" + indexSchema.Columns[i].ColumnName + "]");
 				if (!indexSchema.Columns[i].IsAscending)
 					sb.Append(" DESC");
@@ -1269,8 +1184,7 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="value">The value.</param>
 		/// <returns></returns>
-		private static string DiscardNational(string value)
-		{
+		private static string DiscardNational(string value) {
 			Regex rx = new Regex(@"N\'([^\']*)\'");
 			Match m = rx.Match(value);
 			if (m.Success)
@@ -1284,8 +1198,7 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		private static bool IsValidDefaultValue(string value)
-		{
+		private static bool IsValidDefaultValue(string value) {
 			if (IsSingleQuoted(value))
 				return true;
 
@@ -1295,8 +1208,7 @@ namespace SQLiteConversionEngine.Converters
 			return true;
 		}
 
-		private static bool IsSingleQuoted(string value)
-		{
+		private static bool IsSingleQuoted(string value) {
 			value = value.Trim();
 			if (value.StartsWith("'") && value.EndsWith("'"))
 				return true;
@@ -1308,8 +1220,7 @@ namespace SQLiteConversionEngine.Converters
 		/// </summary>
 		/// <param name="value">The string to strip</param>
 		/// <returns>The stripped string</returns>
-		private static string StripParens(string value)
-		{
+		private static string StripParens(string value) {
 			Regex rx = new Regex(@"\(([^\)]*)\)");
 			Match m = rx.Match(value);
 			if (!m.Success)
@@ -1317,48 +1228,40 @@ namespace SQLiteConversionEngine.Converters
 			else
 				return StripParens(m.Groups[1].Value);
 		}
-		#endregion
+
+		#endregion Private Methods
 
 		#region Trigger related
+
 		protected static void AddTriggersForForeignKeys(string sqlitePath, IEnumerable<TableSchema> schema,
-			string password, SqlConversionHandler handler)
-		{
+			string password, SqlConversionHandler handler) {
 			// Connect to the newly created database
 			string sqliteConnString = CreateSQLiteConnectionString(sqlitePath, password);
-			using (SQLiteConnection conn = new SQLiteConnection(sqliteConnString))
-			{
+			using (SQLiteConnection conn = new SQLiteConnection(sqliteConnString)) {
 				conn.Open();
 				// foreach
-				foreach (TableSchema dt in schema)
-				{
-					try
-					{
+				foreach (TableSchema dt in schema) {
+					try {
 						AddTableTriggers(conn, dt);
 					}
-					catch (Exception ex)
-					{
+					catch (Exception ex) {
 						//Logging.Log(LogLevel.Error, string.Format("AddTableTriggers failed: {0}", FileLogger.GetInnerException(ex).Message));
 						throw;
 					}
 				}
-
 			}
 
 			//Logging.Log(LogLevel.Debug, "finished adding triggers to schema");
 		}
 
 		protected static void AddTriggersForForeignKeys(SQLiteConnection sqliteConnection, IEnumerable<TableSchema> schema,
-			SqlConversionHandler handler)
-		{
+			SqlConversionHandler handler) {
 			// foreach
-			foreach (TableSchema dt in schema)
-			{
-				try
-				{
+			foreach (TableSchema dt in schema) {
+				try {
 					AddTableTriggers(sqliteConnection, dt);
 				}
-				catch (Exception ex)
-				{
+				catch (Exception ex) {
 					//Logging.Log(LogLevel.Error, string.Format("AddTableTriggers failed: {0}", FileLogger.GetInnerException(ex).Message));
 					throw;
 				}
@@ -1367,16 +1270,15 @@ namespace SQLiteConversionEngine.Converters
 			//Logging.Log(LogLevel.Debug, "finished adding triggers to schema");
 		}
 
-		private static void AddTableTriggers(SQLiteConnection conn, TableSchema dt)
-		{
+		private static void AddTableTriggers(SQLiteConnection conn, TableSchema dt) {
 			IList<TriggerSchema> triggers = TriggerBuilder.GetForeignKeyTriggers(dt);
-			foreach (TriggerSchema trigger in triggers)
-			{
+			foreach (TriggerSchema trigger in triggers) {
 				SQLiteCommand cmd = new SQLiteCommand(WriteTriggerSchema(trigger), conn);
 				cmd.ExecuteNonQuery();
 			}
 		}
-		#endregion
+
+		#endregion Trigger related
 	}
 
 	/// <summary>
