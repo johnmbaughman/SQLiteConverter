@@ -1,19 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using SQLiteConversionEngine.Utility;
+﻿using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SQLite;
+using SQLiteConversionEngine.InformationSchema;
 
 namespace SQLiteConversionEngine.Conversion {
-	/// <summary>
-	///
-	/// </summary>
-	/// <typeparam name="sCN">The type of the Source Connection.</typeparam>
-	/// <typeparam name="sCM">The type of the Source Command.</typeparam>
-	/// <typeparam name="dCN">The type of the Destination Connection.</typeparam>
-	/// <typeparam name="dCM">The type of the Source Command.</typeparam>
-	public abstract class ConverterBase<sCN, sCM, dCN, dCM> : IConverter<sCN, sCM, dCN, dCM> {
+	public abstract class ConverterBase {
+		internal const string SQLITE_CONNECTION = "sqlite";
+		internal const string OTHER_CONNECTION = "other";
+
+		public ConverterBase(string sqliteFileWithPath, string otherServerConnectionString, List<Pragma> pragmaParameters) {
+			SQLiteConnectionStringSettings = CreateConnectionStringSettings(sqliteFileWithPath, true);
+			OtherConnectionStringSettings = CreateConnectionStringSettings(otherServerConnectionString);
+		}
+
+		protected ConnectionStringSettings SQLiteConnectionStringSettings { get; private set; }
+
+		protected ConnectionStringSettings OtherConnectionStringSettings { get; private set; }
+
+		public abstract bool ConvertFromSQLite();
+
+		public abstract bool ConvertToSQLite();
+
+		private ConnectionStringSettings CreateConnectionStringSettings(string connectionString, bool isSQLite = false) {
+			if (isSQLite) {
+				SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder {
+					DataSource = connectionString
+				};
+				return new ConnectionStringSettings(SQLITE_CONNECTION, builder.ConnectionString);
+			}
+			else {
+				return new ConnectionStringSettings(OTHER_CONNECTION, connectionString);
+			}
+		}
 	}
 }
