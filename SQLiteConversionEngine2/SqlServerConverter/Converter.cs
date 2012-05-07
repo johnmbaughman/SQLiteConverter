@@ -20,6 +20,7 @@ namespace SqlServerConverter {
 
 		public override bool ConvertFromSQLite() {
 			FromSQLiteConversion fromSQLiteConversion = new FromSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
+			fromSQLiteConversion.ConvertToDatabase(null, null, null, false);
 			return true;
 		}
 	}

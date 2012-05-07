@@ -10,8 +10,8 @@ namespace SqlServerConverter {
 
 		public FromSQLiteConversion(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
 
-		protected override void ReadSourceSchema(ConversionBase.ConversionHandler conversionHandler, ConversionBase.TableSelectionHandler tableSelectionHandler) {
-			throw new NotImplementedException();
-		}
+		//protected override void ReadSourceSchema(ConversionBase.ConversionHandler conversionHandler, ConversionBase.TableSelectionHandler tableSelectionHandler) {
+		//    throw new NotImplementedException();
+		//}
 	}
 }

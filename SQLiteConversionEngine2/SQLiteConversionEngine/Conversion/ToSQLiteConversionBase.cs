@@ -7,8 +7,6 @@ namespace SQLiteConversionEngine.Conversion {
 
 		public ToSQLiteConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
 
-		protected abstract override string BuildSourceTableQuery(InformationSchema.Table table);
-
 		protected override void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
 			throw new NotImplementedException();
 		}

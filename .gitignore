@@ -1,0 +1,6 @@
+# git ignore file
+*.bak
+*.suo
+bin/
+obj/
+*.dat

@@ -123,6 +123,11 @@ namespace Massive.SQLite {
 			return dm;
 		}
 
+		public static DynamicModel Open(ConnectionStringSettings connectionStringSettings) {
+			dynamic dm = new DynamicModel(connectionStringSettings);
+			return dm;
+		}
+
 		public DynamicModel(string connectionStringName, string tableName = "", string primaryKeyField = "") {
 			TableName = tableName == "" ? this.GetType().Name : tableName;
 			PrimaryKeyField = string.IsNullOrEmpty(primaryKeyField) ? "ID" : primaryKeyField;

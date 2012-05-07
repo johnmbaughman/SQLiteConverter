@@ -13,14 +13,17 @@ namespace SQLiteConversionEngine.Conversion {
 		public ConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) {
 			connections = new Connections {
 				SQLiteConnection = sqliteConnectionStringSettings,
-				OtherConnection = otherConnectionStringSettings
+				OtherConnection = otherConnectionStringSettings,
 			};
+
+			SourceSchema = new Schema();
 		}
 
 		#region Protected Properties
 
 		internal Connections connections;
-		protected Schema schema;
+
+		protected Schema SourceSchema { get; set; }
 
 		#endregion Protected Properties
 
@@ -73,14 +76,6 @@ namespace SQLiteConversionEngine.Conversion {
 		protected abstract void CopySourceDataToDestination(ConversionHandler conversionHandler);
 
 		/// <summary>
-		/// Builds a SELECT query for a specific table. Needed in the process of copying rows
-		/// from the SQL Server database to the SQLite database.
-		/// </summary>
-		/// <param name="ts">The table schema of the table for which we need the query.</param>
-		/// <returns>The SELECT query for the table.</returns>
-		protected abstract string BuildSourceTableQuery(Table table);
-
-		/// <summary>
 		/// Reads the entire source database schema.
 		/// </summary>
 		/// <param name="conversionHandler">The conversion handler.</param>
@@ -116,6 +111,28 @@ namespace SQLiteConversionEngine.Conversion {
 		}
 
 		#endregion Public Methods
+
+		#region Protected Virtual Methods
+
+		/// <summary>
+		/// Builds a SELECT query for a specific table. Needed in the process of copying rows
+		/// from the source database to the destination database.
+		/// </summary>
+		/// <param name="ts">The table schema of the table for which we need the query.</param>
+		/// <returns>The SELECT query for the table.</returns>
+		protected virtual string BuildSourceTableQuery(InformationSchema.Table table) {
+			StringBuilder sb = new StringBuilder();
+			sb.Append("SELECT ");
+			for (int i = 0; i < table.Columns.Count; i++) {
+				sb.Append("[" + table.Columns[i].Name + "]");
+				if (i < table.Columns.Count - 1)
+					sb.Append(", ");
+			}
+			sb.Append(" FROM " + table.Schema + "." + "[" + table.Name + "]");
+			return sb.ToString();
+		}
+
+		#endregion Protected Virtual Methods
 
 		#region "Event" Handlers
 
