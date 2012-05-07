@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converter.cs" />
+    <Compile Include="DataAccess\Massive.cs" />
     <Compile Include="FromSQLiteConversion.cs" />
     <Compile Include="ToSQLiteConversion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -115,6 +116,11 @@
       <Project>{CDE494AC-74A8-4E3A-8E91-65DF4977FF3F}</Project>
       <Name>SQLiteConversionEngine %28SQLiteConversionEngine2\SQLiteConversionEngine%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\SelfInstallingWindowsServiceNET4.0\Service.Core\Service.Core.licenseheader">
+      <Link>Service.Core.licenseheader</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

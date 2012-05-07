@@ -129,8 +129,11 @@
     <Compile Include="InformationSchema\Column.cs" />
     <Compile Include="Utility\Utilities.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="DataAccess\SQLite\" />
+    <None Include="..\..\..\SelfInstallingWindowsServiceNET4.0\Service.Core\Service.Core.licenseheader">
+      <Link>Service.Core.licenseheader</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
