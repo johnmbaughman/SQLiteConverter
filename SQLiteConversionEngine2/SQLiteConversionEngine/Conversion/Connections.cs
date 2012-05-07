@@ -25,7 +25,7 @@
 using System.Configuration;
 
 namespace SQLiteConversionEngine.Conversion {
-	internal class Connections {
+	public class Connections {
 
 		public ConnectionStringSettings SQLiteConnection { get; set; }
 

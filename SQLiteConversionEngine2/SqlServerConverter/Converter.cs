@@ -34,6 +34,9 @@ namespace SqlServerConverter {
 
 		public override bool ConvertToSQLite() {
 			ToSQLiteConversion toSQLiteConversion = new ToSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
+			toSQLiteConversion.TablesToLoad.AddRange(TablesToLoad.ToArray());
+			toSQLiteConversion.SchemasToLoad.AddRange(SchemasToLoad.ToArray());
+			toSQLiteConversion.ConvertToDatabase(null, null, null, false);
 			return true;
 		}
 

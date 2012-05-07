@@ -138,6 +138,11 @@ namespace Massive {
 			return dm;
 		}
 
+		public static DynamicModel Open(ConnectionStringSettings connectionStringSettings) {
+			dynamic dm = new DynamicModel(connectionStringSettings);
+			return dm;
+		}
+
 		public DynamicModel(string connectionStringName, string tableName = "",
 			string primaryKeyField = "", string descriptorField = "") {
 			TableName = tableName == "" ? this.GetType().Name : tableName;
@@ -150,6 +155,15 @@ namespace Massive {
 
 			_factory = DbProviderFactories.GetFactory(_providerName);
 			ConnectionString = ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString;
+		}
+
+		public DynamicModel(ConnectionStringSettings connectionStringSettings, string tableName = "", string primaryKeyField = "") {
+			TableName = tableName == "" ? this.GetType().Name : tableName;
+			PrimaryKeyField = string.IsNullOrEmpty(primaryKeyField) ? "ID" : primaryKeyField;
+			var _providerName = "System.Data.SqlClient";
+			_factory = DbProviderFactories.GetFactory(_providerName);
+			ConnectionString = connectionStringSettings.ConnectionString;
+			_providerName = connectionStringSettings.ProviderName;
 		}
 
 		/// <summary>

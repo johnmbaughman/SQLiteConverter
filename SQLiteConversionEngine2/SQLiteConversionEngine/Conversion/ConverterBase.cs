@@ -35,7 +35,13 @@ namespace SQLiteConversionEngine.Conversion {
 		public ConverterBase(string sqliteFileWithPath, string otherServerConnectionString, List<Pragma> pragmaParameters) {
 			SQLiteConnectionStringSettings = CreateConnectionStringSettings(sqliteFileWithPath, true);
 			OtherConnectionStringSettings = CreateConnectionStringSettings(otherServerConnectionString);
+			TablesToLoad = new List<string>();
+			SchemasToLoad = new List<string>();
 		}
+
+		public List<string> TablesToLoad { get; set; }
+
+		public List<string> SchemasToLoad { get; set; }
 
 		protected ConnectionStringSettings SQLiteConnectionStringSettings { get; private set; }
 

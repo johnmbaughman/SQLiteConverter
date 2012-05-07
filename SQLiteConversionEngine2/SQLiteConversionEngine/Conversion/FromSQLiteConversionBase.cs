@@ -59,13 +59,13 @@ namespace SQLiteConversionEngine.Conversion {
 			throw new NotImplementedException();
 		}
 
-		protected override Table CreateTableSchema(string tableName, string schemaName) {
+		protected override void CreateTableSchema(Table table) {
 			throw new NotImplementedException();
 		}
 
 		protected override void ReadSourceSchema(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler) {
 			// Read table info
-			var sqliteMaster = new DynamicModel(connections.SQLiteConnection, "sqlite_master", "name");
+			var sqliteMaster = new DynamicModel(Connections.SQLiteConnection, "sqlite_master", "name");
 			var tables = sqliteMaster.All(where: "type='table' and tbl_name <> 'sqlite_sequence'");
 
 			// Loop tables
@@ -77,7 +77,7 @@ namespace SQLiteConversionEngine.Conversion {
 				};
 
 				// Read column info
-				var columns = Massive.SQLite.DynamicModel.Open(connections.SQLiteConnection).Query(string.Format("pragma table_info('{0}')", table.tbl_name));
+				var columns = Massive.SQLite.DynamicModel.Open(Connections.SQLiteConnection).Query(string.Format("pragma table_info('{0}')", table.tbl_name));
 				foreach (var column in columns) {
 					sourceTable.Columns.Add(new Column {
 						Name = column.name,
@@ -88,7 +88,7 @@ namespace SQLiteConversionEngine.Conversion {
 				}
 
 				// Read foreign key info
-				var fkeys = Massive.SQLite.DynamicModel.Open(connections.SQLiteConnection).Query(string.Format("pragma foreign_key_list('{0}')", table.tbl_name));
+				var fkeys = Massive.SQLite.DynamicModel.Open(Connections.SQLiteConnection).Query(string.Format("pragma foreign_key_list('{0}')", table.tbl_name));
 				foreach (var fkey in fkeys) {
 					sourceTable.ForeignKeys.Add(new ForeignKey {
 						ForeignKeyTable = fkey.table,

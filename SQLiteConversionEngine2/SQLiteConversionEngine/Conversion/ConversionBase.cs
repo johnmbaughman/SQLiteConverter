@@ -32,19 +32,25 @@ namespace SQLiteConversionEngine.Conversion {
 	public abstract class ConversionBase {
 
 		public ConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) {
-			connections = new Connections {
+			Connections = new Connections {
 				SQLiteConnection = sqliteConnectionStringSettings,
 				OtherConnection = otherConnectionStringSettings,
 			};
 
 			SourceSchema = new Schema();
+			TablesToLoad = new List<string>();
+			SchemasToLoad = new List<string>();
 		}
 
 		#region Protected Properties
 
-		internal Connections connections;
+		public List<string> TablesToLoad { get; set; }
 
-		protected Schema SourceSchema { get; set; }
+		public List<string> SchemasToLoad { get; set; }
+
+		public Connections Connections { get; set; }
+
+		public Schema SourceSchema { get; set; }
 
 		#endregion Protected Properties
 
@@ -112,7 +118,7 @@ namespace SQLiteConversionEngine.Conversion {
 		/// <returns>
 		/// A table schema object that represents our knowledge of the table schema
 		/// </returns>
-		protected abstract Table CreateTableSchema(string tableName, string schemaName);
+		protected abstract void CreateTableSchema(Table table);
 
 		/// <summary>
 		/// Add foreign key schema object from the specified components.

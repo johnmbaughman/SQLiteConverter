@@ -22,7 +22,41 @@
 
 #endregion
 
+using System;
+using System.Collections.Generic;
+
 namespace SQLiteConversionEngine.Utility {
-	internal class Utilities {
+	public class Utilities {
+
+		public static string ConvertListToInClause(List<string> list, string tableName, bool isString = true) {
+			try {
+				string returnString = string.Format(" {0} IN (|", tableName);
+				foreach (var item in list) {
+					if (!returnString.Contains(item)) {
+						if (isString) {
+							returnString += string.Format(", '{0}'", item);
+						}
+						else {
+							returnString += string.Format(", {0}", item);
+						}
+					}
+				}
+				returnString += ")";
+				returnString = returnString.Replace("|,", "");
+
+				return returnString;
+			}
+			catch (Exception ex) {
+				//Logging.Log(LogLevel.Error, string.Format("ConvertListToInClause exception: {0}", LoggingEngine.FileLogger.GetInnerException(ex).ToString()));
+				return string.Empty;
+			}
+		}
+
+		public static List<string> ConvertListToCase(List<string> list, bool upperCase) {
+			for (int i = 0; i < list.Count; i++) {
+				list[i] = upperCase ? list[i].ToUpper() : list[i].ToLower();
+			}
+			return list;
+		}
 	}
 }

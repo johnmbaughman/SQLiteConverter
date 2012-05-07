@@ -45,7 +45,7 @@ namespace SQLiteConversionEngine.Conversion {
 
 		protected abstract override void CreateForeignKeySchema(Table table);
 
-		protected abstract override Table CreateTableSchema(string tableName, string schemaName);
+		protected abstract override void CreateTableSchema(Table table);
 
 		protected abstract override void ReadSourceSchema(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler);
 	}
