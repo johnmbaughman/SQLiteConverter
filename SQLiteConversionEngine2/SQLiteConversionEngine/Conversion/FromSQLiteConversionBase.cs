@@ -24,85 +24,309 @@
 
 using System;
 using System.Configuration;
-using Massive.SQLite;
-using SQLiteConversionEngine.InformationSchema;
+using System.Data;
+using System.Data.SQLite;
+using SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.Conversion {
-	public abstract class FromSQLiteConversionBase : ConversionBase {
+	public abstract class FromSQLiteConversionBase : ConversionBase<Database> {
+		private SQLiteConnection sqliteConnection = null;
+		private string currentCatalogName = string.Empty;
+		private string currentTableName = string.Empty;
+		private string currentIndexName = string.Empty;
+		private string currentViewName = string.Empty;
 
 		public FromSQLiteConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings)
 			: base(sqliteConnectionStringSettings, otherConnectionStringSettings) {
 			string[] connectionString = sqliteConnectionStringSettings.ConnectionString.Split(';');
 			foreach (string param in connectionString) {
 				if (param.ToLower().Contains("data source")) {
-					SourceSchema.Name = param.Split('=')[1];
-					SourceSchema.Schema = string.Empty;
-					SourceSchema.Database.Name = SourceSchema.Name;
-					SourceSchema.Database.Schema = SourceSchema.Schema;
+					SourceSchema.FileName = param.Split('=')[1];
+					//SourceSchema.Schema = string.Empty;
+					//SourceSchema.Database.Name = SourceSchema.Name;
+					//SourceSchema.Database.Schema = SourceSchema.Schema;
 				}
 			}
-		}
-
-		protected override void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
-			throw new NotImplementedException();
 		}
 
 		public override void ConvertToDatabase(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
-			ReadSourceSchema(null, null);
-		}
-
-		protected override void CopySourceDataToDestination(ConversionHandler conversionHandler) {
-			throw new NotImplementedException();
-		}
-
-		protected override void CreateForeignKeySchema(Table table) {
-			throw new NotImplementedException();
-		}
-
-		protected override void CreateTableSchema(Table table) {
-			throw new NotImplementedException();
-		}
-
-		protected override void ReadSourceSchema(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler) {
-			// Read table info
-			var sqliteMaster = new DynamicModel(Connections.SQLiteConnection, "sqlite_master", "name");
-			var tables = sqliteMaster.All(where: "type='table' and tbl_name <> 'sqlite_sequence'");
-
-			// Loop tables
-			foreach (var table in tables) {
-				// Add table info to schema
-				Table sourceTable = new Table {
-					Name = table.tbl_name,
-					Schema = SourceSchema.Schema
-				};
-
-				// Read column info
-				var columns = Massive.SQLite.DynamicModel.Open(Connections.SQLiteConnection).Query(string.Format("pragma table_info('{0}')", table.tbl_name));
-				foreach (var column in columns) {
-					sourceTable.Columns.Add(new Column {
-						Name = column.name,
-						ColumnType = column.type,
-						IsPrimaryKey = column.pk == 1 ? true : false,
-						Schema = SourceSchema.Schema + "." + sourceTable.Name
-					});
-				}
-
-				// Read foreign key info
-				var fkeys = Massive.SQLite.DynamicModel.Open(Connections.SQLiteConnection).Query(string.Format("pragma foreign_key_list('{0}')", table.tbl_name));
-				foreach (var fkey in fkeys) {
-					sourceTable.ForeignKeys.Add(new ForeignKey {
-						ForeignKeyTable = fkey.table,
-						FromColumn = fkey.from,
-						Match = fkey.match,
-						OnDelete = fkey.on_delete,
-						OnUpdate = fkey.on_update,
-						ToColumn = fkey.to,
-						Schema = SourceSchema.Schema + "." + sourceTable.Name
-					});
-				}
-
-				SourceSchema.Tables.Add(sourceTable);
+			sqliteConnection = new SQLiteConnection(Connections.SQLiteConnection.ConnectionString);
+			try {
+				sqliteConnection.Open();
+				LoadSchema();
+				sqliteConnection.Close();
+			}
+			catch (Exception) {
+				throw;
 			}
 		}
+
+		protected override void LoadColumns() {
+			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Columns, new string[] { currentCatalogName, null, currentTableName });
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).Columns.Add(new Column() {
+					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
+					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
+					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
+					ColumnName = row["COLUMN_NAME"] == DBNull.Value ? null : row["COLUMN_NAME"].ToString(),
+					//TODO: read up on BinaryGUID=False in connectionstring
+					ColumnGuid = row["COLUMN_GUID"] == DBNull.Value ? new Nullable<Guid>() : new Guid(row["COLUMN_GUID"].ToString()),
+					ColumnPropId = row["COLUMN_PROPID"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(row["COLUMN_PROPID"]),
+					OrdinalPosition = row["ORDINAL_POSITION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["ORDINAL_POSITION"]),
+					ColumnHasDefault = row["COLUMN_HASDEFAULT"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["COLUMN_HASDEFAULT"]),
+					ColumnDefault = row["COLUMN_DEFAULT"] == DBNull.Value ? null : row["COLUMN_DEFAULT"].ToString(),
+					ColumnFlags = row["COLUMN_FLAGS"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(row["COLUMN_FLAGS"]),
+					IsNullable = row["IS_NULLABLE"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IS_NULLABLE"]),
+					DataType = row["DATA_TYPE"] == DBNull.Value ? null : row["DATA_TYPE"].ToString(),
+					//TODO: read up on BinaryGUID=False in connectionstring
+					TypeGuid = row["TYPE_GUID"] == DBNull.Value ? new Nullable<Guid>() : new Guid(row["TYPE_GUID"].ToString()),
+					CharacterMaximumLength = row["CHARACTER_MAXIMUM_LENGTH"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["CHARACTER_MAXIMUM_LENGTH"]),
+					CharacterOctetLength = row["CHARACTER_OCTET_LENGTH"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["CHARACTER_OCTET_LENGTH"]),
+					NumericPrecision = row["NUMERIC_PRECISION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["NUMERIC_PRECISION"]),
+					NumericScale = row["NUMERIC_SCALE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["NUMERIC_SCALE"]),
+					DateTimePrecision = row["DATETIME_PRECISION"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(row["DATETIME_PRECISION"]),
+					CharacterSetCatalog = row["CHARACTER_SET_CATALOG"] == DBNull.Value ? null : row["CHARACTER_SET_CATALOG"].ToString(),
+					CharacterSetSchema = row["CHARACTER_SET_SCHEMA"] == DBNull.Value ? null : row["CHARACTER_SET_SCHEMA"].ToString(),
+					CharacterSetName = row["CHARACTER_SET_NAME"] == DBNull.Value ? null : row["CHARACTER_SET_NAME"].ToString(),
+					CollationCatalog = row["COLLATION_CATALOG"] == DBNull.Value ? null : row["COLLATION_CATALOG"].ToString(),
+					CollationSchema = row["COLLATION_SCHEMA"] == DBNull.Value ? null : row["COLLATION_SCHEMA"].ToString(),
+					CollationName = row["COLLATION_NAME"] == DBNull.Value ? null : row["COLLATION_NAME"].ToString(),
+					DomainCatalog = row["DOMAIN_CATALOG"] == DBNull.Value ? null : row["DOMAIN_CATALOG"].ToString(),
+					DomainName = row["DOMAIN_NAME"] == DBNull.Value ? null : row["DOMAIN_NAME"].ToString(),
+					Description = row["DESCRIPTION"] == DBNull.Value ? null : row["DESCRIPTION"].ToString(),
+					PrimaryKey = row["PRIMARY_KEY"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["PRIMARY_KEY"]),
+					EdmType = row["EDM_TYPE"] == DBNull.Value ? null : row["EDM_TYPE"].ToString(),
+					AutoIncrement = row["AUTOINCREMENT"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["AUTOINCREMENT"]),
+					Unique = row["UNIQUE"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["UNIQUE"])
+				});
+			}
+		}
+
+		protected override void LoadForeignKeys() {
+			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.ForeignKeys, new string[] { currentCatalogName, null, currentTableName });
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).ForeignKeys.Add(new ForeignKey() {
+					ConstraintCatalog = row["CONSTRAINT_CATALOG"] == DBNull.Value ? null : row["CONSTRAINT_CATALOG"].ToString(),
+					ConstraintSchema = row["CONSTRAINT_SCHEMA"] == DBNull.Value ? null : row["CONSTRAINT_SCHEMA"].ToString(),
+					ConstraintName = row["CONSTRAINT_NAME"] == DBNull.Value ? null : row["CONSTRAINT_NAME"].ToString(),
+					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
+					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
+					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
+					ConstraintType = row["CONSTRAINT_TYPE"] == DBNull.Value ? null : row["CONSTRAINT_TYPE"].ToString(),
+					IsDeferrable = row["IS_DEFERRABLE"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IS_DEFERRABLE"]),
+					InitiallyDeferred = row["INITIALLY_DEFERRED"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["INITIALLY_DEFERRED"]),
+					FKeyFromColumn = row["FKEY_FROM_COLUMN"] == DBNull.Value ? null : row["FKEY_FROM_COLUMN"].ToString(),
+					FKeyFromOrdinalPosition = row["FKEY_FROM_ORDINAL_POSITION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["FKEY_FROM_ORDINAL_POSITION"]),
+					FKeyToCatalog = row["FKEY_TO_CATALOG"] == DBNull.Value ? null : row["FKEY_TO_CATALOG"].ToString(),
+					FKeyToSchema = row["FKEY_TO_SCHEMA"] == DBNull.Value ? null : row["FKEY_TO_SCHEMA"].ToString(),
+					FKeyToTable = row["FKEY_TO_TABLE"] == DBNull.Value ? null : row["FKEY_TO_TABLE"].ToString(),
+					FKeyToColumn = row["FKEY_TO_COLUMN"] == DBNull.Value ? null : row["FKEY_TO_COLUMN"].ToString(),
+					FKeyOnUpdate = row["FKEY_ON_UPDATE"] == DBNull.Value ? null : row["FKEY_ON_UPDATE"].ToString(),
+					FKeyOnDelete = row["FKEY_ON_DELETE"] == DBNull.Value ? null : row["FKEY_ON_DELETE"].ToString(),
+					FKeyMatch = row["FKEY_MATCH"] == DBNull.Value ? null : row["FKEY_MATCH"].ToString()
+				});
+			}
+		}
+
+		protected override void LoadIndexColumns() {
+			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.IndexColumns, new string[] { currentCatalogName, null, currentTableName });
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).Indexes.Find(currentIndexName).IndexColumns.Add(new IndexColumn() {
+					ConstraintCatalog = row["CONSTRAINT_CATALOG"] == DBNull.Value ? null : row["CONSTRAINT_CATALOG"].ToString(),
+					ConstraintSchema = row["CONSTRAINT_SCHEMA"] == DBNull.Value ? null : row["CONSTRAINT_SCHEMA"].ToString(),
+					ConstraintName = row["CONSTRAINT_NAME"] == DBNull.Value ? null : row["CONSTRAINT_NAME"].ToString(),
+					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
+					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
+					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
+					ColumnName = row["COLUMN_NAME"] == DBNull.Value ? null : row["COLUMN_NAME"].ToString(),
+					OrdinalPosition = row["ORDINAL_POSITION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["ORDINAL_POSITION"]),
+					IndexName = row["INDEX_NAME"] == DBNull.Value ? null : row["INDEX_NAME"].ToString(),
+					CollationName = row["COLLATION_NAME"] == DBNull.Value ? null : row["COLLATION_NAME"].ToString(),
+					SortMode = row["SORT_MODE"] == DBNull.Value ? null : row["SORT_MODE"].ToString(),
+					ConflictOption = row["CONFLICT_OPTION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["CONFLICT_OPTION"])
+				});
+			}
+		}
+
+		protected override void LoadIndexes() {
+			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Indexes, new string[] { currentCatalogName, null, currentTableName });
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).Indexes.Add(new Index() {
+					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
+					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
+					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
+					IndexCatalog = row["INDEX_CATALOG"] == DBNull.Value ? null : row["INDEX_CATALOG"].ToString(),
+					IndexSchema = row["INDEX_SCHEMA"] == DBNull.Value ? null : row["INDEX_SCHEMA"].ToString(),
+					IndexName = row["INDEX_NAME"] == DBNull.Value ? null : row["INDEX_NAME"].ToString(),
+					PrimaryKey = row["PRIMARY_KEY"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["PRIMARY_KEY"]),
+					Unique = row["UNIQUE"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["UNIQUE"]),
+					Clustered = row["CLUSTERED"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["CLUSTERED"]),
+					Type = row["TYPE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["TYPE"]),
+					FillFactor = row["FILL_FACTOR"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["FILL_FACTOR"]),
+					InitialSize = row["INITIAL_SIZE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["INITIAL_SIZE"]),
+					Nulls = row["NULLS"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["NULLS"]),
+					SortBookmarks = row["SORT_BOOKMARKS"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["SORT_BOOKMARKS"]),
+					AutoUpdate = row["AUTO_UPDATE"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["AUTO_UPDATE"]),
+					NullCollation = row["NULL_COLLATION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["NULL_COLLATION"]),
+					OrdinalPosition = row["ORDINAL_POSITION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["ORDINAL_POSITION"]),
+					ColumnName = row["COLUMN_NAME"] == DBNull.Value ? null : row["COLUMN_NAME"].ToString(),
+					//TODO: read up on BinaryGUID=False in connectionstring
+					ColumnGUID = row["COLUMN_GUID"] == DBNull.Value ? new Nullable<Guid>() : new Guid(row["COLUMN_GUID"].ToString()),
+					ColumnPropId = row["COLUMN_PROPID"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(row["COLUMN_PROPID"]),
+					Collation = row["COLLATION"] == DBNull.Value ? new Nullable<short>() : Convert.ToInt16(row["COLLATION"]),
+					Cardinality = row["CARDINALITY"] == DBNull.Value ? new Nullable<decimal>() : Convert.ToDecimal(row["CARDINALITY"]),
+					Pages = row["PAGES"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["PAGES"]),
+					FilterCondition = row["FILTERsqliteConnectionDITION"] == DBNull.Value ? null : row["FILTERsqliteConnectionDITION"].ToString(),
+					Integrated = row["INTEGRATED"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["INTEGRATED"]),
+					IndexDefinition = row["INDEX_DEFINITION"] == DBNull.Value ? null : row["INDEX_DEFINITION"].ToString()
+				});
+			}
+
+			foreach (Index index in SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).Indexes) {
+				currentIndexName = index.IndexName;
+				LoadIndexColumns();
+			}
+		}
+
+		protected override void LoadSchema() {
+			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Catalogs);
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.CatalogCollection.Add(new Catalog() {
+					CatalogName = row["CATALOG_NAME"] == DBNull.Value ? null : row["CATALOG_NAME"].ToString(),
+					Description = row["DESCRIPTION"] == DBNull.Value ? null : row["DESCRIPTION"].ToString(),
+					Id = row["ID"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(row["ID"])
+				});
+			}
+
+			foreach (Catalog catalog in SourceSchema.CatalogCollection) {
+				currentCatalogName = catalog.CatalogName;
+				LoadTables();
+				LoadViews();
+			}
+		}
+
+		protected override void LoadTables() {
+			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Tables, new string[] { currentCatalogName });
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Add(new Table() {
+					CatalogName = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
+					Name = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
+					Type = row["TABLE_TYPE"] == DBNull.Value ? null : row["TABLE_TYPE"].ToString(),
+					Id = row["TABLE_ID"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(row["TABLE_ID"]),
+					RootPage = row["TABLE_ROOTPAGE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["TABLE_ROOTPAGE"]),
+					Definition = row["TABLE_DEFINITION"] == DBNull.Value ? null : row["TABLE_DEFINITION"].ToString()
+				});
+			}
+
+			foreach (Table table in SourceSchema.CatalogCollection.Find(currentCatalogName).Tables) {
+				currentTableName = table.Name;
+				LoadColumns();
+				LoadForeignKeys();
+				LoadIndexes();
+				LoadTriggers();
+			}
+		}
+
+		protected override void LoadTriggers() {
+			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Triggers, new string[] { currentCatalogName, null, currentTableName });
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).Triggers.Add(new Trigger() {
+					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
+					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
+					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
+					Name = row["TRIGGER_NAME"] == DBNull.Value ? null : row["TRIGGER_NAME"].ToString(),
+					Definition = row["TRIGGER_DEFINITION"] == DBNull.Value ? null : row["TRIGGER_DEFINITION"].ToString()
+				});
+			}
+		}
+
+		protected override void LoadViewColumns() {
+			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.ViewColumns, new string[] { currentCatalogName, null, currentViewName });
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.CatalogCollection.Find(currentCatalogName).Views.Find(currentViewName).ViewColumns.Add(new ViewColumn() {
+					ViewCatalog = row["VIEW_CATALOG"] == DBNull.Value ? null : row["VIEW_CATALOG"].ToString(),
+					ViewSchema = row["VIEW_SCHEMA"] == DBNull.Value ? null : row["VIEW_SCHEMA"].ToString(),
+					ViewName = row["VIEW_NAME"] == DBNull.Value ? null : row["VIEW_NAME"].ToString(),
+					ViewColumnName = row["VIEW_COLUMN_NAME"] == DBNull.Value ? null : row["VIEW_COLUMN_NAME"].ToString(),
+					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
+					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
+					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
+					ColumnName = row["COLUMN_NAME"] == DBNull.Value ? null : row["COLUMN_NAME"].ToString(),
+					OrdinalPosition = row["ORDINAL_POSITION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["ORDINAL_POSITION"]),
+					ColumnHasDefault = row["COLUMN_HASDEFAULT"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["COLUMN_HASDEFAULT"]),
+					ColumnDefault = row["COLUMN_DEFAULT"] == DBNull.Value ? null : row["COLUMN_DEFAULT"].ToString(),
+					ColumnFlags = row["COLUMN_FLAGS"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(row["COLUMN_FLAGS"]),
+					IsNullable = row["IS_NULLABLE"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IS_NULLABLE"]),
+					DataType = row["DATA_TYPE"] == DBNull.Value ? null : row["DATA_TYPE"].ToString(),
+					CharacterMaximumLength = row["CHARACTER_MAXIMUM_LENGTH"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["CHARACTER_MAXIMUM_LENGTH"]),
+					NumericPrecision = row["NUMERIC_PRECISION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["NUMERIC_PRECISION"]),
+					NumericScale = row["NUMERIC_SCALE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["NUMERIC_SCALE"]),
+					DateTimePrecision = row["DATETIME_PRECISION"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(row["DATETIME_PRECISION"]),
+					CharacterSetCatalog = row["CHARACTER_SET_CATALOG"] == DBNull.Value ? null : row["CHARACTER_SET_CATALOG"].ToString(),
+					CharacterSetSchema = row["CHARACTER_SET_SCHEMA"] == DBNull.Value ? null : row["CHARACTER_SET_SCHEMA"].ToString(),
+					CharacterSetName = row["CHARACTER_SET_NAME"] == DBNull.Value ? null : row["CHARACTER_SET_NAME"].ToString(),
+					CollationCatalog = row["COLLATION_CATALOG"] == DBNull.Value ? null : row["COLLATION_CATALOG"].ToString(),
+					CollationSchema = row["COLLATION_SCHEMA"] == DBNull.Value ? null : row["COLLATION_SCHEMA"].ToString(),
+					CollationName = row["COLLATION_NAME"] == DBNull.Value ? null : row["COLLATION_NAME"].ToString(),
+					PrimaryKey = row["PRIMARY_KEY"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["PRIMARY_KEY"]),
+					EdmType = row["EDM_TYPE"] == DBNull.Value ? null : row["EDM_TYPE"].ToString(),
+					AutoIncrement = row["AUTOINCREMENT"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["AUTOINCREMENT"]),
+					Unique = row["UNIQUE"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["UNIQUE"])
+				});
+			}
+		}
+
+		protected override void LoadViews() {
+			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Views, new string[] { currentCatalogName });
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.CatalogCollection.Find(currentCatalogName).Views.Add(new View() {
+					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
+					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
+					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
+					ViewDefinition = row["VIEW_DEFINITION"] == DBNull.Value ? null : row["VIEW_DEFINITION"].ToString(),
+					CheckOption = row["CHECK_OPTION"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["CHECK_OPTION"]),
+					IsUpdatable = row["IS_UPDATABLE"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IS_UPDATABLE"]),
+					Description = row["DESCRIPTION"] == DBNull.Value ? null : row["DESCRIPTION"].ToString(),
+					DateCreated = row["DATE_CREATED"] == DBNull.Value ? new Nullable<DateTime>() : Convert.ToDateTime(row["DATE_CREATED"]),
+					DateModified = row["DATE_MODIFIED"] == DBNull.Value ? new Nullable<DateTime>() : Convert.ToDateTime(row["DATE_MODIFIED"])
+				});
+			}
+
+			foreach (View view in SourceSchema.CatalogCollection.Find(currentCatalogName).Views) {
+				currentViewName = view.ViewDefinition;
+				LoadViewColumns();
+			}
+		}
+
+		//private void LoadAllDataTypes() {
+		//    DataTable dataTable = sqliteConnection.GetSchema("DATATYPES", null);
+
+		//    foreach (DataRow row in dataTable.Rows) {
+		//        _dataTypes.Add(new DataTypes() {
+		//            TypeName = row["TypeName"] == DBNull.Value ? null : row["TypeName"].ToString(),
+		//            ProviderDbType = row["ProviderDbType"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["ProviderDbType"]),
+		//            ColumnSize = row["ColumnSize"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(row["ColumnSize"]),
+		//            CreateFormat = row["CreateFormat"] == DBNull.Value ? null : row["CreateFormat"].ToString(),
+		//            CreateParameters = row["CreateParameters"] == DBNull.Value ? null : row["CreateParameters"].ToString(),
+		//            DataType = row["DataType"] == DBNull.Value ? null : row["DataType"].ToString(),
+		//            IsAutoIncrementable = row["IsAutoIncrementable"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsAutoIncrementable"]),
+		//            IsBestMatch = row["IsBestMatch"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsBestMatch"]),
+		//            IsCaseSensitive = row["IsCaseSensitive"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsCaseSensitive"]),
+		//            IsFixedLength = row["IsFixedLength"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsFixedLength"]),
+		//            IsFixedPrecisionScale = row["IsFixedPrecisionScale"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsFixedPrecisionScale"]),
+		//            IsLong = row["IsLong"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsLong"]),
+		//            IsNullable = row["IsNullable"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsNullable"]),
+		//            IsSearchable = row["IsSearchable"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsSearchable"]),
+		//            IsSearchableWithLike = row["IsSearchableWithLike"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsSearchableWithLike"]),
+		//            IsLiteralSupported = row["IsLiteralSupported"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsLiteralSupported"]),
+		//            LiteralPrefix = row["LiteralPrefix"] == DBNull.Value ? null : row["LiteralPrefix"].ToString(),
+		//            LiteralSuffix = row["LiteralSuffix"] == DBNull.Value ? null : row["LiteralSuffix"].ToString(),
+		//            IsUnsigned = row["IsUnsigned"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsUnsigned"]),
+		//            MaximumScale = row["MaximumScale"] == DBNull.Value ? new Nullable<short>() : Convert.ToInt16(row["MaximumScale"]),
+		//            MinimumScale = row["MinimumScale"] == DBNull.Value ? new Nullable<short>() : Convert.ToInt16(row["MinimumScale"]),
+		//            IsConcurrencyType = row["IsConcurrencyType"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["IsConcurrencyType"])
+		//        });
+		//    }
+		//}
 	}
 }

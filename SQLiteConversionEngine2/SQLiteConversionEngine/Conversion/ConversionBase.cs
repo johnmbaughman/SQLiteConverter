@@ -29,7 +29,7 @@ using System.Text.RegularExpressions;
 using SQLiteConversionEngine.InformationSchema;
 
 namespace SQLiteConversionEngine.Conversion {
-	public abstract class ConversionBase {
+	public abstract class ConversionBase<T> where T : new() {
 
 		public ConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) {
 			Connections = new Connections {
@@ -37,7 +37,7 @@ namespace SQLiteConversionEngine.Conversion {
 				OtherConnection = otherConnectionStringSettings,
 			};
 
-			SourceSchema = new Schema();
+			SourceSchema = new T();
 			TablesToLoad = new List<string>();
 			SchemasToLoad = new List<string>();
 		}
@@ -50,7 +50,7 @@ namespace SQLiteConversionEngine.Conversion {
 
 		public Connections Connections { get; set; }
 
-		public Schema SourceSchema { get; set; }
+		public T SourceSchema { get; set; }
 
 		#endregion Protected Properties
 
@@ -102,29 +102,23 @@ namespace SQLiteConversionEngine.Conversion {
 		/// <param name="conversionHandler">The conversion handler.</param>
 		protected abstract void CopySourceDataToDestination(ConversionHandler conversionHandler);
 
-		/// <summary>
-		/// Reads the entire source database schema.
-		/// </summary>
-		/// <param name="conversionHandler">The conversion handler.</param>
-		/// <param name="tableSelectionHandler">The table selection handler.</param>
-		protected abstract void ReadSourceSchema(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler);
+		protected abstract void LoadSchema();
 
-		/// <summary>
-		/// Creates a Table object using the source connection
-		/// and the name of the table for which we need to create the schema.
-		/// </summary>
-		/// <param name="tableName">The name of the table for which we wants to create the table schema.</param>
-		/// <param name="schemaName">Name of the schema.</param>
-		/// <returns>
-		/// A table schema object that represents our knowledge of the table schema
-		/// </returns>
-		protected abstract void CreateTableSchema(Table table);
+		protected abstract void LoadForeignKeys();
 
-		/// <summary>
-		/// Add foreign key schema object from the specified components.
-		/// </summary>
-		/// <param name="table">The table to add the forgein key to.</param>
-		protected abstract void CreateForeignKeySchema(Table table);
+		protected abstract void LoadIndexes();
+
+		protected abstract void LoadIndexColumns();
+
+		protected abstract void LoadTables();
+
+		protected abstract void LoadTriggers();
+
+		protected abstract void LoadViews();
+
+		protected abstract void LoadViewColumns();
+
+		protected abstract void LoadColumns();
 
 		#endregion Protected Abstract Methods
 
@@ -147,15 +141,15 @@ namespace SQLiteConversionEngine.Conversion {
 		/// </summary>
 		/// <param name="ts">The table schema of the table for which we need the query.</param>
 		/// <returns>The SELECT query for the table.</returns>
-		protected virtual string BuildSourceTableQuery(InformationSchema.Table table) {
+		protected virtual string BuildSourceTableQuery() {
 			StringBuilder sb = new StringBuilder();
-			sb.Append("SELECT ");
-			for (int i = 0; i < table.Columns.Count; i++) {
-				sb.Append("[" + table.Columns[i].Name + "]");
-				if (i < table.Columns.Count - 1)
-					sb.Append(", ");
-			}
-			sb.Append(" FROM " + table.Schema + "." + "[" + table.Name + "]");
+			//sb.Append("SELECT ");
+			//for (int i = 0; i < table.Columns.Count; i++) {
+			//    sb.Append("[" + table.Columns[i].Name + "]");
+			//    if (i < table.Columns.Count - 1)
+			//        sb.Append(", ");
+			//}
+			//sb.Append(" FROM " + table.Schema + "." + "[" + table.Name + "]");
 			return sb.ToString();
 		}
 
@@ -178,7 +172,7 @@ namespace SQLiteConversionEngine.Conversion {
 		/// </summary>
 		/// <param name="schema">The original SQL Server DB schema</param>
 		/// <returns>The same schema minus any table we don't want to convert.</returns>
-		public delegate List<Table> TableSelectionHandler(List<Table> schema);
+		public delegate void TableSelectionHandler(List<T> schema);
 
 		/// <summary>
 		/// This handler is called in order to handle the case when copying the SQL Server view SQL
@@ -187,7 +181,7 @@ namespace SQLiteConversionEngine.Conversion {
 		/// </summary>
 		/// <param name="vs">The problematic view definition</param>
 		/// <returns>The updated view definition, or NULL in case the view should be discarded</returns>
-		public delegate string FailedViewDefinitionHandler(View vs);
+		public delegate string FailedViewDefinitionHandler(T vs);
 
 		#endregion "Event" Handlers
 	}

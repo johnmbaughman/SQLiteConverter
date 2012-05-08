@@ -9,8 +9,8 @@ namespace ConversionTestConsole {
 			sql.Converter converter = new sql.Converter("C:\\SQLiteTest.db", "Data Source=localhost;Initial Catalog=SQLiteConversion;Integrated Security=True", null);
 			converter.TablesToLoad.AddRange(new string[] { "Table_1", "Table_2" });
 			converter.SchemasToLoad.Add("dbo");
-			converter.ConvertToSQLite();
-			//converter.ConvertFromSQLite();
+			//converter.ConvertToSQLite();
+			converter.ConvertFromSQLite();
 		}
 	}
 }

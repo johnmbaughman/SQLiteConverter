@@ -22,29 +22,14 @@
 
 #endregion
 
-using System.Collections.Generic;
-using SQLiteConversionEngine.Conversion;
-using SQLiteConversionEngine.InformationSchema;
-using SQLiteConversionEngine.InformationSchema.SQLite;
+namespace SQLiteConversionEngine.InformationSchema.SQLite {
+	/// <summary>
+	/// Description of CatalogCollection.
+	/// </summary>
+	public class CatalogCollection : InformationSchema.InformationSchemaCollectionBase<Catalog> {
 
-namespace SqlServerConverter {
-	public class Converter : ConverterBase {
-
-		public Converter(string sqliteFileWithPath, string SqlServerConnectionString, PragmaCollection pragmaParameters)
-			: base(sqliteFileWithPath, SqlServerConnectionString, pragmaParameters) { }
-
-		public override bool ConvertToSQLite() {
-			//ToSQLiteConversion toSQLiteConversion = new ToSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
-			////toSQLiteConversion.TablesToLoad.AddRange(TablesToLoad.ToArray());
-			////toSQLiteConversion.SchemasToLoad.AddRange(SchemasToLoad.ToArray());
-			//toSQLiteConversion.ConvertToDatabase(null, null, null, false);
-			return true;
-		}
-
-		public override bool ConvertFromSQLite() {
-			FromSQLiteConversion fromSQLiteConversion = new FromSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
-			fromSQLiteConversion.ConvertToDatabase(null, null, null, false);
-			return true;
+		public override Catalog Find(string name) {
+			return this.Find(t => t.CatalogName == name);
 		}
 	}
 }

@@ -4,6 +4,7 @@ Currently, there is semi-working, disorganized code for SQL Server, and IBM DB2.
 
 Based on code found here: 
 http://www.codeproject.com/Articles/26932/Convert-SQL-Server-DB-to-SQLite-DB
+http://sourceforge.net/projects/sqlitemetadata/
 
 Ideas for converters:
 MySQL

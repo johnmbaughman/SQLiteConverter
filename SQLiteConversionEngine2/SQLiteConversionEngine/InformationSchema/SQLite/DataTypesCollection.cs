@@ -22,7 +22,14 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema {
-	public class View : InformationSchemaBase {
+namespace SQLiteConversionEngine.InformationSchema.SQLite {
+	/// <summary>
+	/// Description of DataTypesCollection.
+	/// </summary>
+	public class DataTypesCollection : InformationSchema.InformationSchemaCollectionBase<DataTypes> {
+
+		public override DataTypes Find(string name) {
+			return this.Find(t => t.TypeName == name);
+		}
 	}
 }

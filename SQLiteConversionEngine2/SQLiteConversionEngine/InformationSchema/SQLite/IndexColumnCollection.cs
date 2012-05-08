@@ -22,7 +22,17 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema {
-	public class Database : InformationSchemaBase {
+using System;
+using System.Data.SQLite;
+
+namespace SQLiteConversionEngine.InformationSchema.SQLite {
+	/// <summary>
+	/// Description of IndexColumnCollection.
+	/// </summary>
+	public class IndexColumnCollection : InformationSchema.InformationSchemaCollectionBase<IndexColumn> {
+
+		public override IndexColumn Find(string name) {
+			return this.Find(t => t.ColumnName == name);
+		}
 	}
 }

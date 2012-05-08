@@ -22,26 +22,31 @@
 
 #endregion
 
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SQLiteConversionEngine.InformationSchema {
-	public class Table : InformationSchemaBase {
+	public abstract class InformationSchemaCollectionBase<T> : List<T>, IEnumerable<T> {
+		private List<T> data = new List<T>();
 
-		public Table() {
-			Columns = new List<Column>();
-			Indexes = new List<Index>();
-			ForeignKeys = new List<ForeignKey>();
-			Triggers = new List<Trigger>();
+		public void Add(T item) {
+			data.Add(item);
 		}
 
-		public List<Column> Columns { get; set; }
+		public IEnumerator<T> GetEnumerator() {
+			foreach (T t in data) {
+				yield return t;
+			}
+		}
 
-		public List<Index> Indexes { get; set; }
+		IEnumerator IEnumerable.GetEnumerator() {
+			return GetEnumerator();
+		}
 
-		public List<ForeignKey> ForeignKeys { get; set; }
+		public T this[int index] {
+			get { return data[index]; }
+		}
 
-		public List<Trigger> Triggers { get; set; }
-
-		public string PrimaryKey { get; set; }
+		public abstract T Find(string name);
 	}
 }

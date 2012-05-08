@@ -26,13 +26,14 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SQLite;
 using SQLiteConversionEngine.InformationSchema;
+using SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.Conversion {
 	public abstract class ConverterBase {
 		internal const string SQLITE_CONNECTION = "sqlite";
 		internal const string OTHER_CONNECTION = "other";
 
-		public ConverterBase(string sqliteFileWithPath, string otherServerConnectionString, List<Pragma> pragmaParameters) {
+		public ConverterBase(string sqliteFileWithPath, string otherServerConnectionString, PragmaCollection pragmaParameters) {
 			SQLiteConnectionStringSettings = CreateConnectionStringSettings(sqliteFileWithPath, true);
 			OtherConnectionStringSettings = CreateConnectionStringSettings(otherServerConnectionString);
 			TablesToLoad = new List<string>();

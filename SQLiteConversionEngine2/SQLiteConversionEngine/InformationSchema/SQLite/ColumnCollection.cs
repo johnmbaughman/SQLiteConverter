@@ -22,7 +22,17 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema {
-	public class Trigger : InformationSchemaBase {
+using System;
+using System.Data.SQLite;
+
+namespace SQLiteConversionEngine.InformationSchema.SQLite {
+	/// <summary>
+	/// Description of ColumnCollection.
+	/// </summary>
+	public class ColumnCollection : InformationSchema.InformationSchemaCollectionBase<Column> {
+
+		public override Column Find(string name) {
+			return this.Find(t => t.ColumnName == name);
+		}
 	}
 }

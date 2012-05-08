@@ -22,29 +22,52 @@
 
 #endregion
 
-using System.Collections.Generic;
-using SQLiteConversionEngine.Conversion;
-using SQLiteConversionEngine.InformationSchema;
-using SQLiteConversionEngine.InformationSchema.SQLite;
+using System;
+using System.Reflection;
+using System.Text;
 
-namespace SqlServerConverter {
-	public class Converter : ConverterBase {
+namespace SQLiteConversionEngine.InformationSchema.SQLite {
+	/// <summary>
+	/// Description of View.
+	/// </summary>
+	public class View {
 
-		public Converter(string sqliteFileWithPath, string SqlServerConnectionString, PragmaCollection pragmaParameters)
-			: base(sqliteFileWithPath, SqlServerConnectionString, pragmaParameters) { }
-
-		public override bool ConvertToSQLite() {
-			//ToSQLiteConversion toSQLiteConversion = new ToSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
-			////toSQLiteConversion.TablesToLoad.AddRange(TablesToLoad.ToArray());
-			////toSQLiteConversion.SchemasToLoad.AddRange(SchemasToLoad.ToArray());
-			//toSQLiteConversion.ConvertToDatabase(null, null, null, false);
-			return true;
+		public View() {
+			ViewColumns = new ViewColumnCollection();
 		}
 
-		public override bool ConvertFromSQLite() {
-			FromSQLiteConversion fromSQLiteConversion = new FromSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
-			fromSQLiteConversion.ConvertToDatabase(null, null, null, false);
-			return true;
+		public string TableCatalog { get; internal set; }
+
+		public string TableSchema { get; internal set; }
+
+		public string TableName { get; internal set; }
+
+		public string ViewDefinition { get; internal set; }
+
+		public bool? CheckOption { get; internal set; }
+
+		public bool? IsUpdatable { get; internal set; }
+
+		public string Description { get; internal set; }
+
+		public DateTime? DateCreated { get; internal set; }
+
+		public DateTime? DateModified { get; internal set; }
+
+		public ViewColumnCollection ViewColumns { get; internal set; }
+
+		public override string ToString() {
+			StringBuilder sc = new StringBuilder();
+
+			foreach (PropertyInfo propertyItem in this.GetType().GetProperties()) {
+				string propName = propertyItem.Name.ToString();
+				var tempVal = propertyItem.GetValue(this, null);
+				var propVal = tempVal == null ? string.Empty : tempVal;
+
+				sc.AppendFormat("{0} : {1}{2}", propName, propVal, Environment.NewLine);
+			}
+
+			return sc.ToString();
 		}
 	}
 }

@@ -108,7 +108,6 @@
     <Compile Include="Converter.cs" />
     <Compile Include="DataAccess\Massive.cs" />
     <Compile Include="FromSQLiteConversion.cs" />
-    <Compile Include="ToSQLiteConversion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

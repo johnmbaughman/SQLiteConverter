@@ -23,26 +23,54 @@
 #endregion
 
 using System;
-using System.Configuration;
-using SQLiteConversionEngine.InformationSchema;
+using System.Reflection;
+using System.Text;
 
-namespace SQLiteConversionEngine.Conversion {
-	public abstract class ToSQLiteConversionBase<T> : ConversionBase<T> where T : new() {
+namespace SQLiteConversionEngine.InformationSchema.SQLite {
+	/// <summary>
+	/// Description of IndexColumns.
+	/// </summary>
+	public class IndexColumn {
 
-		public ToSQLiteConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
+		public IndexColumn() {
+		}
 
-		//protected override void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
-		//    throw new NotImplementedException();
-		//}
+		public string ConstraintCatalog { get; internal set; }
 
-		//public override void ConvertToDatabase(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
-		//    throw new NotImplementedException();
-		//}
+		public string ConstraintSchema { get; internal set; }
 
-		//protected override void CopySourceDataToDestination(ConversionHandler conversionHandler) {
-		//    throw new NotImplementedException();
-		//}
+		public string ConstraintName { get; internal set; }
 
-		//protected abstract override void ReadSourceSchema(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler);
+		public string TableCatalog { get; internal set; }
+
+		public string TableSchema { get; internal set; }
+
+		public string TableName { get; internal set; }
+
+		public string ColumnName { get; internal set; }
+
+		public int? OrdinalPosition { get; internal set; }
+
+		public string IndexName { get; internal set; }
+
+		public string CollationName { get; internal set; }
+
+		public string SortMode { get; internal set; }
+
+		public int? ConflictOption { get; internal set; }
+
+		public override string ToString() {
+			StringBuilder sc = new StringBuilder();
+
+			foreach (PropertyInfo propertyItem in this.GetType().GetProperties()) {
+				string propName = propertyItem.Name.ToString();
+				var tempVal = propertyItem.GetValue(this, null);
+				var propVal = tempVal == null ? string.Empty : tempVal;
+
+				sc.AppendFormat("{0} : {1}{2}", propName, propVal, Environment.NewLine);
+			}
+
+			return sc.ToString();
+		}
 	}
 }

@@ -22,11 +22,17 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema {
-	public class Pragma {
+using System;
+using System.Data.SQLite;
 
-		public string Name { get; set; }
+namespace SQLiteConversionEngine.InformationSchema.SQLite {
+	/// <summary>
+	/// Description of IndexCollection.
+	/// </summary>
+	public class IndexCollection : InformationSchema.InformationSchemaCollectionBase<Index> {
 
-		public string Parameter { get; set; }
+		public override Index Find(string name) {
+			return this.Find(t => t.IndexName == name);
+		}
 	}
 }

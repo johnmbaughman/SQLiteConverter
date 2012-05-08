@@ -22,21 +22,43 @@
 
 #endregion
 
-using System.Collections.Generic;
+using System;
+using System.Reflection;
+using System.Text;
 
-namespace SQLiteConversionEngine.InformationSchema {
-	public class Schema : InformationSchemaBase {
+namespace SQLiteConversionEngine.InformationSchema.SQLite {
+	/// <summary>
+	/// Description of DatabaseDomain.
+	/// </summary>
+	public class Catalog {
 
-		public Schema() {
-			Database = new Database();
-			Tables = new List<Table>();
-			Views = new List<View>();
+		public Catalog() {
+			Tables = new TableCollection();
+			Views = new ViewCollection();
 		}
 
-		public Database Database { get; set; }
+		public string CatalogName { get; internal set; }
 
-		public List<Table> Tables { get; set; }
+		public string Description { get; internal set; }
 
-		public List<View> Views { get; set; }
+		public long? Id { get; internal set; }
+
+		public TableCollection Tables { get; internal set; }
+
+		public ViewCollection Views { get; internal set; }
+
+		public override string ToString() {
+			StringBuilder sc = new StringBuilder();
+
+			foreach (PropertyInfo propertyItem in this.GetType().GetProperties()) {
+				string propName = propertyItem.Name.ToString();
+				var tempVal = propertyItem.GetValue(this, null);
+				var propVal = tempVal == null ? string.Empty : tempVal;
+
+				sc.AppendFormat("{0} : {1}{2}", propName, propVal, Environment.NewLine);
+			}
+
+			return sc.ToString();
+		}
 	}
 }

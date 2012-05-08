@@ -22,29 +22,17 @@
 
 #endregion
 
-using System.Collections.Generic;
-using SQLiteConversionEngine.Conversion;
-using SQLiteConversionEngine.InformationSchema;
-using SQLiteConversionEngine.InformationSchema.SQLite;
+using System;
+using System.Data.SQLite;
 
-namespace SqlServerConverter {
-	public class Converter : ConverterBase {
+namespace SQLiteConversionEngine.InformationSchema.SQLite {
+	/// <summary>
+	/// Description of TriggerCollection.
+	/// </summary>
+	public class TriggerCollection : InformationSchema.InformationSchemaCollectionBase<Trigger> {
 
-		public Converter(string sqliteFileWithPath, string SqlServerConnectionString, PragmaCollection pragmaParameters)
-			: base(sqliteFileWithPath, SqlServerConnectionString, pragmaParameters) { }
-
-		public override bool ConvertToSQLite() {
-			//ToSQLiteConversion toSQLiteConversion = new ToSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
-			////toSQLiteConversion.TablesToLoad.AddRange(TablesToLoad.ToArray());
-			////toSQLiteConversion.SchemasToLoad.AddRange(SchemasToLoad.ToArray());
-			//toSQLiteConversion.ConvertToDatabase(null, null, null, false);
-			return true;
-		}
-
-		public override bool ConvertFromSQLite() {
-			FromSQLiteConversion fromSQLiteConversion = new FromSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
-			fromSQLiteConversion.ConvertToDatabase(null, null, null, false);
-			return true;
+		public override Trigger Find(string name) {
+			return this.Find(t => t.Name == name);
 		}
 	}
 }

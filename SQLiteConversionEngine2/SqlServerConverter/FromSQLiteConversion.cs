@@ -30,8 +30,16 @@ namespace SqlServerConverter {
 
 		public FromSQLiteConversion(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
 
-		//protected override void ReadSourceSchema(ConversionBase.ConversionHandler conversionHandler, ConversionBase.TableSelectionHandler tableSelectionHandler) {
-		//    throw new NotImplementedException();
-		//}
+		protected override void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
+			throw new System.NotImplementedException();
+		}
+
+		public override void ConvertToDatabase(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
+			base.ConvertToDatabase(conversionHandler, tableSelectionHandler, failedViewDefinitionHandler, createTriggers);
+		}
+
+		protected override void CopySourceDataToDestination(ConversionHandler conversionHandler) {
+			throw new System.NotImplementedException();
+		}
 	}
 }
