@@ -24,6 +24,8 @@
 
 using System;
 using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 using Massive;
 using SQLiteConversionEngine.Conversion;
@@ -33,11 +35,20 @@ using SQLiteConversionEngine.Utility;
 
 namespace SqlServerConverter {
 	internal class ToSQLiteConversion : ToSQLiteConversionBase<Database> {
+		private SqlConnection sqlConnection = null;
 
 		public ToSQLiteConversion(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
 
 		public override void ConvertToDatabase(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
-			throw new NotImplementedException();
+			sqlConnection = new SqlConnection(Connections.OtherConnection.ConnectionString);
+			try {
+				sqlConnection.Open();
+				LoadSchema();
+				sqlConnection.Close();
+			}
+			catch (Exception) {
+				throw;
+			}
 		}
 
 		protected override void ConvertSourceDatabaseToDestination(ConversionBase<Database>.ConversionHandler conversionHandler, ConversionBase<Database>.TableSelectionHandler tableSelectionHandler, ConversionBase<Database>.FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
@@ -65,7 +76,23 @@ namespace SqlServerConverter {
 		}
 
 		protected override void LoadSchema() {
-			throw new NotImplementedException();
+			DataTable dataTable = sqlConnection.GetSchema("SCHEMATA");
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.Schemas.Add(new Schemata {
+					CatalogName = row["CATALOG_NAME"] == DBNull.Value ? null : row["CATALOG_NAME"].ToString(),
+					SchemaName = row["SCHEMA_NAME"] == DBNull.Value ? null : row["SCHEMA_NAME"].ToString(),
+					SchemaOwner = row["SCHEMA_OWNER"] == DBNull.Value ? null : row["SCHEMA_OWNER"].ToString(),
+					DefaultCharacterSetCatalog = row["DEFAULT_CHARACTER_SET_CATALOG"] == DBNull.Value ? null : row["DEFAULT_CHARACTER_SET_CATALOG"].ToString(),
+					DefaultCharacterSetSchema = row["DEFAULT_CHARACTER_SET_SCHEMA]"] == DBNull.Value ? null : row["DEFAULT_CHARACTER_SET_SCHEMA"].ToString(),
+					DefaultCharacterSetName = row["DEFAULT_CHARACTER_SET_NAME"] == DBNull.Value ? null : row["DEFAULT_CHARACTER_SET_NAME"].ToString(),
+				});
+			}
+
+			//foreach (Catalog catalog in SourceSchema.CatalogCollection) {
+			//    currentCatalogName = catalog.CatalogName;
+			//    LoadTables();
+			//    LoadViews();
+			//}
 		}
 
 		protected override void LoadTables() {
