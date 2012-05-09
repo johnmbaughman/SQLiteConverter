@@ -22,10 +22,6 @@
 
 #endregion
 
-using System;
-using System.Collections;
-using System.Data.SQLite;
-
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of ViewCollection.
@@ -33,7 +29,7 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	public class ViewCollection : InformationSchema.InformationSchemaCollectionBase<View> {
 
 		public override View Find(string name) {
-			return this.Find(t => t.ViewDefinition == name);
+			return this.Find(t => t.TableName == name);
 		}
 	}
 }

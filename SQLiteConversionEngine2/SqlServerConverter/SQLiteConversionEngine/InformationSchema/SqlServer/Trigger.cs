@@ -22,14 +22,37 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	/// <summary>
-	/// Description of TableCollection.
-	/// </summary>
-	public class TableCollection : InformationSchema.InformationSchemaCollectionBase<Table> {
+using System;
 
-		public override Table Find(string name) {
-			return this.Find(t => t.Name == name);
-		}
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class Trigger : InformationSchemaItemBase {
+
+		public Trigger() { }
+
+		public string Name { get; internal set; }
+
+		public int? ObjectId { get; internal set; }
+
+		public int? ParentClass { get; internal set; }
+
+		public string ParentClassDescription { get; internal set; }
+
+		public int? ParentId { get; internal set; }
+
+		public string Type { get; internal set; }
+
+		public string TypeDescription { get; internal set; }
+
+		public DateTime? CreateDate { get; internal set; }
+
+		public DateTime? ModifyDate { get; internal set; }
+
+		public bool? IsMsShipped { get; internal set; }
+
+		public bool? IsDisabled { get; internal set; }
+
+		public bool? IsNotForReplication { get; internal set; }
+
+		public bool? IsInsteadOfTrigger { get; internal set; }
 	}
 }

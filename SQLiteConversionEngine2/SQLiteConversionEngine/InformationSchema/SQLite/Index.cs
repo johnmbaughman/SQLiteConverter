@@ -23,14 +23,12 @@
 #endregion
 
 using System;
-using System.Reflection;
-using System.Text;
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of Index.
 	/// </summary>
-	public class Index {
+	public class Index : InformationSchemaItemBase {
 
 		public Index() {
 			IndexColumns = new IndexColumnCollection();
@@ -89,19 +87,5 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 		public string IndexDefinition { get; internal set; }
 
 		public IndexColumnCollection IndexColumns { get; internal set; }
-
-		public override string ToString() {
-			StringBuilder sc = new StringBuilder();
-
-			foreach (PropertyInfo propertyItem in this.GetType().GetProperties()) {
-				string propName = propertyItem.Name.ToString();
-				var tempVal = propertyItem.GetValue(this, null);
-				var propVal = tempVal == null ? string.Empty : tempVal;
-
-				sc.AppendFormat("{0} : {1}{2}", propName, propVal, Environment.NewLine);
-			}
-
-			return sc.ToString();
-		}
 	}
 }

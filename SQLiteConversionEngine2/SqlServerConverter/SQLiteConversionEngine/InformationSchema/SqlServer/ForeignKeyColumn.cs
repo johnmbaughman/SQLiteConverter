@@ -22,14 +22,21 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	/// <summary>
-	/// Description of TableCollection.
-	/// </summary>
-	public class TableCollection : InformationSchema.InformationSchemaCollectionBase<Table> {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class ForeignKeyColumn : InformationSchemaItemBase {
 
-		public override Table Find(string name) {
-			return this.Find(t => t.Name == name);
-		}
+		public ForeignKeyColumn() { }
+
+		public int? ConstraintObjectId { get; internal set; }
+
+		public int? ConstraintColumnId { get; internal set; }
+
+		public int? ParentObjectId { get; internal set; }
+
+		public int? ParentColumnId { get; internal set; }
+
+		public int? ReferencedObjectId { get; internal set; }
+
+		public int? ReferencedColumnId { get; internal set; }
 	}
 }

@@ -22,15 +22,11 @@
 
 #endregion
 
-using System;
-using System.Reflection;
-using System.Text;
-
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of DataType.
 	/// </summary>
-	public class DataTypes {
+	public class DataTypes : InformationSchemaItemBase {
 
 		public DataTypes() { }
 
@@ -77,19 +73,5 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 		public short? MinimumScale { get; internal set; }
 
 		public bool? IsConcurrencyType { get; internal set; }
-
-		public override string ToString() {
-			StringBuilder sc = new StringBuilder();
-
-			foreach (PropertyInfo propertyItem in this.GetType().GetProperties()) {
-				string propName = propertyItem.Name.ToString();
-				var tempVal = propertyItem.GetValue(this, null);
-				var propVal = tempVal == null ? string.Empty : tempVal;
-
-				sc.AppendFormat("{0} : {1}{2}", propName, propVal, Environment.NewLine);
-			}
-
-			return sc.ToString();
-		}
 	}
 }

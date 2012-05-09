@@ -22,14 +22,49 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	/// <summary>
-	/// Description of TableCollection.
-	/// </summary>
-	public class TableCollection : InformationSchema.InformationSchemaCollectionBase<Table> {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class Index : InformationSchemaItemBase {
 
-		public override Table Find(string name) {
-			return this.Find(t => t.Name == name);
+		public Index() {
+			IndexColumns = new IndexColumnCollection();
 		}
+
+		public IndexColumnCollection IndexColumns { get; internal set; }
+
+		public int ObjectId { get; internal set; }
+
+		public string Name { get; internal set; }
+
+		public int? IndexId { get; internal set; }
+
+		public int? Type { get; internal set; }
+
+		public string TypeDescription { get; internal set; }
+
+		public bool? IsUnique { get; internal set; }
+
+		public int? DataSpaceId { get; internal set; }
+
+		public bool? IgnoreDupKey { get; internal set; }
+
+		public bool? IsPrimaryKey { get; internal set; }
+
+		public bool? IsUniqueConstraint { get; internal set; }
+
+		public int? FillFactor { get; internal set; }
+
+		public bool? IsPadded { get; internal set; }
+
+		public bool? IsDisabled { get; internal set; }
+
+		public bool? IsHypothetical { get; internal set; }
+
+		public bool? AllowRowLocks { get; internal set; }
+
+		public bool? AllowPageLocks { get; internal set; }
+
+		public bool? HasFilter { get; internal set; }
+
+		public string FilterDefinition { get; internal set; }
 	}
 }

@@ -22,18 +22,13 @@
 
 #endregion
 
-using System;
-using System.Reflection;
-using System.Text;
-
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of Trigger.
 	/// </summary>
-	public class Trigger {
+	public class Trigger : InformationSchemaItemBase {
 
-		public Trigger() {
-		}
+		public Trigger() { }
 
 		public string TableCatalog { get; internal set; }
 
@@ -44,19 +39,5 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 		public string Name { get; internal set; }
 
 		public string Definition { get; internal set; }
-
-		public override string ToString() {
-			StringBuilder sc = new StringBuilder();
-
-			foreach (PropertyInfo propertyItem in this.GetType().GetProperties()) {
-				string propName = propertyItem.Name.ToString();
-				var tempVal = propertyItem.GetValue(this, null);
-				var propVal = tempVal == null ? string.Empty : tempVal;
-
-				sc.AppendFormat("{0} : {1}{2}", propName, propVal, Environment.NewLine);
-			}
-
-			return sc.ToString();
-		}
 	}
 }

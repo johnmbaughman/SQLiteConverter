@@ -22,13 +22,13 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SQLite {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 	/// <summary>
-	/// Description of TableCollection.
+	/// Description of TriggerCollection.
 	/// </summary>
-	public class TableCollection : InformationSchema.InformationSchemaCollectionBase<Table> {
+	public class TriggerCollection : InformationSchema.InformationSchemaCollectionBase<Trigger> {
 
-		public override Table Find(string name) {
+		public override Trigger Find(string name) {
 			return this.Find(t => t.Name == name);
 		}
 	}

@@ -22,13 +22,13 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SQLite {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 	/// <summary>
-	/// Description of TableCollection.
+	/// Description of ForeignKeyCollection.
 	/// </summary>
-	public class TableCollection : InformationSchema.InformationSchemaCollectionBase<Table> {
+	public class ForeignKeyCollection : InformationSchema.InformationSchemaCollectionBase<ForeignKey> {
 
-		public override Table Find(string name) {
+		public override ForeignKey Find(string name) {
 			return this.Find(t => t.Name == name);
 		}
 	}

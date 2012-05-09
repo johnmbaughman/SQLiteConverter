@@ -109,6 +109,28 @@
     <Compile Include="DataAccess\Massive.cs" />
     <Compile Include="FromSQLiteConversion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Column.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ColumnCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Database.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ForeignKey.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ForeignKeyCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ForeignKeyColumn.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ForeignKeyColumnCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Index.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\IndexCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\IndexColumn.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\IndexColumnCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Schemata.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\SchemataCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Table.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\TableCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Trigger.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\TriggerCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\View.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewColumn.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewColumnCollection.cs" />
+    <Compile Include="ToSQLiteConversion.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SQLiteConversionEngine\SQLiteConversionEngine.csproj">

@@ -22,9 +22,6 @@
 
 #endregion
 
-using System;
-using System.Data.SQLite;
-
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of ColumnCollection.

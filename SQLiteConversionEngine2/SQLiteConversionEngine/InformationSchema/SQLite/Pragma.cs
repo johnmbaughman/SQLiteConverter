@@ -23,7 +23,7 @@
 #endregion
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	public class Pragma {
+	public class Pragma : InformationSchemaItemBase {
 
 		public string Name { get; set; }
 

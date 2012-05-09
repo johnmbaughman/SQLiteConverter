@@ -23,14 +23,12 @@
 #endregion
 
 using System;
-using System.Reflection;
-using System.Text;
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of View.
 	/// </summary>
-	public class View {
+	public class View : InformationSchemaItemBase {
 
 		public View() {
 			ViewColumns = new ViewColumnCollection();
@@ -55,19 +53,5 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 		public DateTime? DateModified { get; internal set; }
 
 		public ViewColumnCollection ViewColumns { get; internal set; }
-
-		public override string ToString() {
-			StringBuilder sc = new StringBuilder();
-
-			foreach (PropertyInfo propertyItem in this.GetType().GetProperties()) {
-				string propName = propertyItem.Name.ToString();
-				var tempVal = propertyItem.GetValue(this, null);
-				var propVal = tempVal == null ? string.Empty : tempVal;
-
-				sc.AppendFormat("{0} : {1}{2}", propName, propVal, Environment.NewLine);
-			}
-
-			return sc.ToString();
-		}
 	}
 }

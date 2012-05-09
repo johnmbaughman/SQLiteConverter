@@ -23,17 +23,14 @@
 #endregion
 
 using System;
-using System.Reflection;
-using System.Text;
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of Column.
 	/// </summary>
-	public class Column {
+	public class Column : InformationSchemaItemBase {
 
-		public Column() {
-		}
+		public Column() { }
 
 		public string TableCatalog { get; internal set; }
 
@@ -96,19 +93,5 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 		public bool? AutoIncrement { get; internal set; }
 
 		public bool? Unique { get; internal set; }
-
-		public override string ToString() {
-			StringBuilder sc = new StringBuilder();
-
-			foreach (PropertyInfo propertyItem in this.GetType().GetProperties()) {
-				string propName = propertyItem.Name.ToString();
-				var tempVal = propertyItem.GetValue(this, null);
-				var propVal = tempVal == null ? string.Empty : tempVal;
-
-				sc.AppendFormat("{0} : {1}{2}", propName, propVal, Environment.NewLine);
-			}
-
-			return sc.ToString();
-		}
 	}
 }

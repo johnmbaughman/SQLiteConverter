@@ -22,14 +22,13 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	/// <summary>
-	/// Description of TableCollection.
-	/// </summary>
-	public class TableCollection : InformationSchema.InformationSchemaCollectionBase<Table> {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class Database : InformationSchemaBase {
 
-		public override Table Find(string name) {
-			return this.Find(t => t.Name == name);
+		public Database() {
+			Schemas = new SchemataCollection();
 		}
+
+		public SchemataCollection Schemas { get; internal set; }
 	}
 }

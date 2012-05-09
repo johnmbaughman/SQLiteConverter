@@ -22,21 +22,10 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	/// <summary>
-	/// Description of ViewColumn.
-	/// </summary>
-	public class ViewColumn {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class Column : InformationSchemaItemBase {
 
-		public ViewColumn() { }
-
-		public string ViewCatalog { get; internal set; }
-
-		public string ViewSchema { get; internal set; }
-
-		public string ViewName { get; internal set; }
-
-		public string ViewColumnName { get; internal set; }
+		public Column() { }
 
 		public string TableCatalog { get; internal set; }
 
@@ -46,25 +35,25 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 
 		public string ColumnName { get; internal set; }
 
-		public int? OrdinalPosition { get; internal set; }
-
-		public bool? ColumnHasDefault { get; internal set; }
+		public int OrdinalPosition { get; internal set; }
 
 		public string ColumnDefault { get; internal set; }
 
-		public long? ColumnFlags { get; internal set; }
-
-		public bool? IsNullable { get; internal set; }
+		public bool IsNullable { get; internal set; }
 
 		public string DataType { get; internal set; }
 
 		public int? CharacterMaximumLength { get; internal set; }
 
+		public int? CharacterOctetLength { get; internal set; }
+
 		public int? NumericPrecision { get; internal set; }
+
+		public int? NumericPrecisionRadix { get; internal set; }
 
 		public int? NumericScale { get; internal set; }
 
-		public long? DateTimePrecision { get; internal set; }
+		public int? DateTimePrecision { get; internal set; }
 
 		public string CharacterSetCatalog { get; internal set; }
 
@@ -78,12 +67,10 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 
 		public string CollationName { get; internal set; }
 
-		public bool? PrimaryKey { get; internal set; }
+		public string DomainCatalog { get; internal set; }
 
-		public string EdmType { get; internal set; }
+		public string DomainSchema { get; internal set; }
 
-		public bool? AutoIncrement { get; internal set; }
-
-		public bool? Unique { get; internal set; }
+		public string DomainName { get; internal set; }
 	}
 }

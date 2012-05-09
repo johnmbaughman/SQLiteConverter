@@ -22,14 +22,18 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SQLite {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 	/// <summary>
-	/// Description of TableCollection.
+	/// Description of IndexColumnCollection.
 	/// </summary>
-	public class TableCollection : InformationSchema.InformationSchemaCollectionBase<Table> {
+	public class IndexColumnCollection : InformationSchema.InformationSchemaCollectionBase<IndexColumn> {
 
-		public override Table Find(string name) {
-			return this.Find(t => t.Name == name);
+		public override IndexColumn Find(string name) {
+			return this.Find(t => t.IndexColumnId.ToString() == name);
+		}
+
+		public IndexColumn Find(int id) {
+			return this.Find(t => t.IndexColumnId == id);
 		}
 	}
 }
