@@ -23,10 +23,6 @@
 #endregion
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	public class PragmaCollection : InformationSchema.InformationSchemaCollectionBase<Pragma> {
-
-		public override Pragma Find(string name) {
-			return this.Find(t => t.Name == name);
-		}
+	public class PragmaCollection : InformationSchema.InformationSchemaCollectionBase<string, Pragma> {
 	}
 }

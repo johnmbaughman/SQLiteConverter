@@ -28,9 +28,12 @@ using System.Collections.Generic;
 namespace SQLiteConversionEngine.Utility {
 	public class Utilities {
 
-		public static string ConvertListToInClause(List<string> list, string tableName, bool isString = true) {
+		public static string ConvertListToInClause(List<string> list, string columnName, bool isString = true) {
 			try {
-				string returnString = string.Format(" {0} IN (|", tableName);
+				if (list.Count == 0) {
+					return string.Empty;
+				}
+				string returnString = string.Format(" {0} IN (|", columnName);
 				foreach (var item in list) {
 					if (!returnString.Contains(item)) {
 						if (isString) {

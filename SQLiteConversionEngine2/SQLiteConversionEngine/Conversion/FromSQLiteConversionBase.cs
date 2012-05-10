@@ -64,7 +64,7 @@ namespace SQLiteConversionEngine.Conversion {
 		protected override void LoadColumns() {
 			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Columns, new string[] { currentCatalogName, null, currentTableName });
 			foreach (DataRow row in dataTable.Rows) {
-				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).Columns.Add(new Column() {
+				SourceSchema.CatalogCollection[currentCatalogName].Tables[currentTableName].Columns.Add(row["COLUMN_NAME"].ToString(), new Column() {
 					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
 					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
 					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
@@ -105,7 +105,7 @@ namespace SQLiteConversionEngine.Conversion {
 		protected override void LoadForeignKeys() {
 			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.ForeignKeys, new string[] { currentCatalogName, null, currentTableName });
 			foreach (DataRow row in dataTable.Rows) {
-				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).ForeignKeys.Add(new ForeignKey() {
+				SourceSchema.CatalogCollection[currentCatalogName].Tables[currentTableName].ForeignKeys.Add(row["CONSTRAINT_NAME"].ToString(), new ForeignKey() {
 					ConstraintCatalog = row["CONSTRAINT_CATALOG"] == DBNull.Value ? null : row["CONSTRAINT_CATALOG"].ToString(),
 					ConstraintSchema = row["CONSTRAINT_SCHEMA"] == DBNull.Value ? null : row["CONSTRAINT_SCHEMA"].ToString(),
 					ConstraintName = row["CONSTRAINT_NAME"] == DBNull.Value ? null : row["CONSTRAINT_NAME"].ToString(),
@@ -131,7 +131,7 @@ namespace SQLiteConversionEngine.Conversion {
 		protected override void LoadIndexColumns() {
 			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.IndexColumns, new string[] { currentCatalogName, null, currentTableName });
 			foreach (DataRow row in dataTable.Rows) {
-				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).Indexes.Find(currentIndexName).IndexColumns.Add(new IndexColumn() {
+				SourceSchema.CatalogCollection[currentCatalogName].Tables[currentTableName].Indexes[currentIndexName].IndexColumns.Add(row["COLUMN_NAME"].ToString(), new IndexColumn() {
 					ConstraintCatalog = row["CONSTRAINT_CATALOG"] == DBNull.Value ? null : row["CONSTRAINT_CATALOG"].ToString(),
 					ConstraintSchema = row["CONSTRAINT_SCHEMA"] == DBNull.Value ? null : row["CONSTRAINT_SCHEMA"].ToString(),
 					ConstraintName = row["CONSTRAINT_NAME"] == DBNull.Value ? null : row["CONSTRAINT_NAME"].ToString(),
@@ -151,7 +151,7 @@ namespace SQLiteConversionEngine.Conversion {
 		protected override void LoadIndexes() {
 			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Indexes, new string[] { currentCatalogName, null, currentTableName });
 			foreach (DataRow row in dataTable.Rows) {
-				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).Indexes.Add(new Index() {
+				SourceSchema.CatalogCollection[currentCatalogName].Tables[currentTableName].Indexes.Add(row["INDEX_NAME"].ToString(), new Index() {
 					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
 					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
 					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
@@ -176,39 +176,39 @@ namespace SQLiteConversionEngine.Conversion {
 					Collation = row["COLLATION"] == DBNull.Value ? new Nullable<short>() : Convert.ToInt16(row["COLLATION"]),
 					Cardinality = row["CARDINALITY"] == DBNull.Value ? new Nullable<decimal>() : Convert.ToDecimal(row["CARDINALITY"]),
 					Pages = row["PAGES"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["PAGES"]),
-					FilterCondition = row["FILTERsqliteConnectionDITION"] == DBNull.Value ? null : row["FILTERsqliteConnectionDITION"].ToString(),
+					FilterCondition = row["FILTER_CONDITION"] == DBNull.Value ? null : row["FILTER_CONDITION"].ToString(),
 					Integrated = row["INTEGRATED"] == DBNull.Value ? new Nullable<bool>() : Convert.ToBoolean(row["INTEGRATED"]),
 					IndexDefinition = row["INDEX_DEFINITION"] == DBNull.Value ? null : row["INDEX_DEFINITION"].ToString()
 				});
 			}
 
-			foreach (Index index in SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).Indexes) {
-				currentIndexName = index.IndexName;
-				LoadIndexColumns();
-			}
+			//foreach (Index index in SourceSchema.CatalogCollection[currentCatalogName].Tables[currentTableName].Indexes) {
+			//    currentIndexName = index.IndexName;
+			//    LoadIndexColumns();
+			//}
 		}
 
 		protected override void LoadSchema() {
 			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Catalogs);
 			foreach (DataRow row in dataTable.Rows) {
-				SourceSchema.CatalogCollection.Add(new Catalog() {
+				SourceSchema.CatalogCollection.Add(row["CATALOG_NAME"].ToString(), new Catalog() {
 					CatalogName = row["CATALOG_NAME"] == DBNull.Value ? null : row["CATALOG_NAME"].ToString(),
 					Description = row["DESCRIPTION"] == DBNull.Value ? null : row["DESCRIPTION"].ToString(),
 					Id = row["ID"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(row["ID"])
 				});
 			}
 
-			foreach (Catalog catalog in SourceSchema.CatalogCollection) {
-				currentCatalogName = catalog.CatalogName;
-				LoadTables();
-				LoadViews();
-			}
+			//foreach (Catalog catalog in SourceSchema.CatalogCollection) {
+			//    currentCatalogName = catalog.CatalogName;
+			//    LoadTables();
+			//    LoadViews();
+			//}
 		}
 
 		protected override void LoadTables() {
 			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Tables, new string[] { currentCatalogName });
 			foreach (DataRow row in dataTable.Rows) {
-				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Add(new Table() {
+				SourceSchema.CatalogCollection[currentCatalogName].Tables.Add(row["TABLE_NAME"].ToString(), new Table() {
 					CatalogName = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
 					Name = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
 					Type = row["TABLE_TYPE"] == DBNull.Value ? null : row["TABLE_TYPE"].ToString(),
@@ -218,19 +218,19 @@ namespace SQLiteConversionEngine.Conversion {
 				});
 			}
 
-			foreach (Table table in SourceSchema.CatalogCollection.Find(currentCatalogName).Tables) {
-				currentTableName = table.Name;
-				LoadColumns();
-				LoadForeignKeys();
-				LoadIndexes();
-				LoadTriggers();
-			}
+			//foreach (Table table in SourceSchema.CatalogCollection[currentCatalogName].Tables) {
+			//    currentTableName = table.Name;
+			//    LoadColumns();
+			//    LoadForeignKeys();
+			//    LoadIndexes();
+			//    LoadTriggers();
+			//}
 		}
 
 		protected override void LoadTriggers() {
 			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Triggers, new string[] { currentCatalogName, null, currentTableName });
 			foreach (DataRow row in dataTable.Rows) {
-				SourceSchema.CatalogCollection.Find(currentCatalogName).Tables.Find(currentTableName).Triggers.Add(new Trigger() {
+				SourceSchema.CatalogCollection[currentCatalogName].Tables[currentTableName].Triggers.Add(row["TRIGGER_NAME"].ToString(), new Trigger() {
 					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
 					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
 					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
@@ -243,7 +243,7 @@ namespace SQLiteConversionEngine.Conversion {
 		protected override void LoadViewColumns() {
 			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.ViewColumns, new string[] { currentCatalogName, null, currentViewName });
 			foreach (DataRow row in dataTable.Rows) {
-				SourceSchema.CatalogCollection.Find(currentCatalogName).Views.Find(currentViewName).ViewColumns.Add(new ViewColumn() {
+				SourceSchema.CatalogCollection[currentCatalogName].Views[currentViewName].ViewColumns.Add(row["COLUMN_NAME"].ToString(), new ViewColumn() {
 					ViewCatalog = row["VIEW_CATALOG"] == DBNull.Value ? null : row["VIEW_CATALOG"].ToString(),
 					ViewSchema = row["VIEW_SCHEMA"] == DBNull.Value ? null : row["VIEW_SCHEMA"].ToString(),
 					ViewName = row["VIEW_NAME"] == DBNull.Value ? null : row["VIEW_NAME"].ToString(),
@@ -279,7 +279,7 @@ namespace SQLiteConversionEngine.Conversion {
 		protected override void LoadViews() {
 			DataTable dataTable = sqliteConnection.GetSchema(SQLiteMetaDataCollectionNames.Views, new string[] { currentCatalogName });
 			foreach (DataRow row in dataTable.Rows) {
-				SourceSchema.CatalogCollection.Find(currentCatalogName).Views.Add(new View() {
+				SourceSchema.CatalogCollection[currentCatalogName].Views.Add(row["TABLE_NAME"].ToString(), new View() {
 					TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
 					TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
 					TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
@@ -292,10 +292,10 @@ namespace SQLiteConversionEngine.Conversion {
 				});
 			}
 
-			foreach (View view in SourceSchema.CatalogCollection.Find(currentCatalogName).Views) {
-				currentViewName = view.ViewDefinition;
-				LoadViewColumns();
-			}
+			//foreach (View view in SourceSchema.CatalogCollection[currentCatalogName].Views) {
+			//    currentViewName = view.ViewDefinition;
+			//    LoadViewColumns();
+			//}
 		}
 
 		//private void LoadAllDataTypes() {

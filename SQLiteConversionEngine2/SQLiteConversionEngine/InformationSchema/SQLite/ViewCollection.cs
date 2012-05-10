@@ -26,10 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of ViewCollection.
 	/// </summary>
-	public class ViewCollection : InformationSchema.InformationSchemaCollectionBase<View> {
-
-		public override View Find(string name) {
-			return this.Find(t => t.TableName == name);
-		}
+	public class ViewCollection : InformationSchema.InformationSchemaCollectionBase<string, View> {
 	}
 }

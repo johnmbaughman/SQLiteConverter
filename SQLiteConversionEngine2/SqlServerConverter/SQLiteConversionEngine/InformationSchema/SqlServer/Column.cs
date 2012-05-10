@@ -61,16 +61,10 @@ namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 
 		public string CharacterSetName { get; internal set; }
 
-		public string CollationCatalog { get; internal set; }
+		public bool IsParse { get; internal set; }
 
-		public string CollationSchema { get; internal set; }
+		public bool IsColumnSet { get; internal set; }
 
-		public string CollationName { get; internal set; }
-
-		public string DomainCatalog { get; internal set; }
-
-		public string DomainSchema { get; internal set; }
-
-		public string DomainName { get; internal set; }
+		public bool IsFileStream { get; internal set; }
 	}
 }

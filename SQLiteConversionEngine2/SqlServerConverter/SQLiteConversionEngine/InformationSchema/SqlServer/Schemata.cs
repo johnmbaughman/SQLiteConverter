@@ -27,6 +27,7 @@ namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 
 		public Schemata() {
 			Tables = new TableCollection();
+			Views = new ViewCollection();
 		}
 
 		public TableCollection Tables { get; internal set; }

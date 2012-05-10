@@ -26,10 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 	/// <summary>
 	/// Description of ForeignKeyCollection.
 	/// </summary>
-	public class ForeignKeyCollection : InformationSchema.InformationSchemaCollectionBase<ForeignKey> {
-
-		public override ForeignKey Find(string name) {
-			return this.Find(t => t.Name == name);
-		}
+	public class ForeignKeyCollection : InformationSchema.InformationSchemaCollectionBase<string, ForeignKey> {
 	}
 }

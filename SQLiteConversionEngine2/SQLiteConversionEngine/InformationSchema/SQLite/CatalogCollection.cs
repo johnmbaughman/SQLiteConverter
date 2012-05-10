@@ -26,10 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of CatalogCollection.
 	/// </summary>
-	public class CatalogCollection : InformationSchema.InformationSchemaCollectionBase<Catalog> {
-
-		public override Catalog Find(string name) {
-			return this.Find(t => t.CatalogName == name);
-		}
+	public class CatalogCollection : InformationSchema.InformationSchemaCollectionBase<string, Catalog> {
 	}
 }

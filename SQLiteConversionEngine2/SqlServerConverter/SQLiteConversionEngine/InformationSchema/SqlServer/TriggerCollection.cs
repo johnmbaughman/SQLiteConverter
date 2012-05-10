@@ -26,10 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 	/// <summary>
 	/// Description of TriggerCollection.
 	/// </summary>
-	public class TriggerCollection : InformationSchema.InformationSchemaCollectionBase<Trigger> {
-
-		public override Trigger Find(string name) {
-			return this.Find(t => t.Name == name);
-		}
+	public class TriggerCollection : InformationSchema.InformationSchemaCollectionBase<string, Trigger> {
 	}
 }

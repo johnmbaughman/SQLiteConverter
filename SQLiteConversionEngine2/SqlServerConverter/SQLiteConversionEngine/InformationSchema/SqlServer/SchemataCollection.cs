@@ -23,10 +23,6 @@
 #endregion
 
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class SchemataCollection : InformationSchemaCollectionBase<Schemata> {
-
-		public override Schemata Find(string name) {
-			return this.Find(t => t.SchemaName == name);
-		}
+	public class SchemataCollection : InformationSchemaCollectionBase<string, Schemata> {
 	}
 }

@@ -37,6 +37,7 @@ namespace SqlServerConverter {
 			ToSQLiteConversion toSQLiteConversion = new ToSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
 			//toSQLiteConversion.TablesToLoad.AddRange(TablesToLoad.ToArray());
 			//toSQLiteConversion.SchemasToLoad.AddRange(SchemasToLoad.ToArray());
+			toSQLiteConversion.SchemasToLoad.Add("dbo");
 			toSQLiteConversion.ConvertToDatabase(null, null, null, false);
 			return true;
 		}

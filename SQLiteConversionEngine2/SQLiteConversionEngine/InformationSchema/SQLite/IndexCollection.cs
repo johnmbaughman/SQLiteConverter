@@ -26,10 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of IndexCollection.
 	/// </summary>
-	public class IndexCollection : InformationSchema.InformationSchemaCollectionBase<Index> {
-
-		public override Index Find(string name) {
-			return this.Find(t => t.IndexName == name);
-		}
+	public class IndexCollection : InformationSchema.InformationSchemaCollectionBase<string, Index> {
 	}
 }

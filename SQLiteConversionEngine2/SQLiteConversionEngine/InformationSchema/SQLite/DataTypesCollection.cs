@@ -26,10 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of DataTypesCollection.
 	/// </summary>
-	public class DataTypesCollection : InformationSchema.InformationSchemaCollectionBase<DataTypes> {
-
-		public override DataTypes Find(string name) {
-			return this.Find(t => t.TypeName == name);
-		}
+	public class DataTypesCollection : InformationSchema.InformationSchemaCollectionBase<string, DataTypes> {
 	}
 }

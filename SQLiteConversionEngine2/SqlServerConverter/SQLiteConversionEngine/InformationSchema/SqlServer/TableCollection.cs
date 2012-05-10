@@ -23,10 +23,6 @@
 #endregion
 
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class TableCollection : InformationSchemaCollectionBase<Table> {
-
-		public override Table Find(string name) {
-			return this.Find(t => t.TableName == name);
-		}
+	public class TableCollection : InformationSchemaCollectionBase<string, Table> {
 	}
 }

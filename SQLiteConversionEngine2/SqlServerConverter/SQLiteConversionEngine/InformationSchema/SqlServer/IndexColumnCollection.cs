@@ -26,14 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 	/// <summary>
 	/// Description of IndexColumnCollection.
 	/// </summary>
-	public class IndexColumnCollection : InformationSchema.InformationSchemaCollectionBase<IndexColumn> {
-
-		public override IndexColumn Find(string name) {
-			return this.Find(t => t.IndexColumnId.ToString() == name);
-		}
-
-		public IndexColumn Find(int id) {
-			return this.Find(t => t.IndexColumnId == id);
-		}
+	public class IndexColumnCollection : InformationSchema.InformationSchemaCollectionBase<string, IndexColumn> {
 	}
 }

@@ -26,27 +26,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace SQLiteConversionEngine.InformationSchema {
-	public abstract class InformationSchemaCollectionBase<T> : List<T>, IEnumerable<T> {
-		private List<T> data = new List<T>();
+	public abstract class InformationSchemaCollectionBase<K, T> : Dictionary<K, T> {
 
-		public void Add(T item) {
-			data.Add(item);
+		public new void Add(K key, T item) {
+			base.Add(key, item);
 		}
-
-		public IEnumerator<T> GetEnumerator() {
-			foreach (T t in data) {
-				yield return t;
-			}
-		}
-
-		IEnumerator IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
-
-		public T this[int index] {
-			get { return data[index]; }
-		}
-
-		public abstract T Find(string name);
 	}
 }

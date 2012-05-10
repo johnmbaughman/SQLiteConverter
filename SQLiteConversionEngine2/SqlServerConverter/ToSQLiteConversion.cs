@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -36,6 +37,10 @@ using SQLiteConversionEngine.Utility;
 namespace SqlServerConverter {
 	internal class ToSQLiteConversion : ToSQLiteConversionBase<Database> {
 		private SqlConnection sqlConnection = null;
+		private string currentSchemaName = string.Empty;
+		private string currentViewName = string.Empty;
+		private string currentTableName = string.Empty;
+		private List<string> defaultIgnores = new List<string> { "sysdiagrams" };
 
 		public ToSQLiteConversion(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
 
@@ -60,11 +65,49 @@ namespace SqlServerConverter {
 		}
 
 		protected override void LoadColumns() {
-			throw new NotImplementedException();
+			DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.Columns, new string[] { null, currentSchemaName, currentTableName, null });
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Columns.Add(row["COLUMN_NAME"].ToString(), new Column {
+					//TABLE_CATALOG
+					//TABLE_SCHEMA
+					//TABLE_NAME
+					//COLUMN_NAME
+					//ORDINAL_POSITION
+					//COLUMN_DEFAULT
+					//IS_NULLABLE
+					//DATA_TYPE
+					//CHARACTER_MAXIMUM_LENGTH
+					//CHARACTER_OCTET_LENGTH
+					//NUMERIC_PRECISION
+					//NUMERIC_PRECISION_RADIX
+					//NUMERIC_SCALE
+					//DATETIME_PRECISION
+					//CHARACTER_SET_CATALOG
+					//CHARACTER_SET_SCHEMA
+					//CHARACTER_SET_NAME
+					//COLLATION_CATALOG
+					//IS_SPARSE
+					//IS_COLUMN_SET
+					//IS_FILESTREAM
+				});
+			}
 		}
 
 		protected override void LoadForeignKeys() {
-			throw new NotImplementedException();
+			DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.ForeignKeys, new string[] { null, currentSchemaName, currentTableName, null });
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].ForeignKeys.Add(row["CONSTRAINT_NAME"].ToString(), new ForeignKey {
+					//CONSTRAINT_CATALOG
+					//CONSTRAINT_SCHEMA
+					//CONSTRAINT_NAME
+					//TABLE_CATALOG
+					//TABLE_SCHEMA
+					//TABLE_NAME
+					//CONSTRAINT_TYPE
+					//IS_DEFERRABLE
+					//INITIALLY_DEFERRED
+				});
+			}
 		}
 
 		protected override void LoadIndexColumns() {
@@ -72,31 +115,71 @@ namespace SqlServerConverter {
 		}
 
 		protected override void LoadIndexes() {
-			throw new NotImplementedException();
+			DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.Indexes, new string[] { null, currentSchemaName, currentTableName });
+			string columns = string.Empty;
+			foreach (DataColumn col in dataTable.Columns) {
+				columns += col.ColumnName + "|";
+			}
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Indexes.Add(row["index_name"].ToString(), new Index {
+					//constraint_catalog
+					//constraint_schema
+					//constraint_name
+					//table_catalog
+					//table_schema
+					//table_name
+					//index_name
+					//type_desc
+				});
+			}
 		}
 
 		protected override void LoadSchema() {
-			//DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.Databases);
-			//foreach (DataRow row in dataTable.Rows) {
-			//    SourceSchema.Schemas.Add(new Schemata {
-			//        CatalogName = row["CATALOG_NAME"] == DBNull.Value ? null : row["CATALOG_NAME"].ToString(),
-			//        SchemaName = row["SCHEMA_NAME"] == DBNull.Value ? null : row["SCHEMA_NAME"].ToString(),
-			//        SchemaOwner = row["SCHEMA_OWNER"] == DBNull.Value ? null : row["SCHEMA_OWNER"].ToString(),
-			//        DefaultCharacterSetCatalog = row["DEFAULT_CHARACTER_SET_CATALOG"] == DBNull.Value ? null : row["DEFAULT_CHARACTER_SET_CATALOG"].ToString(),
-			//        DefaultCharacterSetSchema = row["DEFAULT_CHARACTER_SET_SCHEMA]"] == DBNull.Value ? null : row["DEFAULT_CHARACTER_SET_SCHEMA"].ToString(),
-			//        DefaultCharacterSetName = row["DEFAULT_CHARACTER_SET_NAME"] == DBNull.Value ? null : row["DEFAULT_CHARACTER_SET_NAME"].ToString(),
-			//    });
-			//}
+			string sql = "SELECT [CATALOG_NAME] ,[SCHEMA_NAME] ,[SCHEMA_OWNER] ,[DEFAULT_CHARACTER_SET_CATALOG] ,[DEFAULT_CHARACTER_SET_SCHEMA] ,[DEFAULT_CHARACTER_SET_NAME] FROM [INFORMATION_SCHEMA].[SCHEMATA]{0}";
+			string where = string.Format(" {0}{1}", SchemasToLoad.Count > 0 ? "where" : string.Empty, Utilities.ConvertListToInClause(SchemasToLoad, "SCHEMA_NAME"));
 
-			//foreach (Catalog catalog in SourceSchema.CatalogCollection) {
-			//    currentCatalogName = catalog.CatalogName;
-			//    LoadTables();
-			//    LoadViews();
-			//}
+			SqlCommand sqlCommand = new SqlCommand(string.Format(sql, where), sqlConnection);
+			using (SqlDataReader reader = sqlCommand.ExecuteReader()) {
+				while (reader.Read()) {
+					SourceSchema.Schemas.Add(reader["SCHEMA_NAME"].ToString(), new Schemata {
+						CatalogName = reader["CATALOG_NAME"] == DBNull.Value ? null : reader["CATALOG_NAME"].ToString(),
+						SchemaName = reader["SCHEMA_NAME"] == DBNull.Value ? null : reader["SCHEMA_NAME"].ToString(),
+						SchemaOwner = reader["SCHEMA_OWNER"] == DBNull.Value ? null : reader["SCHEMA_OWNER"].ToString(),
+						DefaultCharacterSetCatalog = reader["DEFAULT_CHARACTER_SET_CATALOG"] == DBNull.Value ? null : reader["DEFAULT_CHARACTER_SET_CATALOG"].ToString(),
+						DefaultCharacterSetSchema = reader["DEFAULT_CHARACTER_SET_SCHEMA"] == DBNull.Value ? null : reader["DEFAULT_CHARACTER_SET_SCHEMA"].ToString(),
+						DefaultCharacterSetName = reader["DEFAULT_CHARACTER_SET_NAME"] == DBNull.Value ? null : reader["DEFAULT_CHARACTER_SET_NAME"].ToString(),
+					});
+				}
+			}
+
+			foreach (Schemata catalog in SourceSchema.Schemas.Values) {
+				currentSchemaName = catalog.SchemaName;
+				LoadTables();
+				//    LoadViews();
+			}
 		}
 
 		protected override void LoadTables() {
-			throw new NotImplementedException();
+			DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.Tables, new string[] { null, currentSchemaName, null, "BASE TABLE" });
+			foreach (DataRow row in dataTable.Rows) {
+				if (!defaultIgnores.Contains(row["TABLE_NAME"].ToString())) {
+					Schemata schema = SourceSchema.Schemas[currentSchemaName];
+					schema.Tables.Add(row["TABLE_NAME"].ToString(), new Table() {
+						TableCatalog = row["TABLE_CATALOG"] == DBNull.Value ? null : row["TABLE_CATALOG"].ToString(),
+						TableName = row["TABLE_NAME"] == DBNull.Value ? null : row["TABLE_NAME"].ToString(),
+						TableSchema = row["TABLE_SCHEMA"] == DBNull.Value ? null : row["TABLE_SCHEMA"].ToString(),
+						TableType = row["TABLE_TYPE"] == DBNull.Value ? null : row["TABLE_TYPE"].ToString()
+					});
+				}
+			}
+
+			foreach (Table table in SourceSchema.Schemas[currentSchemaName].Tables.Values) {
+				currentTableName = table.TableName;
+				LoadColumns();
+				LoadForeignKeys();
+				LoadIndexes();
+				//LoadTriggers();
+			}
 		}
 
 		protected override void LoadTriggers() {
@@ -108,7 +191,23 @@ namespace SqlServerConverter {
 		}
 
 		protected override void LoadViews() {
-			throw new NotImplementedException();
+			DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.Views, new string[] { null, currentSchemaName, currentTableName });
+			string columns = string.Empty;
+			foreach (DataColumn col in dataTable.Columns) {
+				columns += col.ColumnName + "|";
+			}
+			foreach (DataRow row in dataTable.Rows) {
+				SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Indexes.Add(row["index_name"].ToString(), new Index {
+					//constraint_catalog
+					//constraint_schema
+					//constraint_name
+					//table_catalog
+					//table_schema
+					//table_name
+					//index_name
+					//type_desc
+				});
+			}
 		}
 		///// <summary>
 		///// Converts to database.
