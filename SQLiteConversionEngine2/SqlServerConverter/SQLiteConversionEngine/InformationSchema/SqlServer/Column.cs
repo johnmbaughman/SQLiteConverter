@@ -53,7 +53,7 @@ namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 
 		public int? NumericScale { get; internal set; }
 
-		public int? DateTimePrecision { get; internal set; }
+		public long? DateTimePrecision { get; internal set; }
 
 		public string CharacterSetCatalog { get; internal set; }
 

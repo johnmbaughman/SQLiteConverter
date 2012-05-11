@@ -27,10 +27,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
-using Massive;
 using SQLiteConversionEngine.Conversion;
-using SQLiteConversionEngine.InformationSchema;
 using SQLiteConversionEngine.InformationSchema.SqlServer;
 using SQLiteConversionEngine.Utility;
 
@@ -86,7 +83,7 @@ namespace SqlServerConverter {
 						NumericPrecision = row["NUMERIC_PRECISION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["NUMERIC_PRECISION"]),
 						NumericPrecisionRadix = row["NUMERIC_PRECISION_RADIX"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["NUMERIC_PRECISION_RADIX"]),
 						NumericScale = row["NUMERIC_SCALE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["NUMERIC_SCALE"]),
-						DateTimePrecision = row["DATETIME_PRECISION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(row["DATETIME_PRECISION"]),
+						DateTimePrecision = row["DATETIME_PRECISION"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt32(row["DATETIME_PRECISION"]),
 						CharacterSetCatalog = row["CHARACTER_SET_CATALOG"] == DBNull.Value ? null : row["CHARACTER_SET_CATALOG"].ToString(),
 						CharacterSetSchema = row["CHARACTER_SET_SCHEMA"] == DBNull.Value ? null : row["CHARACTER_SET_SCHEMA"].ToString(),
 						CharacterSetName = row["CHARACTER_SET_NAME"] == DBNull.Value ? null : row["CHARACTER_SET_NAME"].ToString(),

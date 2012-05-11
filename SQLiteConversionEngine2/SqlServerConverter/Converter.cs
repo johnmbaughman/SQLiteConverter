@@ -22,9 +22,7 @@
 
 #endregion
 
-using System.Collections.Generic;
 using SQLiteConversionEngine.Conversion;
-using SQLiteConversionEngine.InformationSchema;
 using SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SqlServerConverter {

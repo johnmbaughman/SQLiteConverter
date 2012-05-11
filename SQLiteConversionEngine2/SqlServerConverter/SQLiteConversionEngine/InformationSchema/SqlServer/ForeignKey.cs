@@ -22,8 +22,6 @@
 
 #endregion
 
-using System;
-
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 	public class ForeignKey : InformationSchemaItemBase {
 

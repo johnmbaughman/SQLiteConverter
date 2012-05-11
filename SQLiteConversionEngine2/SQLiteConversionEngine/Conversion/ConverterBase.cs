@@ -25,7 +25,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SQLite;
-using SQLiteConversionEngine.InformationSchema;
 using SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.Conversion {

@@ -26,7 +26,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 using System.Text.RegularExpressions;
-using SQLiteConversionEngine.InformationSchema;
 
 namespace SQLiteConversionEngine.Conversion {
 	public abstract class ConversionBase<T> where T : new() {

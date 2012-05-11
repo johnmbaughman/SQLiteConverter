@@ -22,9 +22,7 @@
 
 #endregion
 
-using System;
 using System.Configuration;
-using SQLiteConversionEngine.InformationSchema;
 
 namespace SQLiteConversionEngine.Conversion {
 	public abstract class ToSQLiteConversionBase<T> : ConversionBase<T> where T : new() {

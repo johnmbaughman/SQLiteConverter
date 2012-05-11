@@ -26,11 +26,11 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	public class Database : InformationSchemaBase {
 
 		public Database() {
-			CatalogCollection = new CatalogCollection();
+			Catalogs = new CatalogCollection();
 		}
 
 		public string FileName { get; set; }
 
-		public CatalogCollection CatalogCollection { get; set; }
+		public CatalogCollection Catalogs { get; set; }
 	}
 }
