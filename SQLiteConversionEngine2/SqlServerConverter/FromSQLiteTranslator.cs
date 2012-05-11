@@ -22,29 +22,18 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class IndexColumn : InformationSchemaItemBase {
+using System;
+using SQLiteConversionEngine.InformationSchema;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
-		public IndexColumn() { }
+namespace SqlServerConverter {
+	internal class FromSQLiteTranslator : InformationSchemaTranslator<SQLite.Database, SqlServer.Database> {
 
-		public string ConstraintCatalog { get; internal set; }
+		public FromSQLiteTranslator(SQLite.Database sqliteDatabase) : base(sqliteDatabase) { }
 
-		public string ConstraintSchema { get; internal set; }
-
-		public string ConstraintName { get; internal set; }
-
-		public string TableCatalog { get; internal set; }
-
-		public string TableSchema { get; internal set; }
-
-		public string TableName { get; internal set; }
-
-		public string ColumnName { get; internal set; }
-
-		public int? OrdinalPosition { get; internal set; }
-
-		public int? KeyType { get; internal set; }
-
-		public string IndexName { get; internal set; }
+		public override SqlServer.Database Translate() {
+			throw new NotImplementedException();
+		}
 	}
 }

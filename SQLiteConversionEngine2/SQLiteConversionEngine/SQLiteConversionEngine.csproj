@@ -121,6 +121,7 @@
     <Compile Include="InformationSchema\InformationSchemaBase.cs" />
     <Compile Include="InformationSchema\InformationSchemaCollectionBase.cs" />
     <Compile Include="InformationSchema\InformationSchemaItemBase.cs" />
+    <Compile Include="InformationSchema\InformationSchemaTranslator.cs" />
     <Compile Include="InformationSchema\SQLite\Database.cs" />
     <Compile Include="InformationSchema\SQLite\Pragma.cs" />
     <Compile Include="InformationSchema\SQLite\Catalog.cs" />

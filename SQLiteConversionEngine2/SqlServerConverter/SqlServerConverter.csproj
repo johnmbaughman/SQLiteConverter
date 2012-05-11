@@ -114,8 +114,6 @@
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Database.cs" />
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ForeignKey.cs" />
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ForeignKeyCollection.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ForeignKeyColumn.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ForeignKeyColumnCollection.cs" />
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Index.cs" />
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\IndexCollection.cs" />
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\IndexColumn.cs" />
@@ -131,6 +129,8 @@
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewColumn.cs" />
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewColumnCollection.cs" />
     <Compile Include="ToSQLiteConversion.cs" />
+    <Compile Include="ToSQLiteTranslator.cs" />
+    <Compile Include="FromSQLiteTranslator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SQLiteConversionEngine\SQLiteConversionEngine.csproj">

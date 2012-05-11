@@ -35,11 +35,11 @@ namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 
 		public string ColumnName { get; internal set; }
 
-		public int OrdinalPosition { get; internal set; }
+		public int? OrdinalPosition { get; internal set; }
 
 		public string ColumnDefault { get; internal set; }
 
-		public bool IsNullable { get; internal set; }
+		public bool? IsNullable { get; internal set; }
 
 		public string DataType { get; internal set; }
 
@@ -61,10 +61,12 @@ namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 
 		public string CharacterSetName { get; internal set; }
 
-		public bool IsParse { get; internal set; }
+		public string CollationCatalog { get; internal set; }
 
-		public bool IsColumnSet { get; internal set; }
+		public bool? IsSparse { get; internal set; }
 
-		public bool IsFileStream { get; internal set; }
+		public bool? IsColumnSet { get; internal set; }
+
+		public bool? IsFileStream { get; internal set; }
 	}
 }

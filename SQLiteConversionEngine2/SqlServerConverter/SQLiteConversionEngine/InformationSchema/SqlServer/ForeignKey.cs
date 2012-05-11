@@ -27,54 +27,24 @@ using System;
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 	public class ForeignKey : InformationSchemaItemBase {
 
-		public ForeignKey() {
-			ForeignKeyColumns = new ForeignKeyColumnCollection();
-		}
+		public ForeignKey() { }
 
-		public ForeignKeyColumnCollection ForeignKeyColumns { get; internal set; }
+		public string ConstraintCatalog { get; internal set; }
 
-		public string Name { get; internal set; }
+		public string ConstraintSchema { get; internal set; }
 
-		public int? ObjectId { get; internal set; }
+		public string ConstraintName { get; internal set; }
 
-		public int? PrincipalId { get; internal set; }
+		public string TableCatalog { get; internal set; }
 
-		public int? SchemaId { get; internal set; }
+		public string TableSchema { get; internal set; }
 
-		public int? ParentObjectId { get; internal set; }
+		public string TableName { get; internal set; }
 
-		public string Type { get; internal set; }
+		public string ConstraintType { get; internal set; }
 
-		public string TypeDescription { get; internal set; }
+		public bool? IsDeferrable { get; internal set; }
 
-		public DateTime? CreateDate { get; internal set; }
-
-		public DateTime? ModifyDate { get; internal set; }
-
-		public bool? IsMsShipped { get; internal set; }
-
-		public bool? IsPublished { get; internal set; }
-
-		public bool? IsSchemaPublished { get; internal set; }
-
-		public int? ReferencedObjectId { get; internal set; }
-
-		public int? KeyIndexId { get; internal set; }
-
-		public bool? IsDisabled { get; internal set; }
-
-		public bool? IsNotForReplication { get; internal set; }
-
-		public bool? IsNotTrusted { get; internal set; }
-
-		public int? DeleteReferentialAction { get; internal set; }
-
-		public string DeleteReferentialActionDescription { get; internal set; }
-
-		public int? UpdateReferentialAction { get; internal set; }
-
-		public string UpdateReferentialActionDescription { get; internal set; }
-
-		public bool? IsSystemNamed { get; internal set; }
+		public bool? InitiallyDeferred { get; internal set; }
 	}
 }

@@ -22,10 +22,17 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	/// <summary>
-	/// Description of IndexColumnCollection.
-	/// </summary>
-	public class ForeignKeyColumnCollection : InformationSchema.InformationSchemaCollectionBase<string, ForeignKeyColumn> {
+namespace SQLiteConversionEngine.InformationSchema {
+	public abstract class InformationSchemaTranslator<I, O> {
+
+		private InformationSchemaTranslator() { }
+
+		public InformationSchemaTranslator(I databaseToTranslate) {
+			DatabaseToTranslate = databaseToTranslate;
+		}
+
+		protected I DatabaseToTranslate { get; private set; }
+
+		public abstract O Translate();
 	}
 }

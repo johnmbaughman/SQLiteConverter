@@ -22,21 +22,18 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class ForeignKeyColumn : InformationSchemaItemBase {
+using System;
+using SQLiteConversionEngine.InformationSchema;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
-		public ForeignKeyColumn() { }
+namespace SqlServerConverter {
+	internal class ToSQLiteTranslator : InformationSchemaTranslator<SqlServer.Database, SQLite.Database> {
 
-		public int? ConstraintObjectId { get; internal set; }
+		public ToSQLiteTranslator(SqlServer.Database sqlServerDatabase) : base(sqlServerDatabase) { }
 
-		public int? ConstraintColumnId { get; internal set; }
-
-		public int? ParentObjectId { get; internal set; }
-
-		public int? ParentColumnId { get; internal set; }
-
-		public int? ReferencedObjectId { get; internal set; }
-
-		public int? ReferencedColumnId { get; internal set; }
+		public override SQLite.Database Translate() {
+			throw new NotImplementedException();
+		}
 	}
 }
