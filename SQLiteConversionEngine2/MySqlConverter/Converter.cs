@@ -29,8 +29,8 @@ namespace MySqlConverter
 {
     public class Converter : ConverterBase
     {
-        public Converter(string sqliteFileWithPath, string MySqlConnectionString, PragmaCollection pragmaParameters)
-            : base(sqliteFileWithPath, MySqlConnectionString, pragmaParameters) { }
+        public Converter(string sqliteFileWithPath, string mySqlConnectionString, PragmaCollection pragmaParameters)
+            : base(sqliteFileWithPath, mySqlConnectionString, pragmaParameters) { }
 
         public override bool ConvertToSQLite()
         {
