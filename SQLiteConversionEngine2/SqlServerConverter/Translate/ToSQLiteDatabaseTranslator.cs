@@ -27,54 +27,29 @@ using SQLiteConversionEngine.InformationSchema;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
-namespace SqlServerConverter {
-	internal class ToSQLiteTranslator : InformationSchemaTranslator<SqlServer.Database, SQLite.Database> {
+namespace SqlServerConverter.Translate {
+	internal class ToSQLiteDatabaseTranslator : InformationSchemaTranslator<SqlServer.Database, SQLite.Database> {
 		private SQLite.Database currentDatabase = null;
 		private SQLite.Catalog currentCatalog = null;
 		private SQLite.Index currentIndex = null;
 		private SQLite.Table currentTable = null;
 		private SQLite.View currentView = null;
 
-		public ToSQLiteTranslator(SqlServer.Database sqlServerDatabase) : base(sqlServerDatabase) { }
+		public ToSQLiteDatabaseTranslator(SqlServer.Database sqlServerDatabase, SQLite.Database sqliteDatabase) : base(sqlServerDatabase, sqliteDatabase) { }
 
 		public override SQLite.Database Translate() {
-			throw new NotImplementedException();
+			foreach (SqlServer.Schemata schema in ItemToTranslate.Schemas.Values) {
+				TranslatedItem.Catalogs.Add(schema.CatalogName, new SQLite.Catalog {
+					CatalogName = schema.CatalogName
+				});
+
+				foreach (SqlServer.Table table in ItemToTranslate.Schemas[schema.SchemaName].Tables.Values) {
+					SQLite.Table newTable = new SQLite.Table();
+					ToSQLiteTableTranslator newTableTranslator = new ToSQLiteTableTranslator(table, newTable);
+				}
+			}
+
+			return currentDatabase;
 		}
-
-		//protected override void TranslateCatalog() {
-		//    throw new NotImplementedException();
-		//}
-
-		//protected override void TranslateColumns() {
-		//    throw new NotImplementedException();
-		//}
-
-		//protected override void TranslateForeignKeys() {
-		//    throw new NotImplementedException();
-		//}
-
-		//protected override void TranslateIndexColumns() {
-		//    throw new NotImplementedException();
-		//}
-
-		//protected override void TranslateIndexes() {
-		//    throw new NotImplementedException();
-		//}
-
-		//protected override void TranslateTables() {
-		//    throw new NotImplementedException();
-		//}
-
-		//protected override void TranslateTriggers() {
-		//    throw new NotImplementedException();
-		//}
-
-		//protected override void TranslateViewColumns() {
-		//    throw new NotImplementedException();
-		//}
-
-		//protected override void TranslateViews() {
-		//    throw new NotImplementedException();
-		//}
 	}
 }

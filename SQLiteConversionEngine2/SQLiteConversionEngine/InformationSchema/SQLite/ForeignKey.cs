@@ -30,40 +30,40 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 
 		public ForeignKey() { }
 
-		public string ConstraintCatalog { get; internal set; }
+		public string ConstraintCatalog { get; set; }
 
-		public string ConstraintSchema { get; internal set; }
+		public string ConstraintSchema { get; set; }
 
-		public string ConstraintName { get; internal set; }
+		public string ConstraintName { get; set; }
 
-		public string TableCatalog { get; internal set; }
+		public string TableCatalog { get; set; }
 
-		public string TableSchema { get; internal set; }
+		public string TableSchema { get; set; }
 
-		public string TableName { get; internal set; }
+		public string TableName { get; set; }
 
-		public string ConstraintType { get; internal set; }
+		public string ConstraintType { get; set; }
 
-		public bool? IsDeferrable { get; internal set; }
+		public bool? IsDeferrable { get; set; }
 
-		public bool? InitiallyDeferred { get; internal set; }
+		public bool? InitiallyDeferred { get; set; }
 
-		public string FKeyFromColumn { get; internal set; }
+		public string FKeyFromColumn { get; set; }
 
-		public int? FKeyFromOrdinalPosition { get; internal set; }
+		public int? FKeyFromOrdinalPosition { get; set; }
 
-		public string FKeyToCatalog { get; internal set; }
+		public string FKeyToCatalog { get; set; }
 
-		public string FKeyToSchema { get; internal set; }
+		public string FKeyToSchema { get; set; }
 
-		public string FKeyToTable { get; internal set; }
+		public string FKeyToTable { get; set; }
 
-		public string FKeyToColumn { get; internal set; }
+		public string FKeyToColumn { get; set; }
 
-		public string FKeyOnUpdate { get; internal set; }
+		public string FKeyOnUpdate { get; set; }
 
-		public string FKeyOnDelete { get; internal set; }
+		public string FKeyOnDelete { get; set; }
 
-		public string FKeyMatch { get; internal set; }
+		public string FKeyMatch { get; set; }
 	}
 }

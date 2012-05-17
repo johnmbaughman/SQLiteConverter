@@ -34,58 +34,58 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 			IndexColumns = new IndexColumnCollection();
 		}
 
-		public string TableCatalog { get; internal set; }
+		public string TableCatalog { get; set; }
 
-		public string TableSchema { get; internal set; }
+		public string TableSchema { get; set; }
 
-		public string TableName { get; internal set; }
+		public string TableName { get; set; }
 
-		public string IndexCatalog { get; internal set; }
+		public string IndexCatalog { get; set; }
 
-		public string IndexSchema { get; internal set; }
+		public string IndexSchema { get; set; }
 
-		public string IndexName { get; internal set; }
+		public string IndexName { get; set; }
 
-		public bool? PrimaryKey { get; internal set; }
+		public bool? PrimaryKey { get; set; }
 
-		public bool? Unique { get; internal set; }
+		public bool? Unique { get; set; }
 
-		public bool? Clustered { get; internal set; }
+		public bool? Clustered { get; set; }
 
-		public int? Type { get; internal set; }
+		public int? Type { get; set; }
 
-		public int? FillFactor { get; internal set; }
+		public int? FillFactor { get; set; }
 
-		public int? InitialSize { get; internal set; }
+		public int? InitialSize { get; set; }
 
-		public int? Nulls { get; internal set; }
+		public int? Nulls { get; set; }
 
-		public bool? SortBookmarks { get; internal set; }
+		public bool? SortBookmarks { get; set; }
 
-		public bool? AutoUpdate { get; internal set; }
+		public bool? AutoUpdate { get; set; }
 
-		public int? NullCollation { get; internal set; }
+		public int? NullCollation { get; set; }
 
-		public int? OrdinalPosition { get; internal set; }
+		public int? OrdinalPosition { get; set; }
 
-		public string ColumnName { get; internal set; }
+		public string ColumnName { get; set; }
 
-		public Guid? ColumnGUID { get; internal set; }
+		public Guid? ColumnGUID { get; set; }
 
-		public long? ColumnPropId { get; internal set; }
+		public long? ColumnPropId { get; set; }
 
-		public short? Collation { get; internal set; }
+		public short? Collation { get; set; }
 
-		public decimal? Cardinality { get; internal set; }
+		public decimal? Cardinality { get; set; }
 
-		public int? Pages { get; internal set; }
+		public int? Pages { get; set; }
 
-		public string FilterCondition { get; internal set; }
+		public string FilterCondition { get; set; }
 
-		public bool? Integrated { get; internal set; }
+		public bool? Integrated { get; set; }
 
-		public string IndexDefinition { get; internal set; }
+		public string IndexDefinition { get; set; }
 
-		public IndexColumnCollection IndexColumns { get; internal set; }
+		public IndexColumnCollection IndexColumns { get; set; }
 	}
 }

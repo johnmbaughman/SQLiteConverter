@@ -32,66 +32,66 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 
 		public Column() { }
 
-		public string TableCatalog { get; internal set; }
+		public string TableCatalog { get; set; }
 
-		public string TableSchema { get; internal set; }
+		public string TableSchema { get; set; }
 
-		public string TableName { get; internal set; }
+		public string TableName { get; set; }
 
-		public string ColumnName { get; internal set; }
+		public string ColumnName { get; set; }
 
-		public Guid? ColumnGuid { get; internal set; }
+		public Guid? ColumnGuid { get; set; }
 
-		public long? ColumnPropId { get; internal set; }
+		public long? ColumnPropId { get; set; }
 
-		public int? OrdinalPosition { get; internal set; }
+		public int? OrdinalPosition { get; set; }
 
-		public bool? ColumnHasDefault { get; internal set; }
+		public bool? ColumnHasDefault { get; set; }
 
-		public string ColumnDefault { get; internal set; }
+		public string ColumnDefault { get; set; }
 
-		public long? ColumnFlags { get; internal set; }
+		public long? ColumnFlags { get; set; }
 
-		public bool? IsNullable { get; internal set; }
+		public bool? IsNullable { get; set; }
 
-		public string DataType { get; internal set; }
+		public string DataType { get; set; }
 
-		public Guid? TypeGuid { get; internal set; }
+		public Guid? TypeGuid { get; set; }
 
-		public int? CharacterMaximumLength { get; internal set; }
+		public int? CharacterMaximumLength { get; set; }
 
-		public int? CharacterOctetLength { get; internal set; }
+		public int? CharacterOctetLength { get; set; }
 
-		public int? NumericPrecision { get; internal set; }
+		public int? NumericPrecision { get; set; }
 
-		public int? NumericScale { get; internal set; }
+		public int? NumericScale { get; set; }
 
-		public long? DateTimePrecision { get; internal set; }
+		public long? DateTimePrecision { get; set; }
 
-		public string CharacterSetCatalog { get; internal set; }
+		public string CharacterSetCatalog { get; set; }
 
-		public string CharacterSetSchema { get; internal set; }
+		public string CharacterSetSchema { get; set; }
 
-		public string CharacterSetName { get; internal set; }
+		public string CharacterSetName { get; set; }
 
-		public string CollationCatalog { get; internal set; }
+		public string CollationCatalog { get; set; }
 
-		public string CollationSchema { get; internal set; }
+		public string CollationSchema { get; set; }
 
-		public string CollationName { get; internal set; }
+		public string CollationName { get; set; }
 
-		public string DomainCatalog { get; internal set; }
+		public string DomainCatalog { get; set; }
 
-		public string DomainName { get; internal set; }
+		public string DomainName { get; set; }
 
-		public string Description { get; internal set; }
+		public string Description { get; set; }
 
-		public bool? PrimaryKey { get; internal set; }
+		public bool? PrimaryKey { get; set; }
 
-		public string EdmType { get; internal set; }
+		public string EdmType { get; set; }
 
-		public bool? AutoIncrement { get; internal set; }
+		public bool? AutoIncrement { get; set; }
 
-		public bool? Unique { get; internal set; }
+		public bool? Unique { get; set; }
 	}
 }

@@ -30,28 +30,28 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 
 		public IndexColumn() { }
 
-		public string ConstraintCatalog { get; internal set; }
+		public string ConstraintCatalog { get; set; }
 
-		public string ConstraintSchema { get; internal set; }
+		public string ConstraintSchema { get; set; }
 
-		public string ConstraintName { get; internal set; }
+		public string ConstraintName { get; set; }
 
-		public string TableCatalog { get; internal set; }
+		public string TableCatalog { get; set; }
 
-		public string TableSchema { get; internal set; }
+		public string TableSchema { get; set; }
 
-		public string TableName { get; internal set; }
+		public string TableName { get; set; }
 
-		public string ColumnName { get; internal set; }
+		public string ColumnName { get; set; }
 
-		public int? OrdinalPosition { get; internal set; }
+		public int? OrdinalPosition { get; set; }
 
-		public string IndexName { get; internal set; }
+		public string IndexName { get; set; }
 
-		public string CollationName { get; internal set; }
+		public string CollationName { get; set; }
 
-		public string SortMode { get; internal set; }
+		public string SortMode { get; set; }
 
-		public int? ConflictOption { get; internal set; }
+		public int? ConflictOption { get; set; }
 	}
 }

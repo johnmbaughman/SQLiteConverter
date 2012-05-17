@@ -30,14 +30,14 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 
 		public Trigger() { }
 
-		public string TableCatalog { get; internal set; }
+		public string TableCatalog { get; set; }
 
-		public string TableSchema { get; internal set; }
+		public string TableSchema { get; set; }
 
-		public string TableName { get; internal set; }
+		public string TableName { get; set; }
 
-		public string Name { get; internal set; }
+		public string Name { get; set; }
 
-		public string Definition { get; internal set; }
+		public string Definition { get; set; }
 	}
 }

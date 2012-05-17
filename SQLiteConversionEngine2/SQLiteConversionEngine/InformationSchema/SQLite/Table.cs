@@ -35,24 +35,24 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 			Triggers = new TriggerCollection();
 		}
 
-		public string CatalogName { get; internal set; }
+		public string CatalogName { get; set; }
 
-		public string Name { get; internal set; }
+		public string Name { get; set; }
 
-		public string Type { get; internal set; }
+		public string Type { get; set; }
 
-		public long? Id { get; internal set; }
+		public long? Id { get; set; }
 
-		public int? RootPage { get; internal set; }
+		public int? RootPage { get; set; }
 
-		public string Definition { get; internal set; }
+		public string Definition { get; set; }
 
-		public ColumnCollection Columns { get; internal set; }
+		public ColumnCollection Columns { get; set; }
 
-		public ForeignKeyCollection ForeignKeys { get; internal set; }
+		public ForeignKeyCollection ForeignKeys { get; set; }
 
-		public IndexCollection Indexes { get; internal set; }
+		public IndexCollection Indexes { get; set; }
 
-		public TriggerCollection Triggers { get; internal set; }
+		public TriggerCollection Triggers { get; set; }
 	}
 }

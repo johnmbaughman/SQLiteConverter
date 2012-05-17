@@ -27,11 +27,14 @@ namespace SQLiteConversionEngine.InformationSchema {
 
 		private InformationSchemaTranslator() { }
 
-		public InformationSchemaTranslator(I databaseToTranslate) {
-			DatabaseToTranslate = databaseToTranslate;
+		public InformationSchemaTranslator(I itemToTranslate, O translatedItem) {
+			ItemToTranslate = itemToTranslate;
+			TranslatedItem = translatedItem;
 		}
 
-		protected I DatabaseToTranslate { get; private set; }
+		protected I ItemToTranslate { get; private set; }
+
+		protected O TranslatedItem { get; private set; }
 
 		public abstract O Translate();
 	}

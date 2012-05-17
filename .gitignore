@@ -6,3 +6,4 @@ obj/
 *.dat
 *.licenseheader
 .DS_Store
+*.user

@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6919B2D4-B056-48C8-B851-D4D738757E40}</ProjectGuid>
+    <ProjectGuid>{3AD1373F-F02F-46DB-89EC-A676FBD23318}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MySqlConverter</RootNamespace>
@@ -106,28 +106,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converter.cs" />
-    <Compile Include="DataAccess\Massive.cs" />
     <Compile Include="FromSQLiteConversion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Column.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ColumnCollection.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Database.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ForeignKey.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ForeignKeyCollection.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Index.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\IndexCollection.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\IndexColumn.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\IndexColumnCollection.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Schemata.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\SchemataCollection.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Table.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\TableCollection.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\Trigger.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\TriggerCollection.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\View.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewCollection.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewColumn.cs" />
-    <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewColumnCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\Column.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\ColumnCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\Database.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\ForeignKey.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\ForeignKeyCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\Index.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\IndexCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\IndexColumn.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\IndexColumnCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\Schemata.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\SchemataCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\Table.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\TableCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\Trigger.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\TriggerCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\View.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\ViewCollection.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\ViewColumn.cs" />
+    <Compile Include="SQLiteConversionEngine\InformationSchema\MySql\ViewColumnCollection.cs" />
     <Compile Include="ToSQLiteConversion.cs" />
     <Compile Include="ToSQLiteTranslator.cs" />
     <Compile Include="FromSQLiteTranslator.cs" />
@@ -143,8 +142,11 @@
       <Link>Service.Core.licenseheader</Link>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataAccess\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

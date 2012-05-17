@@ -33,14 +33,14 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 			Views = new ViewCollection();
 		}
 
-		public string CatalogName { get; internal set; }
+		public string CatalogName { get; set; }
 
-		public string Description { get; internal set; }
+		public string Description { get; set; }
 
-		public long? Id { get; internal set; }
+		public long? Id { get; set; }
 
-		public TableCollection Tables { get; internal set; }
+		public TableCollection Tables { get; set; }
 
-		public ViewCollection Views { get; internal set; }
+		public ViewCollection Views { get; set; }
 	}
 }

@@ -34,24 +34,24 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 			ViewColumns = new ViewColumnCollection();
 		}
 
-		public string TableCatalog { get; internal set; }
+		public string TableCatalog { get; set; }
 
-		public string TableSchema { get; internal set; }
+		public string TableSchema { get; set; }
 
-		public string TableName { get; internal set; }
+		public string TableName { get; set; }
 
-		public string ViewDefinition { get; internal set; }
+		public string ViewDefinition { get; set; }
 
-		public bool? CheckOption { get; internal set; }
+		public bool? CheckOption { get; set; }
 
-		public bool? IsUpdatable { get; internal set; }
+		public bool? IsUpdatable { get; set; }
 
-		public string Description { get; internal set; }
+		public string Description { get; set; }
 
-		public DateTime? DateCreated { get; internal set; }
+		public DateTime? DateCreated { get; set; }
 
-		public DateTime? DateModified { get; internal set; }
+		public DateTime? DateModified { get; set; }
 
-		public ViewColumnCollection ViewColumns { get; internal set; }
+		public ViewColumnCollection ViewColumns { get; set; }
 	}
 }
