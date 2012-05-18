@@ -27,11 +27,11 @@ using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
 namespace SqlServerConverter.Translate {
-	internal class FromSQLiteTranslator : InformationSchemaTranslator<SQLite.Database, SqlServer.Database> {
+	internal class FromSQLiteTranslator : InformationSchemaTranslator<SQLite.Database<SqlServer.Database>, SqlServer.Database> {
 		private SqlServer.Schemata currentSchema = null;
 		private const string defaultSchemaName = "dbo";
 
-		public FromSQLiteTranslator(SQLite.Database sqliteDatabase, SqlServer.Database sqlserverDatabase) : base(sqliteDatabase, sqlserverDatabase) { }
+		public FromSQLiteTranslator(SQLite.Database<SqlServer.Database> sqliteDatabase, SqlServer.Database sqlserverDatabase) : base(sqliteDatabase, sqlserverDatabase) { }
 
 		public override SqlServer.Database Translate() {
 			SqlServer.Database database = new SqlServer.Database();
