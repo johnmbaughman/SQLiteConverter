@@ -23,11 +23,14 @@
 #endregion
 
 using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class Trigger : InformationSchemaItemBase {
+	public class Trigger : InformationSchemaItemBase<Trigger, SQLite.Trigger<Trigger>> {
 
-		public Trigger() { }
+		public Trigger(DataRow itemToLoad) : base(itemToLoad) { }
 
 		public string Name { get; internal set; }
 
@@ -54,5 +57,9 @@ namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 		public bool? IsNotForReplication { get; internal set; }
 
 		public bool? IsInsteadOfTrigger { get; internal set; }
+
+		public override void LoadItem(DataRow itemToLoad) {
+			throw new NotImplementedException();
+		}
 	}
 }

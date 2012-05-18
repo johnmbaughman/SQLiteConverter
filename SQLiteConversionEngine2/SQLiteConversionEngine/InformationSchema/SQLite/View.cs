@@ -23,15 +23,19 @@
 #endregion
 
 using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of View.
 	/// </summary>
-	public class View : InformationSchemaItemBase {
+	public class View<O> : InformationSchemaItemBase<View<O>, O> {
 
-		public View() {
-			ViewColumns = new ViewColumnCollection();
+		public View(DataRow itemToLoad)
+			: base(itemToLoad) {
+			ViewColumns = new ViewColumnCollection<O>();
 		}
 
 		public string TableCatalog { get; set; }
@@ -52,6 +56,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 
 		public DateTime? DateModified { get; set; }
 
-		public ViewColumnCollection ViewColumns { get; set; }
+		public ViewColumnCollection<O> ViewColumns { get; set; }
 	}
 }

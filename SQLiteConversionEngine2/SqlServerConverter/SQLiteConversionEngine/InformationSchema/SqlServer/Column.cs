@@ -22,51 +22,79 @@
 
 #endregion
 
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class Column : InformationSchemaItemBase {
+	public class Column : InformationSchemaItemBase<Column, SQLite.Column<Column>> {
 
-		public Column() { }
+		public Column(DataRow itemToLoad)
+			: base(itemToLoad) {
+			TableCatalog = itemToLoad["TABLE_CATALOG"] == DBNull.Value ? null : itemToLoad["TABLE_CATALOG"].ToString();
+			TableSchema = itemToLoad["TABLE_SCHEMA"] == DBNull.Value ? null : itemToLoad["TABLE_SCHEMA"].ToString();
+			TableName = itemToLoad["TABLE_NAME"] == DBNull.Value ? null : itemToLoad["TABLE_NAME"].ToString();
+			ColumnName = itemToLoad["COLUMN_NAME"] == DBNull.Value ? null : itemToLoad["COLUMN_NAME"].ToString();
+			OrdinalPosition = itemToLoad["ORDINAL_POSITION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["ORDINAL_POSITION"]);
+			ColumnDefault = itemToLoad["COLUMN_DEFAULT"] == DBNull.Value ? null : itemToLoad["COLUMN_DEFAULT"].ToString();
+			IsNullable = itemToLoad["IS_NULLABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_NULLABLE"].ToString());
+			DataType = itemToLoad["DATA_TYPE"] == DBNull.Value ? null : itemToLoad["DATA_TYPE"].ToString();
+			CharacterMaximumLength = itemToLoad["CHARACTER_MAXIMUM_LENGTH"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["CHARACTER_MAXIMUM_LENGTH"]);
+			CharacterOctetLength = itemToLoad["CHARACTER_OCTET_LENGTH"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["CHARACTER_OCTET_LENGTH"]);
+			NumericPrecision = itemToLoad["NUMERIC_PRECISION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["NUMERIC_PRECISION"]);
+			NumericPrecisionRadix = itemToLoad["NUMERIC_PRECISION_RADIX"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["NUMERIC_PRECISION_RADIX"]);
+			NumericScale = itemToLoad["NUMERIC_SCALE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["NUMERIC_SCALE"]);
+			DateTimePrecision = itemToLoad["DATETIME_PRECISION"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt32(itemToLoad["DATETIME_PRECISION"]);
+			CharacterSetCatalog = itemToLoad["CHARACTER_SET_CATALOG"] == DBNull.Value ? null : itemToLoad["CHARACTER_SET_CATALOG"].ToString();
+			CharacterSetSchema = itemToLoad["CHARACTER_SET_SCHEMA"] == DBNull.Value ? null : itemToLoad["CHARACTER_SET_SCHEMA"].ToString();
+			CharacterSetName = itemToLoad["CHARACTER_SET_NAME"] == DBNull.Value ? null : itemToLoad["CHARACTER_SET_NAME"].ToString();
+			CollationCatalog = itemToLoad["COLLATION_CATALOG"] == DBNull.Value ? null : itemToLoad["COLLATION_CATALOG"].ToString();
+			IsSparse = itemToLoad["IS_SPARSE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_SPARSE"].ToString());
+			IsColumnSet = itemToLoad["IS_COLUMN_SET"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_COLUMN_SET"].ToString());
+			IsFileStream = itemToLoad["IS_FILESTREAM"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_FILESTREAM"].ToString());
+		}
 
-		public string TableCatalog { get; internal set; }
+		public string TableCatalog { get; private set; }
 
-		public string TableSchema { get; internal set; }
+		public string TableSchema { get; private set; }
 
-		public string TableName { get; internal set; }
+		public string TableName { get; private set; }
 
-		public string ColumnName { get; internal set; }
+		public string ColumnName { get; private set; }
 
-		public int? OrdinalPosition { get; internal set; }
+		public int? OrdinalPosition { get; private set; }
 
-		public string ColumnDefault { get; internal set; }
+		public string ColumnDefault { get; private set; }
 
-		public bool? IsNullable { get; internal set; }
+		public bool? IsNullable { get; private set; }
 
-		public string DataType { get; internal set; }
+		public string DataType { get; private set; }
 
-		public int? CharacterMaximumLength { get; internal set; }
+		public int? CharacterMaximumLength { get; private set; }
 
-		public int? CharacterOctetLength { get; internal set; }
+		public int? CharacterOctetLength { get; private set; }
 
-		public int? NumericPrecision { get; internal set; }
+		public int? NumericPrecision { get; private set; }
 
-		public int? NumericPrecisionRadix { get; internal set; }
+		public int? NumericPrecisionRadix { get; private set; }
 
-		public int? NumericScale { get; internal set; }
+		public int? NumericScale { get; private set; }
 
-		public long? DateTimePrecision { get; internal set; }
+		public long? DateTimePrecision { get; private set; }
 
-		public string CharacterSetCatalog { get; internal set; }
+		public string CharacterSetCatalog { get; private set; }
 
-		public string CharacterSetSchema { get; internal set; }
+		public string CharacterSetSchema { get; private set; }
 
-		public string CharacterSetName { get; internal set; }
+		public string CharacterSetName { get; private set; }
 
-		public string CollationCatalog { get; internal set; }
+		public string CollationCatalog { get; private set; }
 
-		public bool? IsSparse { get; internal set; }
+		public bool? IsSparse { get; private set; }
 
-		public bool? IsColumnSet { get; internal set; }
+		public bool? IsColumnSet { get; private set; }
 
-		public bool? IsFileStream { get; internal set; }
+		public bool? IsFileStream { get; private set; }
 	}
 }

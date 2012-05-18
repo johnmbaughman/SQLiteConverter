@@ -22,37 +22,43 @@
 
 #endregion
 
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of Table.
 	/// </summary>
-	public class Table : InformationSchemaItemBase {
+	public class Table<O> : InformationSchemaItemBase<Table<O>, O> {
 
-		public Table() {
-			Columns = new ColumnCollection();
-			ForeignKeys = new ForeignKeyCollection();
-			Indexes = new IndexCollection();
-			Triggers = new TriggerCollection();
+		public Table(DataRow itemToLoad)
+			: base(itemToLoad) {
+			Columns = new ColumnCollection<O>();
+			ForeignKeys = new ForeignKeyCollection<O>();
+			Indexes = new IndexCollection<O>();
+			Triggers = new TriggerCollection<O>();
 		}
 
-		public string CatalogName { get; set; }
+		public string CatalogName { get; private set; }
 
-		public string Name { get; set; }
+		public string Name { get; private set; }
 
-		public string Type { get; set; }
+		public string Type { get; private set; }
 
-		public long? Id { get; set; }
+		public long? Id { get; private set; }
 
-		public int? RootPage { get; set; }
+		public int? RootPage { get; private set; }
 
-		public string Definition { get; set; }
+		public string Definition { get; private set; }
 
-		public ColumnCollection Columns { get; set; }
+		public ColumnCollection<O> Columns { get; private set; }
 
-		public ForeignKeyCollection ForeignKeys { get; set; }
+		public ForeignKeyCollection<O> ForeignKeys { get; private set; }
 
-		public IndexCollection Indexes { get; set; }
+		public IndexCollection<O> Indexes { get; private set; }
 
-		public TriggerCollection Triggers { get; set; }
+		public TriggerCollection<O> Triggers { get; private set; }
 	}
 }

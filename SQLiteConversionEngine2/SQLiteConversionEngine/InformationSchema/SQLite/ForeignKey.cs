@@ -22,13 +22,18 @@
 
 #endregion
 
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of ForeignKey.
 	/// </summary>
-	public class ForeignKey : InformationSchemaItemBase {
+	public class ForeignKey<O> : InformationSchemaItemBase<ForeignKey<O>, O> {
 
-		public ForeignKey() { }
+		public ForeignKey(DataRow itemToLoad) : base(itemToLoad) { }
 
 		public string ConstraintCatalog { get; set; }
 

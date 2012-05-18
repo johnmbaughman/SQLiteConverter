@@ -26,6 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of TriggerCollection.
 	/// </summary>
-	public class TriggerCollection : InformationSchema.InformationSchemaCollectionBase<string, Trigger> {
+	public class TriggerCollection<O> : InformationSchema.InformationSchemaCollectionBase<string, Trigger<O>> {
 	}
 }

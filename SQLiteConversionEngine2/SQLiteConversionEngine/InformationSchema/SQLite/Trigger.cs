@@ -22,13 +22,18 @@
 
 #endregion
 
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of Trigger.
 	/// </summary>
-	public class Trigger : InformationSchemaItemBase {
+	public class Trigger<O> : InformationSchemaItemBase<Trigger<O>, O> {
 
-		public Trigger() { }
+		public Trigger(DataRow itemToLoad) : base(itemToLoad) { }
 
 		public string TableCatalog { get; set; }
 

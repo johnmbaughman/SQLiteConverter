@@ -22,13 +22,18 @@
 
 #endregion
 
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of DataType.
 	/// </summary>
-	public class DataTypes : InformationSchemaItemBase {
+	public class DataTypes<O> : InformationSchemaItemBase<DataTypes<O>, O> {
 
-		public DataTypes() { }
+		public DataTypes(DataRow itemToLoad) : base(itemToLoad) { }
 
 		public string TypeName { get; set; }
 

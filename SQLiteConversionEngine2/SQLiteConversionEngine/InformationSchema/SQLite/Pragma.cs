@@ -22,8 +22,14 @@
 
 #endregion
 
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	public class Pragma : InformationSchemaItemBase {
+	public class Pragma<O> : InformationSchemaItemBase<Pragma<O>, O> {
+
+		public Pragma(DataRow itemToLoad) : base(itemToLoad) { }
 
 		public string Name { get; set; }
 

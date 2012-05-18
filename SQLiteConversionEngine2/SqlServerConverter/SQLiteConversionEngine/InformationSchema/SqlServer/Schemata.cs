@@ -22,10 +22,16 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class Schemata : InformationSchemaItemBase {
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
-		public Schemata() {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class Schemata : InformationSchemaItemBase<Schemata, SQLite.Catalog<Schemata>> {
+
+		public Schemata(DataRow itemToLoad)
+			: base(itemToLoad) {
 			Tables = new TableCollection();
 			Views = new ViewCollection();
 		}

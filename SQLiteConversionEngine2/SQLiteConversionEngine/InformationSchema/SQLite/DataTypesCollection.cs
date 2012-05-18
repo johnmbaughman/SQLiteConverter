@@ -26,6 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of DataTypesCollection.
 	/// </summary>
-	public class DataTypesCollection : InformationSchema.InformationSchemaCollectionBase<string, DataTypes> {
+	public class DataTypesCollection<O> : InformationSchema.InformationSchemaCollectionBase<string, DataTypes<O>> {
 	}
 }

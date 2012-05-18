@@ -26,6 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of ForeignKeyCollection.
 	/// </summary>
-	public class ForeignKeyCollection : InformationSchema.InformationSchemaCollectionBase<string, ForeignKey> {
+	public class ForeignKeyCollection<O> : InformationSchema.InformationSchemaCollectionBase<string, ForeignKey<O>> {
 	}
 }

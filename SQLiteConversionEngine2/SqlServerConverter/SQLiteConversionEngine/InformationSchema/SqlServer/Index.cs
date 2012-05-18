@@ -22,11 +22,26 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class Index : InformationSchemaItemBase {
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
-		public Index() {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class Index : InformationSchemaItemBase<Index, SQLite.Index<Index>> {
+
+		public Index(DataRow itemToLoad)
+			: base(itemToLoad) {
 			IndexColumns = new IndexColumnCollection();
+
+			ConstraintCatalog = itemToLoad["constraint_catalog"] == DBNull.Value ? null : itemToLoad["constraint_catalog"].ToString();
+			ConstraintSchema = itemToLoad["constraint_schema"] == DBNull.Value ? null : itemToLoad["constraint_schema"].ToString();
+			ConstraintName = itemToLoad["constraint_name"] == DBNull.Value ? null : itemToLoad["constraint_name"].ToString();
+			TableCatalog = itemToLoad["table_catalog"] == DBNull.Value ? null : itemToLoad["table_catalog"].ToString();
+			TableSchema = itemToLoad["table_schema"] == DBNull.Value ? null : itemToLoad["table_schema"].ToString();
+			TableName = itemToLoad["table_name"] == DBNull.Value ? null : itemToLoad["table_name"].ToString();
+			IndexName = itemToLoad["index_name"] == DBNull.Value ? null : itemToLoad["index_name"].ToString();
+			TypeDescription = itemToLoad["type_desc"] == DBNull.Value ? null : itemToLoad["type_desc"].ToString();
 		}
 
 		public IndexColumnCollection IndexColumns { get; internal set; }

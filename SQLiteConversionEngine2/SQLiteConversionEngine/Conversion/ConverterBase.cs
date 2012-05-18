@@ -28,11 +28,11 @@ using System.Data.SQLite;
 using SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.Conversion {
-	public abstract class ConverterBase {
+	public abstract class ConverterBase<O> {
 		internal const string SQLITE_CONNECTION = "sqlite";
 		internal const string OTHER_CONNECTION = "other";
 
-		public ConverterBase(string sqliteFileWithPath, string otherServerConnectionString, PragmaCollection pragmaParameters) {
+		public ConverterBase(string sqliteFileWithPath, string otherServerConnectionString, PragmaCollection<O> pragmaParameters) {
 			SQLiteConnectionStringSettings = CreateConnectionStringSettings(sqliteFileWithPath, true);
 			OtherConnectionStringSettings = CreateConnectionStringSettings(otherServerConnectionString);
 			TablesToLoad = new List<string>();

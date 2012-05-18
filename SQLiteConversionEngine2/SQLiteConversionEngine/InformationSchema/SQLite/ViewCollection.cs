@@ -26,6 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of ViewCollection.
 	/// </summary>
-	public class ViewCollection : InformationSchema.InformationSchemaCollectionBase<string, View> {
+	public class ViewCollection<O> : InformationSchema.InformationSchemaCollectionBase<string, View<O>> {
 	}
 }

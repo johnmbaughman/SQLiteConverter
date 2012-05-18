@@ -22,13 +22,18 @@
 
 #endregion
 
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of IndexColumns.
 	/// </summary>
-	public class IndexColumn : InformationSchemaItemBase {
+	public class IndexColumn<O> : InformationSchemaItemBase<IndexColumn<O>, O> {
 
-		public IndexColumn() { }
+		public IndexColumn(DataRow itemToLoad) : base(itemToLoad) { }
 
 		public string ConstraintCatalog { get; set; }
 

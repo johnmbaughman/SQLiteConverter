@@ -28,24 +28,24 @@ using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
 namespace SqlServerConverter.Translate {
-	internal class ToSQLiteDatabaseTranslator : InformationSchemaTranslator<SqlServer.Database, SQLite.Database> {
-		private SQLite.Database currentDatabase = null;
-		private SQLite.Catalog currentCatalog = null;
-		private SQLite.Index currentIndex = null;
-		private SQLite.Table currentTable = null;
-		private SQLite.View currentView = null;
+	internal class ToSQLiteDatabaseTranslator : InformationSchemaTranslator<SqlServer.Database, SQLite.Database<SqlServer.Database>> {
+		private SQLite.Database<SqlServer.Database> currentDatabase = null;
+		private SQLite.Catalog<SqlServer.Database> currentCatalog = null;
+		private SQLite.Index<SqlServer.Database> currentIndex = null;
+		private SQLite.Table<SqlServer.Database> currentTable = null;
+		private SQLite.View<SqlServer.Database> currentView = null;
 
-		public ToSQLiteDatabaseTranslator(SqlServer.Database sqlServerDatabase, SQLite.Database sqliteDatabase) : base(sqlServerDatabase, sqliteDatabase) { }
+		public ToSQLiteDatabaseTranslator(SqlServer.Database sqlServerDatabase, SQLite.Database<SqlServer.Database> sqliteDatabase) : base(sqlServerDatabase, sqliteDatabase) { }
 
-		public override SQLite.Database Translate() {
+		public override SQLite.Database<SqlServer.Database> Translate() {
 			foreach (SqlServer.Schemata schema in ItemToTranslate.Schemas.Values) {
-				TranslatedItem.Catalogs.Add(schema.CatalogName, new SQLite.Catalog {
-					CatalogName = schema.CatalogName
-				});
+				//TranslatedItem.Catalogs.Add(schema.CatalogName, new SQLite.Catalog {
+				//    CatalogName = schema.CatalogName
+				//});
 
 				foreach (SqlServer.Table table in ItemToTranslate.Schemas[schema.SchemaName].Tables.Values) {
-					SQLite.Table newTable = new SQLite.Table();
-					ToSQLiteTableTranslator newTableTranslator = new ToSQLiteTableTranslator(table, newTable);
+					//SQLite.Table<SqlServer.Table> newTable = new SQLite.Table();
+					//ToSQLiteTableTranslator newTableTranslator = new ToSQLiteTableTranslator(table, newTable);
 				}
 			}
 

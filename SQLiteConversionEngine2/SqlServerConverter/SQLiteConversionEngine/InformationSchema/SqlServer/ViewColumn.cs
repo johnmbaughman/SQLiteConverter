@@ -22,10 +22,28 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class ViewColumn : InformationSchemaItemBase {
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
-		public ViewColumn() { }
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class ViewColumn : InformationSchemaItemBase<ViewColumn, SQLite.ViewColumn<ViewColumn>> {
+
+		public ViewColumn(DataRow itemToLoad)
+			: base(itemToLoad) {
+			ViewCatalog = itemToLoad["VIEW_CATALOG"] == DBNull.Value ? null : itemToLoad["VIEW_CATALOG"].ToString();
+			ViewSchema = itemToLoad["VIEW_SCHEMA"] == DBNull.Value ? null : itemToLoad["VIEW_SCHEMA"].ToString();
+			ViewName = itemToLoad["VIEW_NAME"] == DBNull.Value ? null : itemToLoad["VIEW_NAME"].ToString();
+			TableCatalog = itemToLoad["TABLE_CATALOG"] == DBNull.Value ? null : itemToLoad["TABLE_CATALOG"].ToString();
+			TableSchema = itemToLoad["TABLE_SCHEMA"] == DBNull.Value ? null : itemToLoad["TABLE_SCHEMA"].ToString();
+			TableName = itemToLoad["TABLE_NAME"] == DBNull.Value ? null : itemToLoad["TABLE_NAME"].ToString();
+			ColumnName = itemToLoad["COLUMN_NAME"] == DBNull.Value ? null : itemToLoad["COLUMN_NAME"].ToString();
+		}
+
+		public ViewColumn(SQLite.ViewColumn<ViewColumn> itemToLoad)
+			: base(itemToLoad) {
+		}
 
 		public string ViewCatalog { get; internal set; }
 

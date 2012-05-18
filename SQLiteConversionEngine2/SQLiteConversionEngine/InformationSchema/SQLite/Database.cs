@@ -23,14 +23,14 @@
 #endregion
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	public class Database : InformationSchemaBase {
+	public class Database<O> : InformationSchemaBase {
 
 		public Database() {
-			Catalogs = new CatalogCollection();
+			Catalogs = new CatalogCollection<O>();
 		}
 
 		public string FileName { get; set; }
 
-		public CatalogCollection Catalogs { get; set; }
+		public CatalogCollection<O> Catalogs { get; set; }
 	}
 }

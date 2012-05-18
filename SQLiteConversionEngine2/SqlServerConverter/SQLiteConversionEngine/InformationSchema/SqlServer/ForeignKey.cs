@@ -22,10 +22,26 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class ForeignKey : InformationSchemaItemBase {
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
-		public ForeignKey() { }
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class ForeignKey : InformationSchemaItemBase<ForeignKey, SQLite.ForeignKey<ForeignKey>> {
+
+		public ForeignKey(DataRow itemToLoad)
+			: base(itemToLoad) {
+			ConstraintCatalog = itemToLoad["CONSTRAINT_CATALOG"] == DBNull.Value ? null : itemToLoad["CONSTRAINT_CATALOG"].ToString();
+			ConstraintSchema = itemToLoad["CONSTRAINT_SCHEMA"] == DBNull.Value ? null : itemToLoad["CONSTRAINT_SCHEMA"].ToString();
+			ConstraintName = itemToLoad["CONSTRAINT_NAME"] == DBNull.Value ? null : itemToLoad["CONSTRAINT_NAME"].ToString();
+			TableCatalog = itemToLoad["TABLE_CATALOG"] == DBNull.Value ? null : itemToLoad["TABLE_CATALOG"].ToString();
+			TableSchema = itemToLoad["TABLE_SCHEMA"] == DBNull.Value ? null : itemToLoad["TABLE_SCHEMA"].ToString();
+			TableName = itemToLoad["TABLE_NAME"] == DBNull.Value ? null : itemToLoad["TABLE_NAME"].ToString();
+			ConstraintType = itemToLoad["CONSTRAINT_TYPE"] == DBNull.Value ? null : itemToLoad["CONSTRAINT_TYPE"].ToString();
+			IsDeferrable = itemToLoad["IS_DEFERRABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_DEFERRABLE"].ToString());
+			InitiallyDeferred = itemToLoad["INITIALLY_DEFERRED"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["INITIALLY_DEFERRED"].ToString());
+		}
 
 		public string ConstraintCatalog { get; internal set; }
 

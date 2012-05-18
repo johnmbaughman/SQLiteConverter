@@ -25,8 +25,8 @@
 using System.Configuration;
 using SQLiteConversionEngine.Conversion;
 
-namespace SqlServerConverter {
-	internal class FromSQLiteConversion : FromSQLiteConversionBase {
+namespace SqlServerConverter.Conversion {
+	internal class FromSQLiteConversion : FromSQLiteConversionBase<SQLiteConversionEngine.InformationSchema.SqlServer.Database> {
 
 		public FromSQLiteConversion(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
 

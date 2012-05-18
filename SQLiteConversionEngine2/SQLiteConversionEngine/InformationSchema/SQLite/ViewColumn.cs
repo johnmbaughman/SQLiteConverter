@@ -22,13 +22,18 @@
 
 #endregion
 
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of ViewColumn.
 	/// </summary>
-	public class ViewColumn {
+	public class ViewColumn<O> : InformationSchemaItemBase<ViewColumn<O>, O> {
 
-		public ViewColumn() { }
+		public ViewColumn(DataRow itemToLoad) : base(itemToLoad) { }
 
 		public string ViewCatalog { get; set; }
 

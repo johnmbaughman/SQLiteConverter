@@ -22,14 +22,29 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class Table : InformationSchemaItemBase {
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
-		public Table() {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class Table : InformationSchemaItemBase<Table, SQLite.Table<Table>> {
+
+		public Table(DataRow itemToLoad)
+			: base(itemToLoad) {
 			Columns = new ColumnCollection();
 			ForeignKeys = new ForeignKeyCollection();
 			Indexes = new IndexCollection();
 			Triggers = new TriggerCollection();
+
+			TableCatalog = itemToLoad["TABLE_CATALOG"] == DBNull.Value ? null : itemToLoad["TABLE_CATALOG"].ToString();
+			TableName = itemToLoad["TABLE_NAME"] == DBNull.Value ? null : itemToLoad["TABLE_NAME"].ToString();
+			TableSchema = itemToLoad["TABLE_SCHEMA"] == DBNull.Value ? null : itemToLoad["TABLE_SCHEMA"].ToString();
+			TableType = itemToLoad["TABLE_TYPE"] == DBNull.Value ? null : itemToLoad["TABLE_TYPE"].ToString();
+		}
+
+		public Table(SQLite.Table<Table> itemToLoad)
+			: base(itemToLoad) {
 		}
 
 		public ColumnCollection Columns { get; internal set; }

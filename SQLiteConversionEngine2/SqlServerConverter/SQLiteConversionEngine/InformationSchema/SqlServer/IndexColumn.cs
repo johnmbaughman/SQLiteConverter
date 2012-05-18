@@ -22,10 +22,26 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class IndexColumn : InformationSchemaItemBase {
+using System;
+using System.Data;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
-		public IndexColumn() { }
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class IndexColumn : InformationSchemaItemBase<IndexColumn, SQLite.IndexCollection<IndexColumn>> {
+
+		public IndexColumn(DataRow itemToLoad)
+			: base(itemToLoad) {
+			ConstraintCatalog = itemToLoad["constraint_catalog"] == DBNull.Value ? null : itemToLoad["constraint_catalog"].ToString();
+			ConstraintSchema = itemToLoad["constraint_schema"] == DBNull.Value ? null : itemToLoad["constraint_schema"].ToString();
+			ConstraintName = itemToLoad["constraint_name"] == DBNull.Value ? null : itemToLoad["constraint_name"].ToString();
+			TableCatalog = itemToLoad["table_catalog"] == DBNull.Value ? null : itemToLoad["table_catalog"].ToString();
+			TableSchema = itemToLoad["table_schema"] == DBNull.Value ? null : itemToLoad["table_schema"].ToString();
+			TableName = itemToLoad["table_name"] == DBNull.Value ? null : itemToLoad["table_name"].ToString();
+			ColumnName = itemToLoad["column_name"] == DBNull.Value ? null : itemToLoad["column_name"].ToString();
+			OrdinalPosition = itemToLoad["ordinal_position"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["ordinal_position"]);
+			KeyType = itemToLoad["KeyType"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["KeyType"]);
+			IndexName = itemToLoad["index_name"] == DBNull.Value ? null : itemToLoad["index_name"].ToString();
+		}
 
 		public string ConstraintCatalog { get; internal set; }
 

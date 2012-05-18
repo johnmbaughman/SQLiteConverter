@@ -23,11 +23,26 @@
 #endregion
 
 using System;
+using System.Data;
 using System.Reflection;
 using System.Text;
 
 namespace SQLiteConversionEngine.InformationSchema {
-	public abstract class InformationSchemaItemBase {
+	public abstract class InformationSchemaItemBase<I, O> {
+
+		private InformationSchemaItemBase() { }
+
+		public InformationSchemaItemBase(DataRow itemToLoad) {
+			OriginalItemDataRow = itemToLoad;
+		}
+
+		public InformationSchemaItemBase(O itemToLoad) {
+			OriginalItemObject = itemToLoad;
+		}
+
+		protected DataRow OriginalItemDataRow { get; private set; }
+
+		protected O OriginalItemObject { get; private set; }
 
 		public override string ToString() {
 			StringBuilder sc = new StringBuilder();

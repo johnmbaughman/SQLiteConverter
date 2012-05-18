@@ -23,15 +23,19 @@
 #endregion
 
 using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of Index.
 	/// </summary>
-	public class Index : InformationSchemaItemBase {
+	public class Index<O> : InformationSchemaItemBase<Index<O>, O> {
 
-		public Index() {
-			IndexColumns = new IndexColumnCollection();
+		public Index(DataRow itemToLoad)
+			: base(itemToLoad) {
+			IndexColumns = new IndexColumnCollection<O>();
 		}
 
 		public string TableCatalog { get; set; }
@@ -86,6 +90,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 
 		public string IndexDefinition { get; set; }
 
-		public IndexColumnCollection IndexColumns { get; set; }
+		public IndexColumnCollection<O> IndexColumns { get; set; }
 	}
 }

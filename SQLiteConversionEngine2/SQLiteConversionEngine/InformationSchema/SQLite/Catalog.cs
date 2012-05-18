@@ -22,15 +22,21 @@
 
 #endregion
 
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of DatabaseDomain.
 	/// </summary>
-	public class Catalog : InformationSchemaItemBase {
+	public class Catalog<O> : InformationSchemaItemBase<Catalog<O>, O> {
 
-		public Catalog() {
-			Tables = new TableCollection();
-			Views = new ViewCollection();
+		public Catalog(DataRow itemToLoad)
+			: base(itemToLoad) {
+			Tables = new TableCollection<O>();
+			Views = new ViewCollection<O>();
 		}
 
 		public string CatalogName { get; set; }
@@ -39,8 +45,8 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 
 		public long? Id { get; set; }
 
-		public TableCollection Tables { get; set; }
+		public TableCollection<O> Tables { get; set; }
 
-		public ViewCollection Views { get; set; }
+		public ViewCollection<O> Views { get; set; }
 	}
 }

@@ -26,6 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of CatalogCollection.
 	/// </summary>
-	public class CatalogCollection : InformationSchema.InformationSchemaCollectionBase<string, Catalog> {
+	public class CatalogCollection<O> : InformationSchema.InformationSchemaCollectionBase<string, Catalog<O>> {
 	}
 }

@@ -23,75 +23,78 @@
 #endregion
 
 using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of Column.
 	/// </summary>
-	public class Column : InformationSchemaItemBase {
+	public class Column<O> : InformationSchemaItemBase<Column<O>, O> {
 
-		public Column() { }
+		public Column(DataRow itemToLoad) : base(itemToLoad) { }
 
-		public string TableCatalog { get; set; }
+		public string TableCatalog { get; private set; }
 
-		public string TableSchema { get; set; }
+		public string TableSchema { get; private set; }
 
-		public string TableName { get; set; }
+		public string TableName { get; private set; }
 
-		public string ColumnName { get; set; }
+		public string ColumnName { get; private set; }
 
-		public Guid? ColumnGuid { get; set; }
+		public Guid? ColumnGuid { get; private set; }
 
-		public long? ColumnPropId { get; set; }
+		public long? ColumnPropId { get; private set; }
 
-		public int? OrdinalPosition { get; set; }
+		public int? OrdinalPosition { get; private set; }
 
-		public bool? ColumnHasDefault { get; set; }
+		public bool? ColumnHasDefault { get; private set; }
 
-		public string ColumnDefault { get; set; }
+		public string ColumnDefault { get; private set; }
 
-		public long? ColumnFlags { get; set; }
+		public long? ColumnFlags { get; private set; }
 
-		public bool? IsNullable { get; set; }
+		public bool? IsNullable { get; private set; }
 
-		public string DataType { get; set; }
+		public string DataType { get; private set; }
 
-		public Guid? TypeGuid { get; set; }
+		public Guid? TypeGuid { get; private set; }
 
-		public int? CharacterMaximumLength { get; set; }
+		public int? CharacterMaximumLength { get; private set; }
 
-		public int? CharacterOctetLength { get; set; }
+		public int? CharacterOctetLength { get; private set; }
 
-		public int? NumericPrecision { get; set; }
+		public int? NumericPrecision { get; private set; }
 
-		public int? NumericScale { get; set; }
+		public int? NumericScale { get; private set; }
 
-		public long? DateTimePrecision { get; set; }
+		public long? DateTimePrecision { get; private set; }
 
-		public string CharacterSetCatalog { get; set; }
+		public string CharacterSetCatalog { get; private set; }
 
-		public string CharacterSetSchema { get; set; }
+		public string CharacterSetSchema { get; private set; }
 
-		public string CharacterSetName { get; set; }
+		public string CharacterSetName { get; private set; }
 
-		public string CollationCatalog { get; set; }
+		public string CollationCatalog { get; private set; }
 
-		public string CollationSchema { get; set; }
+		public string CollationSchema { get; private set; }
 
-		public string CollationName { get; set; }
+		public string CollationName { get; private set; }
 
-		public string DomainCatalog { get; set; }
+		public string DomainCatalog { get; private set; }
 
-		public string DomainName { get; set; }
+		public string DomainName { get; private set; }
 
-		public string Description { get; set; }
+		public string Description { get; private set; }
 
-		public bool? PrimaryKey { get; set; }
+		public bool? PrimaryKey { get; private set; }
 
-		public string EdmType { get; set; }
+		public string EdmType { get; private set; }
 
-		public bool? AutoIncrement { get; set; }
+		public bool? AutoIncrement { get; private set; }
 
-		public bool? Unique { get; set; }
+		public bool? Unique { get; private set; }
 	}
 }

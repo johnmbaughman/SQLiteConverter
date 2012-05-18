@@ -22,12 +22,27 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class View : InformationSchemaItemBase {
+using System;
+using System.Data;
+using SQLiteConversionEngine.Utility;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
-		public View() {
+namespace SQLiteConversionEngine.InformationSchema.SqlServer {
+	public class View : InformationSchemaItemBase<View, SQLite.View<View>> {
+
+		public View(DataRow itemToLoad)
+			: base(itemToLoad) {
 			ViewColumns = new ViewColumnCollection();
+
+			TableCatalog = itemToLoad["TABLE_CATALOG"] == DBNull.Value ? null : itemToLoad["TABLE_CATALOG"].ToString();
+			TableSchema = itemToLoad["TABLE_SCHEMA"] == DBNull.Value ? null : itemToLoad["TABLE_SCHEMA"].ToString();
+			TableName = itemToLoad["TABLE_NAME"] == DBNull.Value ? null : itemToLoad["TABLE_NAME"].ToString();
+			CheckOption = itemToLoad["CHECK_OPTION"] == DBNull.Value ? null : itemToLoad["CHECK_OPTION"].ToString();
+			IsUpdatable = itemToLoad["IS_UPDATABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_UPDATABLE"].ToString());
 		}
+
+		public View(SQLite.View<View> itemToLoad)
+			: base(itemToLoad) { }
 
 		public ViewColumnCollection ViewColumns { get; internal set; }
 

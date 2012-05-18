@@ -24,11 +24,12 @@
 
 using SQLiteConversionEngine.Conversion;
 using SQLiteConversionEngine.InformationSchema.SQLite;
+using SqlServerConverter.Conversion;
 
 namespace SqlServerConverter {
-	public class Converter : ConverterBase {
+	public class Converter : ConverterBase<SQLiteConversionEngine.InformationSchema.SqlServer.Database> {
 
-		public Converter(string sqliteFileWithPath, string SqlServerConnectionString, PragmaCollection pragmaParameters)
+		public Converter(string sqliteFileWithPath, string SqlServerConnectionString, PragmaCollection<SQLiteConversionEngine.InformationSchema.SqlServer.Database> pragmaParameters)
 			: base(sqliteFileWithPath, SqlServerConnectionString, pragmaParameters) { }
 
 		public override bool ConvertToSQLite() {
