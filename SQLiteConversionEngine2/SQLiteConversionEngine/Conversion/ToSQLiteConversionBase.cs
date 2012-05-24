@@ -25,22 +25,27 @@
 using System.Configuration;
 
 namespace SQLiteConversionEngine.Conversion {
-	public abstract class ToSQLiteConversionBase<T> : ConversionBase<T> where T : new() {
 
-		public ToSQLiteConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
+    public abstract class ToSQLiteConversionBase<T> : ConversionBase<T> where T : new() {
 
-		//protected override void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
-		//    throw new NotImplementedException();
-		//}
+        public ToSQLiteConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
 
-		//public override void ConvertToDatabase(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
-		//    throw new NotImplementedException();
-		//}
+        //protected override void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
+        //    throw new NotImplementedException();
+        //}
 
-		//protected override void CopySourceDataToDestination(ConversionHandler conversionHandler) {
-		//    throw new NotImplementedException();
-		//}
+        public override void ConvertToDatabase() {
+            throw new System.NotImplementedException();
+        }
 
-		//protected abstract override void ReadSourceSchema(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler);
-	}
+        //public override void ConvertToDatabase(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
+        //    throw new NotImplementedException();
+        //}
+
+        //protected override void CopySourceDataToDestination(ConversionHandler conversionHandler) {
+        //    throw new NotImplementedException();
+        //}
+
+        //protected abstract override void ReadSourceSchema(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler);
+    }
 }

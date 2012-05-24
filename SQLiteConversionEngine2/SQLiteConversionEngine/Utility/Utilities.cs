@@ -49,8 +49,7 @@ namespace SQLiteConversionEngine.Utility {
 
 				return returnString;
 			}
-			catch (Exception ex) {
-				//Logging.Log(LogLevel.Error, string.Format("ConvertListToInClause exception: {0}", LoggingEngine.FileLogger.GetInnerException(ex).ToString()));
+			catch (System.Exception ex) {
 				return string.Empty;
 			}
 		}

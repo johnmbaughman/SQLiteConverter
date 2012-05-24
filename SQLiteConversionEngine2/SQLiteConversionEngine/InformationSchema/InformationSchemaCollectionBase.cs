@@ -28,7 +28,12 @@ namespace SQLiteConversionEngine.InformationSchema {
 	public abstract class InformationSchemaCollectionBase<K, T> : Dictionary<K, T> {
 
 		public new void Add(K key, T item) {
-			base.Add(key, item);
+			try {
+				base.Add(key, item);
+			}
+			catch (System.Exception ex) {
+				throw new SQLiteConversionEngine.Exception.InformationSchemaException<K, T>(key, item, ex);
+			}
 		}
 	}
 }

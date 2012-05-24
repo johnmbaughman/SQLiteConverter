@@ -28,21 +28,24 @@ using SQLiteConversionEngine.Utility;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class View : InformationSchemaItemBase<View, SQLite.View<View>> {
+	public class View : InformationSchemaItemBase<View> {
 
 		public View(DataRow itemToLoad)
 			: base(itemToLoad) {
 			ViewColumns = new ViewColumnCollection();
-
-			TableCatalog = itemToLoad["TABLE_CATALOG"] == DBNull.Value ? null : itemToLoad["TABLE_CATALOG"].ToString();
-			TableSchema = itemToLoad["TABLE_SCHEMA"] == DBNull.Value ? null : itemToLoad["TABLE_SCHEMA"].ToString();
-			TableName = itemToLoad["TABLE_NAME"] == DBNull.Value ? null : itemToLoad["TABLE_NAME"].ToString();
-			CheckOption = itemToLoad["CHECK_OPTION"] == DBNull.Value ? null : itemToLoad["CHECK_OPTION"].ToString();
-			IsUpdatable = itemToLoad["IS_UPDATABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_UPDATABLE"].ToString());
 		}
 
-		public View(SQLite.View<View> itemToLoad)
-			: base(itemToLoad) { }
+		protected override void LoadFromDataRow() {
+			TableCatalog = OriginalItemDataRow["TABLE_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_CATALOG"].ToString();
+			TableSchema = OriginalItemDataRow["TABLE_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_SCHEMA"].ToString();
+			TableName = OriginalItemDataRow["TABLE_NAME"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_NAME"].ToString();
+			CheckOption = OriginalItemDataRow["CHECK_OPTION"] == DBNull.Value ? null : OriginalItemDataRow["CHECK_OPTION"].ToString();
+			IsUpdatable = OriginalItemDataRow["IS_UPDATABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["IS_UPDATABLE"].ToString());
+		}
+
+		protected override void LoadFromObject() {
+			throw new NotImplementedException();
+		}
 
 		public ViewColumnCollection ViewColumns { get; internal set; }
 

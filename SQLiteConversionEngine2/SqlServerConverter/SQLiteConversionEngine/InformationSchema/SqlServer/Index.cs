@@ -28,20 +28,26 @@ using SQLiteConversionEngine.Utility;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class Index : InformationSchemaItemBase<Index, SQLite.Index<Index>> {
+	public class Index : InformationSchemaItemBase<Index> {
 
 		public Index(DataRow itemToLoad)
 			: base(itemToLoad) {
 			IndexColumns = new IndexColumnCollection();
+		}
 
-			ConstraintCatalog = itemToLoad["constraint_catalog"] == DBNull.Value ? null : itemToLoad["constraint_catalog"].ToString();
-			ConstraintSchema = itemToLoad["constraint_schema"] == DBNull.Value ? null : itemToLoad["constraint_schema"].ToString();
-			ConstraintName = itemToLoad["constraint_name"] == DBNull.Value ? null : itemToLoad["constraint_name"].ToString();
-			TableCatalog = itemToLoad["table_catalog"] == DBNull.Value ? null : itemToLoad["table_catalog"].ToString();
-			TableSchema = itemToLoad["table_schema"] == DBNull.Value ? null : itemToLoad["table_schema"].ToString();
-			TableName = itemToLoad["table_name"] == DBNull.Value ? null : itemToLoad["table_name"].ToString();
-			IndexName = itemToLoad["index_name"] == DBNull.Value ? null : itemToLoad["index_name"].ToString();
-			TypeDescription = itemToLoad["type_desc"] == DBNull.Value ? null : itemToLoad["type_desc"].ToString();
+		protected override void LoadFromDataRow() {
+			ConstraintCatalog = OriginalItemDataRow["constraint_catalog"] == DBNull.Value ? null : OriginalItemDataRow["constraint_catalog"].ToString();
+			ConstraintSchema = OriginalItemDataRow["constraint_schema"] == DBNull.Value ? null : OriginalItemDataRow["constraint_schema"].ToString();
+			ConstraintName = OriginalItemDataRow["constraint_name"] == DBNull.Value ? null : OriginalItemDataRow["constraint_name"].ToString();
+			TableCatalog = OriginalItemDataRow["table_catalog"] == DBNull.Value ? null : OriginalItemDataRow["table_catalog"].ToString();
+			TableSchema = OriginalItemDataRow["table_schema"] == DBNull.Value ? null : OriginalItemDataRow["table_schema"].ToString();
+			TableName = OriginalItemDataRow["table_name"] == DBNull.Value ? null : OriginalItemDataRow["table_name"].ToString();
+			IndexName = OriginalItemDataRow["index_name"] == DBNull.Value ? null : OriginalItemDataRow["index_name"].ToString();
+			TypeDescription = OriginalItemDataRow["type_desc"] == DBNull.Value ? null : OriginalItemDataRow["type_desc"].ToString();
+		}
+
+		protected override void LoadFromObject() {
+			throw new NotImplementedException();
 		}
 
 		public IndexColumnCollection IndexColumns { get; internal set; }

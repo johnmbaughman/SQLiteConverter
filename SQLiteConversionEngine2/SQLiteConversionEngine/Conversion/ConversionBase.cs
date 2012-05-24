@@ -28,160 +28,162 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SQLiteConversionEngine.Conversion {
-	public abstract class ConversionBase<T> where T : new() {
 
-		public ConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) {
-			Connections = new Connections {
-				SQLiteConnection = sqliteConnectionStringSettings,
-				OtherConnection = otherConnectionStringSettings,
-			};
+    public abstract class ConversionBase<T> where T : new() {
 
-			SourceSchema = new T();
-			TablesToLoad = new List<string>();
-			SchemasToLoad = new List<string>();
-		}
+        public ConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) {
+            Connections = new Connections {
+                SQLiteConnection = sqliteConnectionStringSettings,
+                OtherConnection = otherConnectionStringSettings,
+            };
 
-		#region Protected Properties
+            SourceSchema = new T();
+            TablesToLoad = new List<string>();
+            SchemasToLoad = new List<string>();
+        }
 
-		public List<string> TablesToLoad { get; set; }
+        #region Protected Properties
 
-		public List<string> SchemasToLoad { get; set; }
+        public List<string> TablesToLoad { get; set; }
 
-		public Connections Connections { get; set; }
+        public List<string> SchemasToLoad { get; set; }
 
-		public T SourceSchema { get; set; }
+        public Connections Connections { get; set; }
 
-		#endregion Protected Properties
+        public T SourceSchema { get; set; }
 
-		#region Protected Variables
+        #endregion Protected Properties
 
-		protected static bool _isActive = false;
-		protected static bool _cancelled = false;
-		protected static Regex _keyRx = new Regex(@"([a-zA-Z_0-9]+)(\(\-\))?");
-		protected static Regex _defaultValueRx = new Regex(@"\(N(\'.*\')\)");
+        #region Protected Variables
 
-		#endregion Protected Variables
+        protected static bool _isActive = false;
+        protected static bool _cancelled = false;
+        protected static Regex _keyRx = new Regex(@"([a-zA-Z_0-9]+)(\(\-\))?");
+        protected static Regex _defaultValueRx = new Regex(@"\(N(\'.*\')\)");
 
-		#region Public Abstract Methods
+        #endregion Protected Variables
 
-		/// <summary>
-		/// This method takes as input the connection strings to a source database
-		/// and a destination database file to create the destination derived from a
-		/// schema in the source
-		/// </summary>
-		/// <param name="conversionHandler">The conversion handler.</param>
-		/// <param name="tableSelectionHandler">The table selection handler.</param>
-		/// <param name="failedViewDefinitionHandler">The failed view definition handler.</param>
-		/// <param name="createTriggers">if set to <c>true</c> [create triggers].</param>
-		public abstract void ConvertToDatabase(ConversionHandler conversionHandler,
-											   TableSelectionHandler tableSelectionHandler,
-											   FailedViewDefinitionHandler failedViewDefinitionHandler,
-											   bool createTriggers);
+        #region Public Abstract Methods
 
-		#endregion Public Abstract Methods
+        ///// <summary>
+        ///// This method takes as input the connection strings to a source database
+        ///// and a destination database file to create the destination derived from a
+        ///// schema in the source
+        ///// </summary>
+        ///// <param name="conversionHandler">The conversion handler.</param>
+        ///// <param name="tableSelectionHandler">The table selection handler.</param>
+        ///// <param name="failedViewDefinitionHandler">The failed view definition handler.</param>
+        ///// <param name="createTriggers">if set to <c>true</c> [create triggers].</param>
+        //public abstract void ConvertToDatabase(ConversionHandler conversionHandler,
+        //                                       TableSelectionHandler tableSelectionHandler,
+        //                                       FailedViewDefinitionHandler failedViewDefinitionHandler,
+        //                                       bool createTriggers);
+        public abstract void ConvertToDatabase();
 
-		#region Protected Abstract Methods
+        #endregion Public Abstract Methods
 
-		/// <summary>
-		/// Do the entire process of first reading the source schema, creating a corresponding
-		/// destination schema.
-		/// </summary>
-		/// <param name="conversionHandler">The conversion handler.</param>
-		/// <param name="tableSelectionHandler">The table selection handler.</param>
-		/// <param name="failedViewDefinitionHandler">The failed view definition handler.</param>
-		/// <param name="createTriggers">if set to <c>true</c> [create triggers].</param>
-		protected abstract void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler,
-																   TableSelectionHandler tableSelectionHandler,
-																   FailedViewDefinitionHandler failedViewDefinitionHandler,
-																   bool createTriggers);
+        #region Protected Abstract Methods
 
-		/// <summary>
-		/// Copies the source data to destination.
-		/// </summary>
-		/// <param name="conversionHandler">The conversion handler.</param>
-		protected abstract void CopySourceDataToDestination(ConversionHandler conversionHandler);
+        ///// <summary>
+        ///// Do the entire process of first reading the source schema, creating a corresponding
+        ///// destination schema.
+        ///// </summary>
+        ///// <param name="conversionHandler">The conversion handler.</param>
+        ///// <param name="tableSelectionHandler">The table selection handler.</param>
+        ///// <param name="failedViewDefinitionHandler">The failed view definition handler.</param>
+        ///// <param name="createTriggers">if set to <c>true</c> [create triggers].</param>
+        //protected abstract void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler,
+        //                                                           TableSelectionHandler tableSelectionHandler,
+        //                                                           FailedViewDefinitionHandler failedViewDefinitionHandler,
+        //                                                           bool createTriggers);
 
-		protected abstract void LoadSchema();
+        ///// <summary>
+        ///// Copies the source data to destination.
+        ///// </summary>
+        ///// <param name="conversionHandler">The conversion handler.</param>
+        //protected abstract void CopySourceDataToDestination(ConversionHandler conversionHandler);
 
-		protected abstract void LoadForeignKeys();
+        protected abstract void LoadSchema();
 
-		protected abstract void LoadIndexes();
+        protected abstract void LoadForeignKeys();
 
-		protected abstract void LoadIndexColumns();
+        protected abstract void LoadIndexes();
 
-		protected abstract void LoadTables();
+        protected abstract void LoadIndexColumns();
 
-		protected abstract void LoadTriggers();
+        protected abstract void LoadTables();
 
-		protected abstract void LoadViews();
+        protected abstract void LoadTriggers();
 
-		protected abstract void LoadViewColumns();
+        protected abstract void LoadViews();
 
-		protected abstract void LoadColumns();
+        protected abstract void LoadViewColumns();
 
-		#endregion Protected Abstract Methods
+        protected abstract void LoadColumns();
 
-		#region Public Methods
+        #endregion Protected Abstract Methods
 
-		/// <summary>
-		/// Cancels the conversion.
-		/// </summary>
-		public void CancelConversion() {
-			_cancelled = true;
-		}
+        #region Public Methods
 
-		#endregion Public Methods
+        /// <summary>
+        /// Cancels the conversion.
+        /// </summary>
+        public void CancelConversion() {
+            _cancelled = true;
+        }
 
-		#region Protected Virtual Methods
+        #endregion Public Methods
 
-		/// <summary>
-		/// Builds a SELECT query for a specific table. Needed in the process of copying rows
-		/// from the source database to the destination database.
-		/// </summary>
-		/// <param name="ts">The table schema of the table for which we need the query.</param>
-		/// <returns>The SELECT query for the table.</returns>
-		protected virtual string BuildSourceTableQuery() {
-			StringBuilder sb = new StringBuilder();
-			//sb.Append("SELECT ");
-			//for (int i = 0; i < table.Columns.Count; i++) {
-			//    sb.Append("[" + table.Columns[i].Name + "]");
-			//    if (i < table.Columns.Count - 1)
-			//        sb.Append(", ");
-			//}
-			//sb.Append(" FROM " + table.Schema + "." + "[" + table.Name + "]");
-			return sb.ToString();
-		}
+        #region Protected Virtual Methods
 
-		#endregion Protected Virtual Methods
+        /// <summary>
+        /// Builds a SELECT query for a specific table. Needed in the process of copying rows
+        /// from the source database to the destination database.
+        /// </summary>
+        /// <param name="ts">The table schema of the table for which we need the query.</param>
+        /// <returns>The SELECT query for the table.</returns>
+        protected virtual string BuildSourceTableQuery() {
+            StringBuilder sb = new StringBuilder();
+            //sb.Append("SELECT ");
+            //for (int i = 0; i < table.Columns.Count; i++) {
+            //    sb.Append("[" + table.Columns[i].Name + "]");
+            //    if (i < table.Columns.Count - 1)
+            //        sb.Append(", ");
+            //}
+            //sb.Append(" FROM " + table.Schema + "." + "[" + table.Name + "]");
+            return sb.ToString();
+        }
 
-		#region "Event" Handlers
+        #endregion Protected Virtual Methods
 
-		/// <summary>
-		/// This handler is called whenever a progress is made in the conversion process.
-		/// </summary>
-		/// <param name="done">TRUE indicates that the entire conversion process is finished.</param>
-		/// <param name="success">TRUE indicates that the current step finished successfully.</param>
-		/// <param name="percent">Progress percent (0-100)</param>
-		/// <param name="msg">A message that accompanies the progress.</param>
-		public delegate void ConversionHandler(bool done, bool success, int percent, string msg);
+        #region "Event" Handlers
 
-		/// <summary>
-		/// This handler allows the user to change which tables get converted from SQL Server
-		/// to SQLite.
-		/// </summary>
-		/// <param name="schema">The original SQL Server DB schema</param>
-		/// <returns>The same schema minus any table we don't want to convert.</returns>
-		public delegate void TableSelectionHandler(List<T> schema);
+        ///// <summary>
+        ///// This handler is called whenever a progress is made in the conversion process.
+        ///// </summary>
+        ///// <param name="done">TRUE indicates that the entire conversion process is finished.</param>
+        ///// <param name="success">TRUE indicates that the current step finished successfully.</param>
+        ///// <param name="percent">Progress percent (0-100)</param>
+        ///// <param name="msg">A message that accompanies the progress.</param>
+        //public delegate void ConversionHandler(bool done, bool success, int percent, string msg);
 
-		/// <summary>
-		/// This handler is called in order to handle the case when copying the SQL Server view SQL
-		/// statement is not enough and the user needs to either update the view definition himself
-		/// or discard the view definition from the generated SQLite database.
-		/// </summary>
-		/// <param name="vs">The problematic view definition</param>
-		/// <returns>The updated view definition, or NULL in case the view should be discarded</returns>
-		public delegate string FailedViewDefinitionHandler(T vs);
+        ///// <summary>
+        ///// This handler allows the user to change which tables get converted from SQL Server
+        ///// to SQLite.
+        ///// </summary>
+        ///// <param name="schema">The original SQL Server DB schema</param>
+        ///// <returns>The same schema minus any table we don't want to convert.</returns>
+        //public delegate void TableSelectionHandler(List<T> schema);
 
-		#endregion "Event" Handlers
-	}
+        ///// <summary>
+        ///// This handler is called in order to handle the case when copying the SQL Server view SQL
+        ///// statement is not enough and the user needs to either update the view definition himself
+        ///// or discard the view definition from the generated SQLite database.
+        ///// </summary>
+        ///// <param name="vs">The problematic view definition</param>
+        ///// <returns>The updated view definition, or NULL in case the view should be discarded</returns>
+        //public delegate string FailedViewDefinitionHandler(T vs);
+
+        #endregion "Event" Handlers
+    }
 }

@@ -24,22 +24,29 @@
 
 using System.Configuration;
 using SQLiteConversionEngine.Conversion;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
 namespace SqlServerConverter.Conversion {
-	internal class FromSQLiteConversion : FromSQLiteConversionBase<SQLiteConversionEngine.InformationSchema.SqlServer.Database> {
 
-		public FromSQLiteConversion(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
+    internal class FromSQLiteConversion : FromSQLiteConversionBase {
 
-		protected override void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
-			throw new System.NotImplementedException();
-		}
+        public FromSQLiteConversion(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
 
-		public override void ConvertToDatabase(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
-			base.ConvertToDatabase(conversionHandler, tableSelectionHandler, failedViewDefinitionHandler, createTriggers);
-		}
+        public override void ConvertToDatabase() {
+            base.ConvertToDatabase();
+        }
 
-		protected override void CopySourceDataToDestination(ConversionHandler conversionHandler) {
-			throw new System.NotImplementedException();
-		}
-	}
+        //protected override void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
+        //    throw new System.NotImplementedException();
+        //}
+
+        //public override void ConvertToDatabase(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
+        //    base.ConvertToDatabase(conversionHandler, tableSelectionHandler, failedViewDefinitionHandler, createTriggers);
+        //}
+
+        //protected override void CopySourceDataToDestination(ConversionHandler conversionHandler) {
+        //    throw new System.NotImplementedException();
+        //}
+    }
 }

@@ -28,11 +28,11 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using SQLiteConversionEngine.Conversion;
-using SQLiteConversionEngine.InformationSchema.SqlServer;
 using SQLiteConversionEngine.Utility;
+using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
 namespace SqlServerConverter.Conversion {
-	internal class ToSQLiteConversion : ToSQLiteConversionBase<Database> {
+	internal class ToSQLiteConversion : ToSQLiteConversionBase<SqlServer.Database> {
 		private SqlConnection sqlConnection = null;
 		private string currentSchemaName = string.Empty;
 		private string currentViewName = string.Empty;
@@ -42,7 +42,7 @@ namespace SqlServerConverter.Conversion {
 
 		public ToSQLiteConversion(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
 
-		public override void ConvertToDatabase(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
+		public override void ConvertToDatabase() {
 			using (sqlConnection = new SqlConnection(Connections.OtherConnection.ConnectionString)) {
 				try {
 					sqlConnection.Open();
@@ -58,19 +58,22 @@ namespace SqlServerConverter.Conversion {
 			}
 		}
 
-		protected override void ConvertSourceDatabaseToDestination(ConversionBase<Database>.ConversionHandler conversionHandler, ConversionBase<Database>.TableSelectionHandler tableSelectionHandler, ConversionBase<Database>.FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
-			throw new NotImplementedException();
-		}
+		//public override void ConvertToDatabase(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
+		//
+		//}
 
-		protected override void CopySourceDataToDestination(ConversionBase<Database>.ConversionHandler conversionHandler) {
-			throw new NotImplementedException();
-		}
+		//protected override void ConvertSourceDatabaseToDestination(ConversionBase.ConversionHandler conversionHandler, ConversionBase<Database>.TableSelectionHandler tableSelectionHandler, ConversionBase<Database>.FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
+		//    throw new NotImplementedException();
+		//}
+
+		//protected override void CopySourceDataToDestination(ConversionBase.ConversionHandler conversionHandler) {
+		//    throw new NotImplementedException();
+		//}
 
 		protected override void LoadColumns() {
 			using (DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.Columns, new string[] { null, currentSchemaName, currentTableName, null })) {
 				foreach (DataRow row in dataTable.Rows) {
-					Column column = new Column(row);
-					SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Columns.Add(column.ColumnName, column);
+					SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Columns.Add(row["COLUMN_NAME"].ToString(), new SqlServer.Column(row));
 				}
 			}
 		}
@@ -78,9 +81,7 @@ namespace SqlServerConverter.Conversion {
 		protected override void LoadForeignKeys() {
 			using (DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.ForeignKeys, new string[] { null, currentSchemaName, currentTableName, null })) {
 				foreach (DataRow row in dataTable.Rows) {
-					ForeignKey foreignKey = new ForeignKey();
-					foreignKey.LoadItem(row);
-					SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].ForeignKeys.Add(foreignKey.ConstraintName, foreignKey);
+					SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].ForeignKeys.Add(row["CONSTRAINT_NAME"].ToString(), new SqlServer.ForeignKey(row));
 				}
 			}
 		}
@@ -88,8 +89,7 @@ namespace SqlServerConverter.Conversion {
 		protected override void LoadIndexColumns() {
 			using (DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.IndexColumns, new string[] { null, currentSchemaName, currentTableName })) {
 				foreach (DataRow row in dataTable.Rows) {
-					IndexColumn indexColumn = new IndexColumn(row);
-					SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Indexes[currentIndexName].IndexColumns.Add(indexColumn.ColumnName, indexColumn);
+					SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Indexes[currentIndexName].IndexColumns.Add(row["COLUMN_NAME"].ToString(), new SqlServer.IndexColumn(row));
 				}
 			}
 		}
@@ -97,12 +97,11 @@ namespace SqlServerConverter.Conversion {
 		protected override void LoadIndexes() {
 			using (DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.Indexes, new string[] { null, currentSchemaName, currentTableName })) {
 				foreach (DataRow row in dataTable.Rows) {
-					Index index = new Index(row);
-					SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Indexes.Add(index.IndexName, index);
+					SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Indexes.Add(row["index_name"].ToString(), new SqlServer.Index(row));
 				}
 			}
 
-			foreach (Index catalog in SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Indexes.Values) {
+			foreach (SqlServer.Index catalog in SourceSchema.Schemas[currentSchemaName].Tables[currentTableName].Indexes.Values) {
 				currentIndexName = catalog.IndexName;
 				LoadIndexColumns();
 			}
@@ -114,20 +113,15 @@ namespace SqlServerConverter.Conversion {
 
 			using (SqlCommand sqlCommand = new SqlCommand(string.Format(sql, where), sqlConnection)) {
 				using (SqlDataReader reader = sqlCommand.ExecuteReader()) {
-					while (reader.Read()) {
-						//SourceSchema.Schemas.Add(reader["SCHEMA_NAME"].ToString(), new Schemata {
-						//    CatalogName = reader["CATALOG_NAME"] == DBNull.Value ? null : reader["CATALOG_NAME"].ToString(),
-						//    SchemaName = reader["SCHEMA_NAME"] == DBNull.Value ? null : reader["SCHEMA_NAME"].ToString(),
-						//    SchemaOwner = reader["SCHEMA_OWNER"] == DBNull.Value ? null : reader["SCHEMA_OWNER"].ToString(),
-						//    DefaultCharacterSetCatalog = reader["DEFAULT_CHARACTER_SET_CATALOG"] == DBNull.Value ? null : reader["DEFAULT_CHARACTER_SET_CATALOG"].ToString(),
-						//    DefaultCharacterSetSchema = reader["DEFAULT_CHARACTER_SET_SCHEMA"] == DBNull.Value ? null : reader["DEFAULT_CHARACTER_SET_SCHEMA"].ToString(),
-						//    DefaultCharacterSetName = reader["DEFAULT_CHARACTER_SET_NAME"] == DBNull.Value ? null : reader["DEFAULT_CHARACTER_SET_NAME"].ToString(),
-						//});
+					DataTable table = new DataTable();
+					table.Load(reader);
+					foreach (DataRow row in table.Rows) {
+						SourceSchema.Schemas.Add(row["SCHEMA_NAME"].ToString(), new SqlServer.Schemata(row));
 					}
 				}
 			}
 
-			foreach (Schemata catalog in SourceSchema.Schemas.Values) {
+			foreach (SqlServer.Schemata catalog in SourceSchema.Schemas.Values) {
 				currentSchemaName = catalog.SchemaName;
 				LoadTables();
 				LoadViews();
@@ -138,14 +132,14 @@ namespace SqlServerConverter.Conversion {
 			using (DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.Tables, new string[] { null, currentSchemaName, null, "BASE TABLE" })) {
 				foreach (DataRow row in dataTable.Rows) {
 					if (!defaultIgnores.Contains(row["TABLE_NAME"].ToString())) {
-						Schemata schema = SourceSchema.Schemas[currentSchemaName];
-						Table table = new Table(row);
-						schema.Tables.Add(table.TableName, table);
+						if (TablesToLoad.Contains(row["TABLE_NAME"].ToString())) {
+							SourceSchema.Schemas[currentSchemaName].Tables.Add(row["TABLE_NAME"].ToString(), new SqlServer.Table(row));
+						}
 					}
 				}
 			}
 
-			foreach (Table table in SourceSchema.Schemas[currentSchemaName].Tables.Values) {
+			foreach (SqlServer.Table table in SourceSchema.Schemas[currentSchemaName].Tables.Values) {
 				currentTableName = table.TableName;
 				LoadColumns();
 				LoadForeignKeys();
@@ -161,8 +155,7 @@ namespace SqlServerConverter.Conversion {
 		protected override void LoadViewColumns() {
 			using (DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.ViewColumns, new string[] { null, currentSchemaName, currentViewName, null })) {
 				foreach (DataRow row in dataTable.Rows) {
-					ViewColumn viewColumn = new ViewColumn(row);
-					SourceSchema.Schemas[currentSchemaName].Views[currentViewName].ViewColumns.Add(viewColumn.ColumnName, viewColumn);
+					SourceSchema.Schemas[currentSchemaName].Views[currentViewName].ViewColumns.Add(row["COLUMN_NAME"].ToString(), new SqlServer.ViewColumn(row));
 				}
 			}
 		}
@@ -170,13 +163,12 @@ namespace SqlServerConverter.Conversion {
 		protected override void LoadViews() {
 			using (DataTable dataTable = sqlConnection.GetSchema(SqlClientMetaDataCollectionNames.Views, new string[] { null, currentSchemaName, null })) {
 				foreach (DataRow row in dataTable.Rows) {
-					View view = new View(row);
-					SourceSchema.Schemas[currentSchemaName].Views.Add(view.TableName, view);
+					SourceSchema.Schemas[currentSchemaName].Views.Add(row["TABLE_NAME"].ToString(), new SqlServer.View(row));
+				}
 
-					foreach (View catalog in SourceSchema.Schemas[currentSchemaName].Views.Values) {
-						currentViewName = catalog.TableName;
-						LoadViewColumns();
-					}
+				foreach (SqlServer.View catalog in SourceSchema.Schemas[currentSchemaName].Views.Values) {
+					currentViewName = catalog.TableName;
+					LoadViewColumns();
 				}
 			}
 		}

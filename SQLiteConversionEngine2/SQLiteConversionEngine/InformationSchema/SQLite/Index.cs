@@ -5,7 +5,7 @@
 // Copyright (C) 2012 John M. Baughman (jbaughmanphoto.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-// associated documentation files (the "Software"), to deal in the Software without restriction,
+// associated documentation files (the "Software"); to deal in the Software without restriction,
 // including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
 // and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
 // subject to the following conditions:
@@ -31,11 +31,45 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of Index.
 	/// </summary>
-	public class Index<O> : InformationSchemaItemBase<Index<O>, O> {
+	public class Index : InformationSchemaItemBase<Index> {
 
 		public Index(DataRow itemToLoad)
 			: base(itemToLoad) {
-			IndexColumns = new IndexColumnCollection<O>();
+			IndexColumns = new IndexColumnCollection();
+		}
+
+		protected override void LoadFromDataRow() {
+			TableCatalog = OriginalItemDataRow["TABLE_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_CATALOG"].ToString();
+			TableSchema = OriginalItemDataRow["TABLE_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_SCHEMA"].ToString();
+			TableName = OriginalItemDataRow["TABLE_NAME"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_NAME"].ToString();
+			IndexCatalog = OriginalItemDataRow["INDEX_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["INDEX_CATALOG"].ToString();
+			IndexSchema = OriginalItemDataRow["INDEX_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["INDEX_SCHEMA"].ToString();
+			IndexName = OriginalItemDataRow["INDEX_NAME"] == DBNull.Value ? null : OriginalItemDataRow["INDEX_NAME"].ToString();
+			PrimaryKey = OriginalItemDataRow["PRIMARY_KEY"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["PRIMARY_KEY"].ToString());
+			Unique = OriginalItemDataRow["UNIQUE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["UNIQUE"].ToString());
+			Clustered = OriginalItemDataRow["CLUSTERED"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["CLUSTERED"].ToString());
+			Type = OriginalItemDataRow["TYPE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["TYPE"]);
+			FillFactor = OriginalItemDataRow["FILL_FACTOR"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["FILL_FACTOR"]);
+			InitialSize = OriginalItemDataRow["INITIAL_SIZE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["INITIAL_SIZE"]);
+			Nulls = OriginalItemDataRow["NULLS"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["NULLS"]);
+			SortBookmarks = OriginalItemDataRow["SORT_BOOKMARKS"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["SORT_BOOKMARKS"].ToString());
+			AutoUpdate = OriginalItemDataRow["AUTO_UPDATE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["AUTO_UPDATE"].ToString());
+			NullCollation = OriginalItemDataRow["NULL_COLLATION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["NULL_COLLATION"]);
+			OrdinalPosition = OriginalItemDataRow["ORDINAL_POSITION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["ORDINAL_POSITION"]);
+			ColumnName = OriginalItemDataRow["COLUMN_NAME"] == DBNull.Value ? null : OriginalItemDataRow["COLUMN_NAME"].ToString();
+			//TODO: read up on BinaryGUID=False in connectionstring
+			ColumnGUID = OriginalItemDataRow["COLUMN_GUID"] == DBNull.Value ? new Nullable<Guid>() : new Guid(OriginalItemDataRow["COLUMN_GUID"].ToString());
+			ColumnPropId = OriginalItemDataRow["COLUMN_PROPID"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(OriginalItemDataRow["COLUMN_PROPID"]);
+			Collation = OriginalItemDataRow["COLLATION"] == DBNull.Value ? new Nullable<short>() : Convert.ToInt16(OriginalItemDataRow["COLLATION"]);
+			Cardinality = OriginalItemDataRow["CARDINALITY"] == DBNull.Value ? new Nullable<decimal>() : Convert.ToDecimal(OriginalItemDataRow["CARDINALITY"]);
+			Pages = OriginalItemDataRow["PAGES"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["PAGES"]);
+			FilterCondition = OriginalItemDataRow["FILTER_CONDITION"] == DBNull.Value ? null : OriginalItemDataRow["FILTER_CONDITION"].ToString();
+			Integrated = OriginalItemDataRow["INTEGRATED"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["INTEGRATED"].ToString());
+			IndexDefinition = OriginalItemDataRow["INDEX_DEFINITION"] == DBNull.Value ? null : OriginalItemDataRow["INDEX_DEFINITION"].ToString();
+		}
+
+		protected override void LoadFromObject() {
+			throw new NotImplementedException();
 		}
 
 		public string TableCatalog { get; set; }
@@ -90,6 +124,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 
 		public string IndexDefinition { get; set; }
 
-		public IndexColumnCollection<O> IndexColumns { get; set; }
+		public IndexColumnCollection IndexColumns { get; set; }
 	}
 }

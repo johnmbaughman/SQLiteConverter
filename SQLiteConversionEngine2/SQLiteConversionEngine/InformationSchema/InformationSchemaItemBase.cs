@@ -24,38 +24,47 @@
 
 using System;
 using System.Data;
+using System.Dynamic;
 using System.Reflection;
 using System.Text;
+using SQLiteConversionEngine.Dynamic;
 
 namespace SQLiteConversionEngine.InformationSchema {
-	public abstract class InformationSchemaItemBase<I, O> {
 
-		private InformationSchemaItemBase() { }
+    public abstract class InformationSchemaItemBase<T> : GenericDynamicModel<T> {
 
-		public InformationSchemaItemBase(DataRow itemToLoad) {
-			OriginalItemDataRow = itemToLoad;
-		}
+        private InformationSchemaItemBase() { }
 
-		public InformationSchemaItemBase(O itemToLoad) {
-			OriginalItemObject = itemToLoad;
-		}
+        public InformationSchemaItemBase(DataRow itemToLoad) {
+            OriginalItemDataRow = itemToLoad;
+            LoadFromDataRow();
+        }
 
-		protected DataRow OriginalItemDataRow { get; private set; }
+        public InformationSchemaItemBase(T itemToLoad) {
+            OriginalItemObject = itemToLoad;
+            LoadFromObject();
+        }
 
-		protected O OriginalItemObject { get; private set; }
+        protected DataRow OriginalItemDataRow { get; private set; }
 
-		public override string ToString() {
-			StringBuilder sc = new StringBuilder();
+        protected T OriginalItemObject { get; private set; }
 
-			foreach (PropertyInfo propertyItem in this.GetType().GetProperties()) {
-				string propName = propertyItem.Name.ToString();
-				var tempVal = propertyItem.GetValue(this, null);
-				var propVal = tempVal == null ? string.Empty : tempVal;
+        protected abstract void LoadFromDataRow();
 
-				sc.AppendFormat("{0} : {1}{2}", propName, propVal, Environment.NewLine);
-			}
+        protected abstract void LoadFromObject();
 
-			return sc.ToString();
-		}
-	}
+        public override string ToString() {
+            StringBuilder sc = new StringBuilder();
+
+            foreach (PropertyInfo propertyItem in this.GetType().GetProperties()) {
+                string propName = propertyItem.Name.ToString();
+                var tempVal = propertyItem.GetValue(this, null);
+                var propVal = tempVal == null ? string.Empty : tempVal;
+
+                sc.AppendFormat("{0} : {1}{2}", propName, propVal, Environment.NewLine);
+            }
+
+            return sc.ToString();
+        }
+    }
 }

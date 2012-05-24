@@ -28,21 +28,22 @@ using SQLiteConversionEngine.Utility;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class ViewColumn : InformationSchemaItemBase<ViewColumn, SQLite.ViewColumn<ViewColumn>> {
+	public class ViewColumn : InformationSchemaItemBase<ViewColumn> {
 
-		public ViewColumn(DataRow itemToLoad)
-			: base(itemToLoad) {
-			ViewCatalog = itemToLoad["VIEW_CATALOG"] == DBNull.Value ? null : itemToLoad["VIEW_CATALOG"].ToString();
-			ViewSchema = itemToLoad["VIEW_SCHEMA"] == DBNull.Value ? null : itemToLoad["VIEW_SCHEMA"].ToString();
-			ViewName = itemToLoad["VIEW_NAME"] == DBNull.Value ? null : itemToLoad["VIEW_NAME"].ToString();
-			TableCatalog = itemToLoad["TABLE_CATALOG"] == DBNull.Value ? null : itemToLoad["TABLE_CATALOG"].ToString();
-			TableSchema = itemToLoad["TABLE_SCHEMA"] == DBNull.Value ? null : itemToLoad["TABLE_SCHEMA"].ToString();
-			TableName = itemToLoad["TABLE_NAME"] == DBNull.Value ? null : itemToLoad["TABLE_NAME"].ToString();
-			ColumnName = itemToLoad["COLUMN_NAME"] == DBNull.Value ? null : itemToLoad["COLUMN_NAME"].ToString();
+		public ViewColumn(DataRow itemToLoad) : base(itemToLoad) { }
+
+		protected override void LoadFromDataRow() {
+			ViewCatalog = OriginalItemDataRow["VIEW_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["VIEW_CATALOG"].ToString();
+			ViewSchema = OriginalItemDataRow["VIEW_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["VIEW_SCHEMA"].ToString();
+			ViewName = OriginalItemDataRow["VIEW_NAME"] == DBNull.Value ? null : OriginalItemDataRow["VIEW_NAME"].ToString();
+			TableCatalog = OriginalItemDataRow["TABLE_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_CATALOG"].ToString();
+			TableSchema = OriginalItemDataRow["TABLE_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_SCHEMA"].ToString();
+			TableName = OriginalItemDataRow["TABLE_NAME"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_NAME"].ToString();
+			ColumnName = OriginalItemDataRow["COLUMN_NAME"] == DBNull.Value ? null : OriginalItemDataRow["COLUMN_NAME"].ToString();
 		}
 
-		public ViewColumn(SQLite.ViewColumn<ViewColumn> itemToLoad)
-			: base(itemToLoad) {
+		protected override void LoadFromObject() {
+			throw new NotImplementedException();
 		}
 
 		public string ViewCatalog { get; internal set; }

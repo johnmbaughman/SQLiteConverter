@@ -26,6 +26,6 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// <summary>
 	/// Description of IndexColumnCollection.
 	/// </summary>
-	public class IndexColumnCollection<O> : InformationSchema.InformationSchemaCollectionBase<string, IndexColumn<O>> {
+	public class IndexColumnCollection : InformationSchema.InformationSchemaCollectionBase<string, IndexColumn> {
 	}
 }

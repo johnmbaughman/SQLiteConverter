@@ -27,29 +27,15 @@ using SQLiteConversionEngine.InformationSchema;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
-namespace SqlServerConverter.Translate {
-	internal class ToSQLiteDatabaseTranslator : InformationSchemaTranslator<SqlServer.Database, SQLite.Database<SqlServer.Database>> {
-		private SQLite.Database<SqlServer.Database> currentDatabase = null;
-		private SQLite.Catalog<SqlServer.Database> currentCatalog = null;
-		private SQLite.Index<SqlServer.Database> currentIndex = null;
-		private SQLite.Table<SqlServer.Database> currentTable = null;
-		private SQLite.View<SqlServer.Database> currentView = null;
+namespace SQLiteConversionEngine.Transform {
 
-		public ToSQLiteDatabaseTranslator(SqlServer.Database sqlServerDatabase, SQLite.Database<SqlServer.Database> sqliteDatabase) : base(sqlServerDatabase, sqliteDatabase) { }
+    internal class ToSQLiteDatabaseTransform : ToSQLiteTransformBase<SqlServer.Database> {
+        //private SQLite.Database<SqlServer.Database> currentDatabase = null;
+        //private SQLite.Catalog<SqlServer.Database> currentCatalog = null;
+        //private SQLite.Index<SqlServer.Database> currentIndex = null;
+        //private SQLite.Table<SqlServer.Database> currentTable = null;
+        //private SQLite.View<SqlServer.Database> currentView = null;
 
-		public override SQLite.Database<SqlServer.Database> Translate() {
-			foreach (SqlServer.Schemata schema in ItemToTranslate.Schemas.Values) {
-				//TranslatedItem.Catalogs.Add(schema.CatalogName, new SQLite.Catalog {
-				//    CatalogName = schema.CatalogName
-				//});
-
-				foreach (SqlServer.Table table in ItemToTranslate.Schemas[schema.SchemaName].Tables.Values) {
-					//SQLite.Table<SqlServer.Table> newTable = new SQLite.Table();
-					//ToSQLiteTableTranslator newTableTranslator = new ToSQLiteTableTranslator(table, newTable);
-				}
-			}
-
-			return currentDatabase;
-		}
-	}
+        public ToSQLiteDatabaseTransform(SqlServer.Database sqlServerDatabase) : base(sqlServerDatabase) { }
+    }
 }

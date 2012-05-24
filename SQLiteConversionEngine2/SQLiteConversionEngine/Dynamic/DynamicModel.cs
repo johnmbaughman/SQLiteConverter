@@ -22,20 +22,34 @@
 
 #endregion
 
-namespace SQLiteConversionEngine.InformationSchema {
-	public abstract class InformationSchemaTranslator<I, O> {
+using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Text;
 
-		private InformationSchemaTranslator() { }
+namespace SQLiteConversionEngine {
+	public class DynamicModel : DynamicObject {
+		Dictionary<string, object> dictionary = new Dictionary<string, object>();
 
-		public InformationSchemaTranslator(I itemToTranslate, O translatedItem) {
-			ItemToTranslate = itemToTranslate;
-			TranslatedItem = translatedItem;
+		public override bool TrySetMember(SetMemberBinder binder, object value) {
+			if (dictionary.ContainsKey(binder.Name.ToLower())) {
+				return false;
+			}
+			else {
+				dictionary.Add(binder.Name.ToLower(), value);
+				return true;
+			}
 		}
 
-		protected I ItemToTranslate { get; private set; }
-
-		protected O TranslatedItem { get; private set; }
-
-		public abstract O Translate();
+		public override bool TryGetMember(GetMemberBinder binder, out object result) {
+			if (dictionary.ContainsKey(binder.Name.ToLower())) {
+				return dictionary.TryGetValue(binder.Name.ToLower(), out result);
+			}
+			else {
+				result = null;
+				return false;
+			}
+		}
 	}
 }

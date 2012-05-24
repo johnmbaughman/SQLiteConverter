@@ -28,19 +28,24 @@ using SQLiteConversionEngine.Utility;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class ForeignKey : InformationSchemaItemBase<ForeignKey, SQLite.ForeignKey<ForeignKey>> {
+	public class ForeignKey : InformationSchemaItemBase<ForeignKey> {
 
-		public ForeignKey(DataRow itemToLoad)
-			: base(itemToLoad) {
-			ConstraintCatalog = itemToLoad["CONSTRAINT_CATALOG"] == DBNull.Value ? null : itemToLoad["CONSTRAINT_CATALOG"].ToString();
-			ConstraintSchema = itemToLoad["CONSTRAINT_SCHEMA"] == DBNull.Value ? null : itemToLoad["CONSTRAINT_SCHEMA"].ToString();
-			ConstraintName = itemToLoad["CONSTRAINT_NAME"] == DBNull.Value ? null : itemToLoad["CONSTRAINT_NAME"].ToString();
-			TableCatalog = itemToLoad["TABLE_CATALOG"] == DBNull.Value ? null : itemToLoad["TABLE_CATALOG"].ToString();
-			TableSchema = itemToLoad["TABLE_SCHEMA"] == DBNull.Value ? null : itemToLoad["TABLE_SCHEMA"].ToString();
-			TableName = itemToLoad["TABLE_NAME"] == DBNull.Value ? null : itemToLoad["TABLE_NAME"].ToString();
-			ConstraintType = itemToLoad["CONSTRAINT_TYPE"] == DBNull.Value ? null : itemToLoad["CONSTRAINT_TYPE"].ToString();
-			IsDeferrable = itemToLoad["IS_DEFERRABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_DEFERRABLE"].ToString());
-			InitiallyDeferred = itemToLoad["INITIALLY_DEFERRED"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["INITIALLY_DEFERRED"].ToString());
+		public ForeignKey(DataRow itemToLoad) : base(itemToLoad) { }
+
+		protected override void LoadFromDataRow() {
+			ConstraintCatalog = OriginalItemDataRow["CONSTRAINT_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["CONSTRAINT_CATALOG"].ToString();
+			ConstraintSchema = OriginalItemDataRow["CONSTRAINT_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["CONSTRAINT_SCHEMA"].ToString();
+			ConstraintName = OriginalItemDataRow["CONSTRAINT_NAME"] == DBNull.Value ? null : OriginalItemDataRow["CONSTRAINT_NAME"].ToString();
+			TableCatalog = OriginalItemDataRow["TABLE_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_CATALOG"].ToString();
+			TableSchema = OriginalItemDataRow["TABLE_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_SCHEMA"].ToString();
+			TableName = OriginalItemDataRow["TABLE_NAME"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_NAME"].ToString();
+			ConstraintType = OriginalItemDataRow["CONSTRAINT_TYPE"] == DBNull.Value ? null : OriginalItemDataRow["CONSTRAINT_TYPE"].ToString();
+			IsDeferrable = OriginalItemDataRow["IS_DEFERRABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["IS_DEFERRABLE"].ToString());
+			InitiallyDeferred = OriginalItemDataRow["INITIALLY_DEFERRED"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["INITIALLY_DEFERRED"].ToString());
+		}
+
+		protected override void LoadFromObject() {
+			throw new NotImplementedException();
 		}
 
 		public string ConstraintCatalog { get; internal set; }

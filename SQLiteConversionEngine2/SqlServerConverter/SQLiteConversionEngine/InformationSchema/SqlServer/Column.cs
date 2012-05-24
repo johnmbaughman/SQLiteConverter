@@ -28,31 +28,36 @@ using SQLiteConversionEngine.Utility;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class Column : InformationSchemaItemBase<Column, SQLite.Column<Column>> {
+	public class Column : InformationSchemaItemBase<Column> {
 
-		public Column(DataRow itemToLoad)
-			: base(itemToLoad) {
-			TableCatalog = itemToLoad["TABLE_CATALOG"] == DBNull.Value ? null : itemToLoad["TABLE_CATALOG"].ToString();
-			TableSchema = itemToLoad["TABLE_SCHEMA"] == DBNull.Value ? null : itemToLoad["TABLE_SCHEMA"].ToString();
-			TableName = itemToLoad["TABLE_NAME"] == DBNull.Value ? null : itemToLoad["TABLE_NAME"].ToString();
-			ColumnName = itemToLoad["COLUMN_NAME"] == DBNull.Value ? null : itemToLoad["COLUMN_NAME"].ToString();
-			OrdinalPosition = itemToLoad["ORDINAL_POSITION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["ORDINAL_POSITION"]);
-			ColumnDefault = itemToLoad["COLUMN_DEFAULT"] == DBNull.Value ? null : itemToLoad["COLUMN_DEFAULT"].ToString();
-			IsNullable = itemToLoad["IS_NULLABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_NULLABLE"].ToString());
-			DataType = itemToLoad["DATA_TYPE"] == DBNull.Value ? null : itemToLoad["DATA_TYPE"].ToString();
-			CharacterMaximumLength = itemToLoad["CHARACTER_MAXIMUM_LENGTH"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["CHARACTER_MAXIMUM_LENGTH"]);
-			CharacterOctetLength = itemToLoad["CHARACTER_OCTET_LENGTH"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["CHARACTER_OCTET_LENGTH"]);
-			NumericPrecision = itemToLoad["NUMERIC_PRECISION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["NUMERIC_PRECISION"]);
-			NumericPrecisionRadix = itemToLoad["NUMERIC_PRECISION_RADIX"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["NUMERIC_PRECISION_RADIX"]);
-			NumericScale = itemToLoad["NUMERIC_SCALE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["NUMERIC_SCALE"]);
-			DateTimePrecision = itemToLoad["DATETIME_PRECISION"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt32(itemToLoad["DATETIME_PRECISION"]);
-			CharacterSetCatalog = itemToLoad["CHARACTER_SET_CATALOG"] == DBNull.Value ? null : itemToLoad["CHARACTER_SET_CATALOG"].ToString();
-			CharacterSetSchema = itemToLoad["CHARACTER_SET_SCHEMA"] == DBNull.Value ? null : itemToLoad["CHARACTER_SET_SCHEMA"].ToString();
-			CharacterSetName = itemToLoad["CHARACTER_SET_NAME"] == DBNull.Value ? null : itemToLoad["CHARACTER_SET_NAME"].ToString();
-			CollationCatalog = itemToLoad["COLLATION_CATALOG"] == DBNull.Value ? null : itemToLoad["COLLATION_CATALOG"].ToString();
-			IsSparse = itemToLoad["IS_SPARSE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_SPARSE"].ToString());
-			IsColumnSet = itemToLoad["IS_COLUMN_SET"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_COLUMN_SET"].ToString());
-			IsFileStream = itemToLoad["IS_FILESTREAM"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(itemToLoad["IS_FILESTREAM"].ToString());
+		public Column(DataRow itemToLoad) : base(itemToLoad) { }
+
+		protected override void LoadFromDataRow() {
+			TableCatalog = OriginalItemDataRow["TABLE_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_CATALOG"].ToString();
+			TableSchema = OriginalItemDataRow["TABLE_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_SCHEMA"].ToString();
+			TableName = OriginalItemDataRow["TABLE_NAME"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_NAME"].ToString();
+			ColumnName = OriginalItemDataRow["COLUMN_NAME"] == DBNull.Value ? null : OriginalItemDataRow["COLUMN_NAME"].ToString();
+			OrdinalPosition = OriginalItemDataRow["ORDINAL_POSITION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["ORDINAL_POSITION"]);
+			ColumnDefault = OriginalItemDataRow["COLUMN_DEFAULT"] == DBNull.Value ? null : OriginalItemDataRow["COLUMN_DEFAULT"].ToString();
+			IsNullable = OriginalItemDataRow["IS_NULLABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["IS_NULLABLE"].ToString());
+			DataType = OriginalItemDataRow["DATA_TYPE"] == DBNull.Value ? null : OriginalItemDataRow["DATA_TYPE"].ToString();
+			CharacterMaximumLength = OriginalItemDataRow["CHARACTER_MAXIMUM_LENGTH"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["CHARACTER_MAXIMUM_LENGTH"]);
+			CharacterOctetLength = OriginalItemDataRow["CHARACTER_OCTET_LENGTH"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["CHARACTER_OCTET_LENGTH"]);
+			NumericPrecision = OriginalItemDataRow["NUMERIC_PRECISION"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["NUMERIC_PRECISION"]);
+			NumericPrecisionRadix = OriginalItemDataRow["NUMERIC_PRECISION_RADIX"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["NUMERIC_PRECISION_RADIX"]);
+			NumericScale = OriginalItemDataRow["NUMERIC_SCALE"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["NUMERIC_SCALE"]);
+			DateTimePrecision = OriginalItemDataRow["DATETIME_PRECISION"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt32(OriginalItemDataRow["DATETIME_PRECISION"]);
+			CharacterSetCatalog = OriginalItemDataRow["CHARACTER_SET_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["CHARACTER_SET_CATALOG"].ToString();
+			CharacterSetSchema = OriginalItemDataRow["CHARACTER_SET_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["CHARACTER_SET_SCHEMA"].ToString();
+			CharacterSetName = OriginalItemDataRow["CHARACTER_SET_NAME"] == DBNull.Value ? null : OriginalItemDataRow["CHARACTER_SET_NAME"].ToString();
+			CollationCatalog = OriginalItemDataRow["COLLATION_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["COLLATION_CATALOG"].ToString();
+			IsSparse = OriginalItemDataRow["IS_SPARSE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["IS_SPARSE"].ToString());
+			IsColumnSet = OriginalItemDataRow["IS_COLUMN_SET"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["IS_COLUMN_SET"].ToString());
+			IsFileStream = OriginalItemDataRow["IS_FILESTREAM"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["IS_FILESTREAM"].ToString());
+		}
+
+		protected override void LoadFromObject() {
+			throw new NotImplementedException();
 		}
 
 		public string TableCatalog { get; private set; }

@@ -23,40 +23,17 @@
 #endregion
 
 using System;
-using System.Data;
-using SQLiteConversionEngine.Utility;
-using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	/// <summary>
-	/// Description of DatabaseDomain.
-	/// </summary>
-	public class Catalog : InformationSchemaItemBase<Catalog> {
+namespace SQLiteConversionEngine.Transform {
+	public abstract class ToSQLiteTransformBase<T> : TransformBase<T> {
 
-		public Catalog(DataRow itemToLoad)
-			: base(itemToLoad) {
-			Tables = new TableCollection();
-			Views = new ViewCollection();
-		}
+		public ToSQLiteTransformBase(T itemToTransform) : base(itemToTransform) { }
 
-		public string CatalogName { get; set; }
-
-		public string Description { get; set; }
-
-		public long? Id { get; set; }
-
-		protected override void LoadFromDataRow() {
-			CatalogName = OriginalItemDataRow["CATALOG_NAME"] == DBNull.Value ? null : OriginalItemDataRow["CATALOG_NAME"].ToString();
-			Description = OriginalItemDataRow["DESCRIPTION"] == DBNull.Value ? null : OriginalItemDataRow["DESCRIPTION"].ToString();
-			Id = OriginalItemDataRow["ID"] == DBNull.Value ? new Nullable<long>() : Convert.ToInt64(OriginalItemDataRow["ID"]);
-		}
-
-		protected override void LoadFromObject() {
+		public override dynamic Transform() {
 			throw new NotImplementedException();
 		}
-
-		public TableCollection Tables { get; set; }
-
-		public ViewCollection Views { get; set; }
 	}
 }

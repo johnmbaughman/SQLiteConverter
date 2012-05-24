@@ -655,14 +655,6 @@ namespace Massive {
 				Errors.Add(message);
 		}
 
-		public int Count() {
-			return Count(TableName);
-		}
-
-		public int Count(string tableName, string where = "") {
-			return (int)Scalar("SELECT COUNT(*) FROM " + tableName + " " + where);
-		}
-
 		/// <summary>
 		/// A helpful query tool
 		/// </summary>

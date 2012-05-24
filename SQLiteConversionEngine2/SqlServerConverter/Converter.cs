@@ -23,27 +23,25 @@
 #endregion
 
 using SQLiteConversionEngine.Conversion;
-using SQLiteConversionEngine.InformationSchema.SQLite;
 using SqlServerConverter.Conversion;
+using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
+using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
 namespace SqlServerConverter {
-	public class Converter : ConverterBase<SQLiteConversionEngine.InformationSchema.SqlServer.Database> {
+	public class Converter : ConverterBase<SqlServer.Database> {
 
-		public Converter(string sqliteFileWithPath, string SqlServerConnectionString, PragmaCollection<SQLiteConversionEngine.InformationSchema.SqlServer.Database> pragmaParameters)
+		public Converter(string sqliteFileWithPath, string SqlServerConnectionString, SQLite.PragmaCollection pragmaParameters)
 			: base(sqliteFileWithPath, SqlServerConnectionString, pragmaParameters) { }
 
 		public override bool ConvertToSQLite() {
 			ToSQLiteConversion toSQLiteConversion = new ToSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
-			//toSQLiteConversion.TablesToLoad.AddRange(TablesToLoad.ToArray());
-			//toSQLiteConversion.SchemasToLoad.AddRange(SchemasToLoad.ToArray());
-			toSQLiteConversion.SchemasToLoad.Add("dbo");
-			toSQLiteConversion.ConvertToDatabase(null, null, null, false);
+			toSQLiteConversion.ConvertToDatabase();
 			return true;
 		}
 
 		public override bool ConvertFromSQLite() {
 			FromSQLiteConversion fromSQLiteConversion = new FromSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
-			fromSQLiteConversion.ConvertToDatabase(null, null, null, false);
+			fromSQLiteConversion.ConvertToDatabase();
 			return true;
 		}
 	}

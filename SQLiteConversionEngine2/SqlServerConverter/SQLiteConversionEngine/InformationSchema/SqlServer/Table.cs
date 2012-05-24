@@ -28,23 +28,25 @@ using SQLiteConversionEngine.Utility;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class Table : InformationSchemaItemBase<Table, SQLite.Table<Table>> {
+	public class Table : InformationSchemaItemBase<Table> {
 
 		public Table(DataRow itemToLoad)
 			: base(itemToLoad) {
 			Columns = new ColumnCollection();
 			ForeignKeys = new ForeignKeyCollection();
 			Indexes = new IndexCollection();
-			Triggers = new TriggerCollection();
-
-			TableCatalog = itemToLoad["TABLE_CATALOG"] == DBNull.Value ? null : itemToLoad["TABLE_CATALOG"].ToString();
-			TableName = itemToLoad["TABLE_NAME"] == DBNull.Value ? null : itemToLoad["TABLE_NAME"].ToString();
-			TableSchema = itemToLoad["TABLE_SCHEMA"] == DBNull.Value ? null : itemToLoad["TABLE_SCHEMA"].ToString();
-			TableType = itemToLoad["TABLE_TYPE"] == DBNull.Value ? null : itemToLoad["TABLE_TYPE"].ToString();
+			//Triggers = new TriggerCollection();
 		}
 
-		public Table(SQLite.Table<Table> itemToLoad)
-			: base(itemToLoad) {
+		protected override void LoadFromDataRow() {
+			TableCatalog = OriginalItemDataRow["TABLE_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_CATALOG"].ToString();
+			TableName = OriginalItemDataRow["TABLE_NAME"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_NAME"].ToString();
+			TableSchema = OriginalItemDataRow["TABLE_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_SCHEMA"].ToString();
+			TableType = OriginalItemDataRow["TABLE_TYPE"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_TYPE"].ToString();
+		}
+
+		protected override void LoadFromObject() {
+			throw new NotImplementedException();
 		}
 
 		public ColumnCollection Columns { get; internal set; }
@@ -53,7 +55,7 @@ namespace SQLiteConversionEngine.InformationSchema.SqlServer {
 
 		public IndexCollection Indexes { get; internal set; }
 
-		public TriggerCollection Triggers { get; internal set; }
+		//public TriggerCollection Triggers { get; internal set; }
 
 		public string TableCatalog { get; internal set; }
 

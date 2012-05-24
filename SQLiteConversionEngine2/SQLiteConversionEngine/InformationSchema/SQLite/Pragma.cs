@@ -27,12 +27,21 @@ using System.Data;
 using SQLiteConversionEngine.Utility;
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	public class Pragma<O> : InformationSchemaItemBase<Pragma<O>, O> {
 
-		public Pragma(DataRow itemToLoad) : base(itemToLoad) { }
+    public class Pragma : InformationSchemaItemBase<Pragma> {
 
-		public string Name { get; set; }
+        public Pragma(DataRow itemToLoad) : base(itemToLoad) { }
 
-		public string Parameter { get; set; }
-	}
+        public string Name { get; set; }
+
+        public string Parameter { get; set; }
+
+        protected override void LoadFromDataRow() {
+            throw new NotImplementedException();
+        }
+
+        protected override void LoadFromObject() {
+            throw new NotImplementedException();
+        }
+    }
 }

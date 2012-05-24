@@ -27,20 +27,25 @@ using System.Data;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SqlServer {
-	public class IndexColumn : InformationSchemaItemBase<IndexColumn, SQLite.IndexCollection<IndexColumn>> {
+	public class IndexColumn : InformationSchemaItemBase<IndexColumn> {
 
-		public IndexColumn(DataRow itemToLoad)
-			: base(itemToLoad) {
-			ConstraintCatalog = itemToLoad["constraint_catalog"] == DBNull.Value ? null : itemToLoad["constraint_catalog"].ToString();
-			ConstraintSchema = itemToLoad["constraint_schema"] == DBNull.Value ? null : itemToLoad["constraint_schema"].ToString();
-			ConstraintName = itemToLoad["constraint_name"] == DBNull.Value ? null : itemToLoad["constraint_name"].ToString();
-			TableCatalog = itemToLoad["table_catalog"] == DBNull.Value ? null : itemToLoad["table_catalog"].ToString();
-			TableSchema = itemToLoad["table_schema"] == DBNull.Value ? null : itemToLoad["table_schema"].ToString();
-			TableName = itemToLoad["table_name"] == DBNull.Value ? null : itemToLoad["table_name"].ToString();
-			ColumnName = itemToLoad["column_name"] == DBNull.Value ? null : itemToLoad["column_name"].ToString();
-			OrdinalPosition = itemToLoad["ordinal_position"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["ordinal_position"]);
-			KeyType = itemToLoad["KeyType"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(itemToLoad["KeyType"]);
-			IndexName = itemToLoad["index_name"] == DBNull.Value ? null : itemToLoad["index_name"].ToString();
+		public IndexColumn(DataRow itemToLoad) : base(itemToLoad) { }
+
+		protected override void LoadFromDataRow() {
+			ConstraintCatalog = OriginalItemDataRow["constraint_catalog"] == DBNull.Value ? null : OriginalItemDataRow["constraint_catalog"].ToString();
+			ConstraintSchema = OriginalItemDataRow["constraint_schema"] == DBNull.Value ? null : OriginalItemDataRow["constraint_schema"].ToString();
+			ConstraintName = OriginalItemDataRow["constraint_name"] == DBNull.Value ? null : OriginalItemDataRow["constraint_name"].ToString();
+			TableCatalog = OriginalItemDataRow["table_catalog"] == DBNull.Value ? null : OriginalItemDataRow["table_catalog"].ToString();
+			TableSchema = OriginalItemDataRow["table_schema"] == DBNull.Value ? null : OriginalItemDataRow["table_schema"].ToString();
+			TableName = OriginalItemDataRow["table_name"] == DBNull.Value ? null : OriginalItemDataRow["table_name"].ToString();
+			ColumnName = OriginalItemDataRow["column_name"] == DBNull.Value ? null : OriginalItemDataRow["column_name"].ToString();
+			OrdinalPosition = OriginalItemDataRow["ordinal_position"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["ordinal_position"]);
+			KeyType = OriginalItemDataRow["KeyType"] == DBNull.Value ? new Nullable<int>() : Convert.ToInt32(OriginalItemDataRow["KeyType"]);
+			IndexName = OriginalItemDataRow["index_name"] == DBNull.Value ? null : OriginalItemDataRow["index_name"].ToString();
+		}
+
+		protected override void LoadFromObject() {
+			throw new NotImplementedException();
 		}
 
 		public string ConstraintCatalog { get; internal set; }

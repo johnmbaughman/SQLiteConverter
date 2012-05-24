@@ -118,34 +118,43 @@
     <Compile Include="Conversion\FromSQLiteConversionBase.cs" />
     <Compile Include="Conversion\ToSQLiteConversionBase.cs" />
     <Compile Include="DataAccess\Massive.Sqlite.cs" />
+    <Compile Include="Dynamic\GenericDynamicModel.cs" />
+    <Compile Include="Dynamic\DynamicModel.cs" />
+    <Compile Include="Exception\InformationSchemaException.cs" />
     <Compile Include="InformationSchema\InformationSchemaBase.cs" />
     <Compile Include="InformationSchema\InformationSchemaCollectionBase.cs" />
     <Compile Include="InformationSchema\InformationSchemaItemBase.cs" />
-    <Compile Include="InformationSchema\InformationSchemaTranslator.cs" />
-    <Compile Include="InformationSchema\SQLite\Database.cs" />
-    <Compile Include="InformationSchema\SQLite\Pragma.cs" />
-    <Compile Include="InformationSchema\SQLite\Catalog.cs" />
     <Compile Include="InformationSchema\SQLite\CatalogCollection.cs" />
     <Compile Include="InformationSchema\SQLite\Column.cs" />
     <Compile Include="InformationSchema\SQLite\ColumnCollection.cs" />
-    <Compile Include="InformationSchema\SQLite\DataTypes.cs" />
-    <Compile Include="InformationSchema\SQLite\DataTypesCollection.cs" />
+    <Compile Include="InformationSchema\SQLite\Database.cs" />
     <Compile Include="InformationSchema\SQLite\ForeignKey.cs" />
     <Compile Include="InformationSchema\SQLite\ForeignKeyCollection.cs" />
     <Compile Include="InformationSchema\SQLite\Index.cs" />
     <Compile Include="InformationSchema\SQLite\IndexCollection.cs" />
     <Compile Include="InformationSchema\SQLite\IndexColumn.cs" />
     <Compile Include="InformationSchema\SQLite\IndexColumnCollection.cs" />
-    <Compile Include="InformationSchema\SQLite\PragmaCollection.cs" />
     <Compile Include="InformationSchema\SQLite\Table.cs" />
     <Compile Include="InformationSchema\SQLite\TableCollection.cs" />
-    <Compile Include="InformationSchema\SQLite\Trigger.cs" />
-    <Compile Include="InformationSchema\SQLite\TriggerCollection.cs" />
     <Compile Include="InformationSchema\SQLite\View.cs" />
     <Compile Include="InformationSchema\SQLite\ViewCollection.cs" />
     <Compile Include="InformationSchema\SQLite\ViewColumn.cs" />
     <Compile Include="InformationSchema\SQLite\ViewColumnCollection.cs" />
+    <Compile Include="Transform\FromSQLiteTransformBase.cs" />
+    <Compile Include="Transform\TransformBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InformationSchema\SQLite\Catalog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InformationSchema\SQLite\Pragma.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InformationSchema\SQLite\PragmaCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transform\ToSQLiteTransformBase.cs" />
     <Compile Include="Utility\Utilities.cs" />
   </ItemGroup>
   <ItemGroup />

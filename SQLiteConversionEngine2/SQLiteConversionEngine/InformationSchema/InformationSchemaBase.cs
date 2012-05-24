@@ -23,6 +23,7 @@
 #endregion
 
 using System.Configuration;
+using System.Dynamic;
 
 namespace SQLiteConversionEngine.InformationSchema {
 	public abstract class InformationSchemaBase {

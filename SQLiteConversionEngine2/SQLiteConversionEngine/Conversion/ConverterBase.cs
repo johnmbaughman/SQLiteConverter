@@ -32,7 +32,7 @@ namespace SQLiteConversionEngine.Conversion {
 		internal const string SQLITE_CONNECTION = "sqlite";
 		internal const string OTHER_CONNECTION = "other";
 
-		public ConverterBase(string sqliteFileWithPath, string otherServerConnectionString, PragmaCollection<O> pragmaParameters) {
+		public ConverterBase(string sqliteFileWithPath, string otherServerConnectionString, PragmaCollection pragmaParameters) {
 			SQLiteConnectionStringSettings = CreateConnectionStringSettings(sqliteFileWithPath, true);
 			OtherConnectionStringSettings = CreateConnectionStringSettings(otherServerConnectionString);
 			TablesToLoad = new List<string>();
