@@ -127,7 +127,7 @@
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewCollection.cs" />
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewColumn.cs" />
     <Compile Include="SQLiteConversionEngine\InformationSchema\SqlServer\ViewColumnCollection.cs" />
-    <Compile Include="SQLiteConversionEngine\Transform\ToSQLiteDatabaseTransform.cs" />
+    <Compile Include="SQLiteConversionEngine\Transform\ToSQLiteTransform.cs" />
     <Compile Include="SQLiteConversionEngine\Transform\FromSQLiteTransform.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -141,7 +141,9 @@
       <Link>Service.Core.licenseheader</Link>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="SQLiteConversionEngine\InformationSchema\SQLite\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

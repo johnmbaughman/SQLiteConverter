@@ -28,12 +28,11 @@ using System.Linq;
 using System.Text;
 
 namespace SQLiteConversionEngine.Transform {
-	public abstract class ToSQLiteTransformBase<T> : TransformBase<T> {
 
-		public ToSQLiteTransformBase(T itemToTransform) : base(itemToTransform) { }
+    public abstract class ToSQLiteTransformBase<T> : TransformBase<T> {
 
-		public override dynamic Transform() {
-			throw new NotImplementedException();
-		}
-	}
+        public ToSQLiteTransformBase(T itemToTransform) : base(itemToTransform) { }
+
+        public abstract override dynamic Transform();
+    }
 }

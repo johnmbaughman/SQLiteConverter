@@ -99,7 +99,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SQLiteConversionEngine\SQLiteConversionEngine.csproj">
       <Project>{23AAF1EF-2EB6-43AD-8103-A687F04A7288}</Project>
-      <Name>SQLiteConversionEngine</Name>
+      <Name>SQLiteConversionEngine %28SQLiteConversionEngine1\SQLiteConversionEngine%29</Name>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

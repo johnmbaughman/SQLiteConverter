@@ -23,26 +23,32 @@
 #endregion
 
 using SQLiteConversionEngine.Conversion;
+using SQLiteConversionEngine.Transform;
 using SqlServerConverter.Conversion;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
 namespace SqlServerConverter {
-	public class Converter : ConverterBase<SqlServer.Database> {
 
-		public Converter(string sqliteFileWithPath, string SqlServerConnectionString, SQLite.PragmaCollection pragmaParameters)
-			: base(sqliteFileWithPath, SqlServerConnectionString, pragmaParameters) { }
+    public class Converter : ConverterBase<SqlServer.Database> {
 
-		public override bool ConvertToSQLite() {
-			ToSQLiteConversion toSQLiteConversion = new ToSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
-			toSQLiteConversion.ConvertToDatabase();
-			return true;
-		}
+        public Converter(string sqliteFileWithPath, string SqlServerConnectionString, SQLite.PragmaCollection pragmaParameters)
+            : base(sqliteFileWithPath, SqlServerConnectionString, pragmaParameters) { }
 
-		public override bool ConvertFromSQLite() {
-			FromSQLiteConversion fromSQLiteConversion = new FromSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings);
-			fromSQLiteConversion.ConvertToDatabase();
-			return true;
-		}
-	}
+        public override bool ConvertToSQLite() {
+            ToSQLiteConversion toSQLiteConversion = new ToSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings, SchemasToLoad, TablesToLoad);
+            toSQLiteConversion.ConvertToDatabase();
+
+            ToSQLiteTransform toSQLiteTransform = new ToSQLiteTransform(toSQLiteConversion.SourceSchema);
+            toSQLiteTransform.Transform();
+
+            return true;
+        }
+
+        public override bool ConvertFromSQLite() {
+            FromSQLiteConversion fromSQLiteConversion = new FromSQLiteConversion(SQLiteConnectionStringSettings, OtherConnectionStringSettings, SchemasToLoad, TablesToLoad);
+            fromSQLiteConversion.ConvertToDatabase();
+            return true;
+        }
+    }
 }
