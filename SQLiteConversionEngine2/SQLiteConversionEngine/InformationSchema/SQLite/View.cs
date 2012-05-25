@@ -28,50 +28,55 @@ using SQLiteConversionEngine.Utility;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 
 namespace SQLiteConversionEngine.InformationSchema.SQLite {
-	/// <summary>
-	/// Description of View.
-	/// </summary>
-	public class View : InformationSchemaItemBase<View> {
 
-		public View(DataRow itemToLoad)
-			: base(itemToLoad) {
-			ViewColumns = new ViewColumnCollection();
-		}
+    /// <summary>
+    /// Description of View.
+    /// </summary>
+    public class View : InformationSchemaItemBase<View> {
 
-		protected override void LoadFromDataRow() {
-			TableCatalog = OriginalItemDataRow["TABLE_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_CATALOG"].ToString();
-			TableSchema = OriginalItemDataRow["TABLE_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_SCHEMA"].ToString();
-			TableName = OriginalItemDataRow["TABLE_NAME"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_NAME"].ToString();
-			ViewDefinition = OriginalItemDataRow["VIEW_DEFINITION"] == DBNull.Value ? null : OriginalItemDataRow["VIEW_DEFINITION"].ToString();
-			CheckOption = OriginalItemDataRow["CHECK_OPTION"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["CHECK_OPTION"].ToString());
-			IsUpdatable = OriginalItemDataRow["IS_UPDATABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["IS_UPDATABLE"].ToString());
-			Description = OriginalItemDataRow["DESCRIPTION"] == DBNull.Value ? null : OriginalItemDataRow["DESCRIPTION"].ToString();
-			DateCreated = OriginalItemDataRow["DATE_CREATED"] == DBNull.Value ? new Nullable<DateTime>() : Convert.ToDateTime(OriginalItemDataRow["DATE_CREATED"]);
-			DateModified = OriginalItemDataRow["DATE_MODIFIED"] == DBNull.Value ? new Nullable<DateTime>() : Convert.ToDateTime(OriginalItemDataRow["DATE_MODIFIED"]);
-		}
+        public View() {
+            ViewColumns = new ViewColumnCollection();
+        }
 
-		protected override void LoadFromObject() {
-			throw new NotImplementedException();
-		}
+        public View(DataRow itemToLoad)
+            : base(itemToLoad) {
+            ViewColumns = new ViewColumnCollection();
+        }
 
-		public string TableCatalog { get; set; }
+        protected override void LoadFromDataRow() {
+            TableCatalog = OriginalItemDataRow["TABLE_CATALOG"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_CATALOG"].ToString();
+            TableSchema = OriginalItemDataRow["TABLE_SCHEMA"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_SCHEMA"].ToString();
+            TableName = OriginalItemDataRow["TABLE_NAME"] == DBNull.Value ? null : OriginalItemDataRow["TABLE_NAME"].ToString();
+            ViewDefinition = OriginalItemDataRow["VIEW_DEFINITION"] == DBNull.Value ? null : OriginalItemDataRow["VIEW_DEFINITION"].ToString();
+            CheckOption = OriginalItemDataRow["CHECK_OPTION"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["CHECK_OPTION"].ToString());
+            IsUpdatable = OriginalItemDataRow["IS_UPDATABLE"] == DBNull.Value ? new Nullable<bool>() : Utilities.BoolParser.GetValue(OriginalItemDataRow["IS_UPDATABLE"].ToString());
+            Description = OriginalItemDataRow["DESCRIPTION"] == DBNull.Value ? null : OriginalItemDataRow["DESCRIPTION"].ToString();
+            DateCreated = OriginalItemDataRow["DATE_CREATED"] == DBNull.Value ? new Nullable<DateTime>() : Convert.ToDateTime(OriginalItemDataRow["DATE_CREATED"]);
+            DateModified = OriginalItemDataRow["DATE_MODIFIED"] == DBNull.Value ? new Nullable<DateTime>() : Convert.ToDateTime(OriginalItemDataRow["DATE_MODIFIED"]);
+        }
 
-		public string TableSchema { get; set; }
+        protected override void LoadFromObject() {
+            throw new NotImplementedException();
+        }
 
-		public string TableName { get; set; }
+        public string TableCatalog { get; set; }
 
-		public string ViewDefinition { get; set; }
+        public string TableSchema { get; set; }
 
-		public bool? CheckOption { get; set; }
+        public string TableName { get; set; }
 
-		public bool? IsUpdatable { get; set; }
+        public string ViewDefinition { get; set; }
 
-		public string Description { get; set; }
+        public bool? CheckOption { get; set; }
 
-		public DateTime? DateCreated { get; set; }
+        public bool? IsUpdatable { get; set; }
 
-		public DateTime? DateModified { get; set; }
+        public string Description { get; set; }
 
-		public ViewColumnCollection ViewColumns { get; set; }
-	}
+        public DateTime? DateCreated { get; set; }
+
+        public DateTime? DateModified { get; set; }
+
+        public ViewColumnCollection ViewColumns { get; set; }
+    }
 }

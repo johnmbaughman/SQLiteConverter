@@ -33,7 +33,7 @@ namespace SQLiteConversionEngine.InformationSchema {
 
     public abstract class InformationSchemaItemBase<T> : GenericDynamicModel<T> {
 
-        private InformationSchemaItemBase() { }
+        public InformationSchemaItemBase() { }
 
         public InformationSchemaItemBase(DataRow itemToLoad) {
             OriginalItemDataRow = itemToLoad;

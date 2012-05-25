@@ -22,13 +22,15 @@
 
 #endregion
 
+using System.Collections.Generic;
 using System.Configuration;
 
 namespace SQLiteConversionEngine.Conversion {
 
     public abstract class ToSQLiteConversionBase<T> : ConversionBase<T> where T : new() {
 
-        public ToSQLiteConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
+        public ToSQLiteConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings, List<string> schemasToLoad, List<string> tablesToLoad)
+            : base(sqliteConnectionStringSettings, otherConnectionStringSettings, schemasToLoad, tablesToLoad) { }
 
         //protected override void ConvertSourceDatabaseToDestination(ConversionHandler conversionHandler, TableSelectionHandler tableSelectionHandler, FailedViewDefinitionHandler failedViewDefinitionHandler, bool createTriggers) {
         //    throw new NotImplementedException();

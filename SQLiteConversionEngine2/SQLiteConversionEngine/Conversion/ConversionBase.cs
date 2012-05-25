@@ -31,15 +31,15 @@ namespace SQLiteConversionEngine.Conversion {
 
     public abstract class ConversionBase<T> where T : new() {
 
-        public ConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) {
+        public ConversionBase(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings, List<string> schemasToLoad, List<string> tablesToLoad) {
             Connections = new Connections {
                 SQLiteConnection = sqliteConnectionStringSettings,
                 OtherConnection = otherConnectionStringSettings,
             };
 
             SourceSchema = new T();
-            TablesToLoad = new List<string>();
-            SchemasToLoad = new List<string>();
+            SchemasToLoad = schemasToLoad;
+            TablesToLoad = tablesToLoad;
         }
 
         #region Protected Properties

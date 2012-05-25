@@ -22,6 +22,7 @@
 
 #endregion
 
+using System.Collections.Generic;
 using System.Configuration;
 using SQLiteConversionEngine.Conversion;
 using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
@@ -31,7 +32,8 @@ namespace SqlServerConverter.Conversion {
 
     internal class FromSQLiteConversion : FromSQLiteConversionBase {
 
-        public FromSQLiteConversion(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings) : base(sqliteConnectionStringSettings, otherConnectionStringSettings) { }
+        public FromSQLiteConversion(ConnectionStringSettings sqliteConnectionStringSettings, ConnectionStringSettings otherConnectionStringSettings, List<string> schemasToLoad, List<string> tablesToLoad)
+            : base(sqliteConnectionStringSettings, otherConnectionStringSettings, schemasToLoad, tablesToLoad) { }
 
         public override void ConvertToDatabase() {
             base.ConvertToDatabase();
