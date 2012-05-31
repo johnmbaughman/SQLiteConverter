@@ -33,6 +33,8 @@ namespace SQLiteConversionEngine.InformationSchema.SQLite {
 	/// </summary>
 	public class IndexColumn : InformationSchemaItemBase<IndexColumn> {
 
+		public IndexColumn() { }
+
 		public IndexColumn(DataRow itemToLoad) : base(itemToLoad) { }
 
 		protected override void LoadFromDataRow() {

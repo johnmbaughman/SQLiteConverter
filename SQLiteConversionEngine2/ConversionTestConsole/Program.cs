@@ -3,17 +3,16 @@ using System.Data.SqlClient;
 using sql = SqlServerConverter;
 
 namespace ConversionTestConsole {
+	internal class Program {
 
-    internal class Program {
-
-        private static void Main(string[] args) {
-            sql.Converter converter = new sql.Converter("C:\\SQLiteTest.db", "Data Source=localhost;Initial Catalog=TechNetProductKeys;Integrated Security=True", null);
-            //sql.Converter converter = new sql.Converter("C:\\SQLiteTest.db", "Data Source=localhost;Initial Catalog=SQLiteConversion;Integrated Security=True", null);
-            converter.TablesToLoad.AddRange(new string[] { "ProductKey", "User" });
-            //converter.TablesToLoad.AddRange(new string[] { "Table_1", "Table_2" });
-            converter.SchemasToLoad.Add("dbo");
-            converter.ConvertToSQLite();
-            //converter.ConvertFromSQLite();
-        }
-    }
+		private static void Main(string[] args) {
+			sql.Converter converter = new sql.Converter("C:\\SQLiteTest.db", "Data Source=localhost;Initial Catalog=Northwind;Integrated Security=True", null);
+			//sql.Converter converter = new sql.Converter("C:\\SQLiteTest.db", "Data Source=localhost;Initial Catalog=SQLiteConversion;Integrated Security=True", null);
+			converter.TablesToLoad.AddRange(new string[] { "Order Details" });
+			//converter.TablesToLoad.AddRange(new string[] { "Table_1", "Table_2" });
+			converter.SchemasToLoad.Add("dbo");
+			converter.ConvertToSQLite();
+			//converter.ConvertFromSQLite();
+		}
+	}
 }

@@ -28,39 +28,50 @@ using SQLite = SQLiteConversionEngine.InformationSchema.SQLite;
 using SqlServer = SQLiteConversionEngine.InformationSchema.SqlServer;
 
 namespace SQLiteConversionEngine.Transform {
+	internal class ToSQLiteTransform : ToSQLiteTransformBase<SqlServer.Database> {
 
-    internal class ToSQLiteTransform : ToSQLiteTransformBase<SqlServer.Database> {
+		public ToSQLiteTransform(SqlServer.Database sqlServerDatabase) : base(sqlServerDatabase) { }
 
-        public ToSQLiteTransform(SqlServer.Database sqlServerDatabase) : base(sqlServerDatabase) { }
+		public override dynamic Transform() {
+			SQLite.Database database = new SQLite.Database();
+			foreach (SqlServer.Schemata schemata in ItemToTransform.Schemas.Values) {
+				database.Catalogs.Add(schemata.SchemaName, new SQLite.Catalog {
+					CatalogName = schemata.SchemaOwner,
+				});
 
-        public override dynamic Transform() {
-            SQLite.Database database = new SQLite.Database();
-            foreach (SqlServer.Schemata schemata in ItemToTransform.Schemas.Values) {
-                database.Catalogs.Add(schemata.SchemaName, new SQLite.Catalog {
-                    CatalogName = schemata.SchemaOwner,
-                });
+				foreach (SqlServer.Table table in schemata.Tables.Values) {
+					database.Catalogs[schemata.SchemaName].Tables.Add(table.TableName, new SQLite.Table {
+						CatalogName = table.TableCatalog,
+						Name = table.TableName
+					});
 
-                foreach (SqlServer.Table table in schemata.Tables.Values) {
-                    database.Catalogs[schemata.SchemaName].Tables.Add(table.TableName, new SQLite.Table {
-                        CatalogName = table.TableCatalog,
-                        Name = table.TableName
-                    });
+					foreach (SqlServer.Column column in table.Columns.Values) {
+						database.Catalogs[schemata.SchemaName].Tables[table.TableName].Columns.Add(column.ColumnName, new SQLite.Column {
+							ColumnName = column.ColumnName,
+							DataType = column.DataType,
+							IsNullable = column.IsNullable,
+							NumericPrecision = column.NumericPrecision,
+							NumericScale = column.NumericScale,
+							OrdinalPosition = column.OrdinalPosition,
+							ColumnDefault = column.ColumnDefault
+						});
+					}
 
-                    foreach (SqlServer.Column column in table.Columns.Values) {
-                        database.Catalogs[schemata.SchemaName].Tables[table.TableName].Columns.Add(column.ColumnName, new SQLite.Column {
-                            ColumnName = column.ColumnName,
-                            DataType = column.DataType,
-                            IsNullable = column.IsNullable,
-                            NumericPrecision = column.NumericPrecision,
-                            NumericScale = column.NumericScale,
-                            OrdinalPosition = column.OrdinalPosition,
-                            ColumnDefault = column.ColumnDefault
-                        });
-                    }
-                }
-            }
+					foreach (SqlServer.Index index in table.Indexes.Values) {
+						database.Catalogs[schemata.SchemaName].Tables[table.TableName].Indexes.Add(index.IndexName, new SQLite.Index {
+							IndexName = index.IndexName
+						});
 
-            return database;
-        }
-    }
+						foreach (SqlServer.IndexColumn indexColumn in index.IndexColumns.Values) {
+							database.Catalogs[schemata.SchemaName].Tables[table.TableName].Indexes[index.IndexName].IndexColumns.Add(indexColumn.ColumnName, new SQLite.IndexColumn {
+								ColumnName = indexColumn.ColumnName
+							});
+						}
+					}
+				}
+			}
+
+			return database;
+		}
+	}
 }
